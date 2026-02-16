@@ -1,2 +1,4 @@
 package com.example.debugz;
-public class Rectangle extends Shape{}
+public class Rectangle extends Shape{
+    int x;
+}
