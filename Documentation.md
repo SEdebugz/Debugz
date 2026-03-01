@@ -1,4 +1,4 @@
-# Project Documentation
+# Debugz
 
 ## Table of Contents
 - [Team Information](#team-information)
@@ -116,5 +116,6 @@ _Add UML diagrams here or link images from the repository._
 
 ### Wireframes – Project Part 1
 _Add screenshots or links to wireframe images._
+
 
 
