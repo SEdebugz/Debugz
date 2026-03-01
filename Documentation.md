@@ -19,7 +19,7 @@
 ---
 
 ## Team Information
-- **Team Name:** debugz-
+- **Team Name:** debugz
 
 | Name                       | Roll Number | GitHub ID                 |
 |----------------------------|-------------|---------------------------|
@@ -116,4 +116,5 @@ _Add UML diagrams here or link images from the repository._
 
 ### Wireframes – Project Part 1
 _Add screenshots or links to wireframe images._
+
 
