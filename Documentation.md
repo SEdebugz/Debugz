@@ -116,7 +116,7 @@ https://github.com/SEdebugz/Debugz/blob/main/Docs/crc_cards_picture.png
 
 ### Wireframes – Project Part 2
 
-https://github.com/Edebugz/Debugz/blob/main/Docs/Screens
+https://github.com/SEdebugz/Debugz/blob/main/Docs/Screens
 
 - Login Screen
 
@@ -202,6 +202,7 @@ RSVP Confirmation Screen
 [US4]
 
 ---
+
 
 
 
