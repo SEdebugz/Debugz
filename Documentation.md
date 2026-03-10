@@ -9,7 +9,7 @@
 - [UML Diagrams](#uml-diagrams)
 
 - [Product Backlog](#product-backlog)
-  - [Product Backlog – Project Part 1](#product-backlog--project-part-1)
+  - [Product Backlog – Project Part 2](#product-backlog--project-part-2)
 
 
 - [Wireframes](#wireframes)
@@ -83,9 +83,18 @@ _Add UML diagrams here or link images from the repository._
 
 ## Product Backlog
 
-### Product Backlog – Project Part 1
-| ID | User Story | Priority | Status |
-|----|------------|----------|--------|
+### Product Backlog – Project Part 2
+
+| ID | User Story | Story Points | Risk | Release
+|-----|-----|-----|-----|-----|
+| US1 | As a student, I want to browse all upcoming campus events so that I can discover activities when I have free time. | 4 | Low | Checkpoint |
+| US2 | As a student, I want to search events by category or keyword so that I can find events that match my interests. | 3 | Low | Checkpoint |
+| US3 | As a student, I want to view detailed event information (topic, time, location, speaker, ticket price) so that I can decide whether to attend. | 2 | Low | Checkpoint |
+| US4 | As a student, I want to RSVP to an event so that I can reserve my place. | 6 | Medium | Checkpoint |
+| US5 | As a student, I want to see how many spots remain for an event so that I know if the event might fill up soon. | 5 | Medium | Checkpoint |
+| US6 | As a student, I want to upvote an upcoming event I'm looking forward to so that the most anticipated events trend organically on the main landing page. | 7 | Medium | Later |
+
+
 
 
 ---
@@ -94,6 +103,7 @@ _Add UML diagrams here or link images from the repository._
 
 ### Wireframes – Project Part 1
 _Add screenshots or links to wireframe images._
+
 
 
 
