@@ -112,7 +112,36 @@ https://github.com/SEdebugz/Debugz/blob/main/Docs/crc_cards_picture.png
 ## Wireframes
 
 ### Wireframes – Project Part 1
-_Add screenshots or links to wireframe images._
+
+Login Screen
+Enables user login for different user roles like students, organizers, and admins using email/username and password or social media accounts. New user registration is also enabled, and after successful login, users are redirected to their respective home pages.
+
+Discover Events Screen (Student Home)
+The main page for students to explore events organized by different clubs and organizations on campus using a search bar and category filters.
+
+Event Details Page
+Displays details of the chosen event, like date, venue, organizer, and available capacity. Students can confirm their attendance by clicking on the RSVP button.
+
+RSVP Confirmation & My Events Screen
+Confirms registration for events and also enables users to add events to their calendar or share with friends. The “My Events” section contains all events registered by the user.
+
+Organizer Dashboard
+Provides organizers with details of their events, like statistics of active events, number of RSVPs, etc. Organizers can also create events from this page.
+
+Create Event Screen
+Enables organizers to create new events by providing details of events like event name, category, date, venue, capacity, and cover photo.
+
+Attendees Management Screen
+Shows the list of participants for an event along with attendance statistics. Organizers can search attendees, check in participants, and manage waitlisted users.
+
+Admin Dashboard
+Enables administrators to monitor platform activity and moderate events. Admins can review submissions, approve or reject events, and investigate flagged content.
+
+Search Results Screen
+Displays events that match a user’s search query. Users can filter results and RSVP directly from the list.
+
+Notifications Screen
+Shows updates related to events, including reminders, RSVP confirmations, and event changes. It also highlights friend activity for social discovery.
 
 
 
