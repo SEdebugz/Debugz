@@ -76,8 +76,7 @@ Friday, March 06, 2026
 
 ---
 
-## UML Diagrams
-_Add UML diagrams here or link images from the repository._
+## Object Oriented Analysis
 
 ---
 https://github.com/SEdebugz/Debugz/blob/main/Docs/crc_cards_picture.png
@@ -108,6 +107,7 @@ https://github.com/SEdebugz/Debugz/blob/main/Docs/crc_cards_picture.png
 
 ### Wireframes – Project Part 1
 _Add screenshots or links to wireframe images._
+
 
 
 
