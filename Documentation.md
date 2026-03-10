@@ -80,7 +80,7 @@ Friday, March 06, 2026
 _Add UML diagrams here or link images from the repository._
 
 ---
-
+https://github.com/SEdebugz/Debugz/blob/main/Docs/crc_cards_picture.png
 ## Product Backlog
 
 ### Product Backlog – Project Part 2
@@ -108,6 +108,7 @@ _Add UML diagrams here or link images from the repository._
 
 ### Wireframes – Project Part 1
 _Add screenshots or links to wireframe images._
+
 
 
 
