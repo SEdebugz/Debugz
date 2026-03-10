@@ -13,7 +13,7 @@
 
 
 - [Wireframes](#wireframes)
-  - [Wireframes – Project Part 1](#wireframes--project-part-1)
+  - [Wireframes – Project Part 2](#wireframes--project-part-2)
 
 ---
 
@@ -111,7 +111,9 @@ https://github.com/SEdebugz/Debugz/blob/main/Docs/crc_cards_picture.png
 
 ## Wireframes
 
-### Wireframes – Project Part 1
+### Wireframes – Project Part 2
+
+https://github.com/Edebugz/Debugz/blob/main/Docs/Screens
 
 - Login Screen
 
@@ -152,6 +154,7 @@ Displays events that match a user’s search query. Users can filter results and
 - Notifications Screen
 
 Shows updates related to events, including reminders, RSVP confirmations, and event changes. It also highlights friend activity for social discovery.
+
 
 
 
