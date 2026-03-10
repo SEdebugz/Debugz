@@ -257,7 +257,7 @@ Event Review Screen (event details displayed)
 Approve Event → Event appears in Discover Feed  
 Reject Event → Event removed  
 [US15]
----
+
 
 
 
