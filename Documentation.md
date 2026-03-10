@@ -79,7 +79,11 @@ Friday, March 06, 2026
 ## Object Oriented Analysis
 
 ---
+
 https://github.com/SEdebugz/Debugz/blob/main/Docs/crc_cards_picture.png
+
+---
+
 ## Product Backlog
 
 ### Product Backlog – Project Part 2
@@ -97,8 +101,10 @@ https://github.com/SEdebugz/Debugz/blob/main/Docs/crc_cards_picture.png
 | US9 | As a student, I’d like to see which friends will attend an event because this information will help me decide whether to I want go. | 5 | Medium | Later |
 | US10 | As a student, I need a system to monitor my RSPV’d events which helps me plan my time effectively. | 3 | Low | Checkpoint |
 | US11 | As a student, I’d like event reminders some days before the event to ensure I remember to attend. | 5 | Medium | Later |
-
-
+| US12 | As an organizer, I want to edit event details so that I can keep event information updated. | 3 | Low | Checkpoint |
+| US13 | As an organizer, I want to set event capacity or ticket limits so that attendance can be controlled. | 5 | Medium | Checkpoint |
+| US14 | As an organizer, I want to view the list of RSVPed attendees so that I can estimate participation. | 5 | Medium | Checkpoint |
+| US15 | As an administrator, I want to manage event listings so that inappropriate or duplicate events can be removed. | 5 | Medium | Later |
 
 
 ---
@@ -107,6 +113,7 @@ https://github.com/SEdebugz/Debugz/blob/main/Docs/crc_cards_picture.png
 
 ### Wireframes – Project Part 1
 _Add screenshots or links to wireframe images._
+
 
 
 
