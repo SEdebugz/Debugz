@@ -201,7 +201,64 @@ Event Details Screen (event information displayed)
 RSVP Confirmation Screen  
 [US4]
 
+
+### Storyboard 3 – Notification and Reminder Flow
+
+Student RSVPs to Event  
+[US4]  
+↓ System schedules reminder  
+
+Push Notification Sent (event reminder)  
+[US7, US11]  
+↓ Student taps notification  
+
+Notifications Screen (event updates and friend activity)  
+[US7, US11]  
+↓ Student opens event  
+
+Event Details Screen  
+[US3]
+
 ---
+
+### Storyboard 4 – Organizer Event Creation Flow
+
+Organizer Login  
+↓  
+
+Organizer Dashboard (event statistics and controls)  
+↓ Organizer clicks "Create Event"  
+
+Create Event Screen (event form: title, date, capacity, location)  
+↓ Organizer submits form  
+
+Event Published  
+↓  
+
+Organizer Dashboard (event now listed)  
+↓ Organizer selects "Attendees"  
+
+Attendees Management Screen  
+[US12, US13, US14]
+
+---
+
+### Storyboard 5 – Admin Moderation Flow
+
+Admin Login  
+↓  
+
+Admin Dashboard (pending and flagged events)  
+↓ Admin selects event  
+
+Event Review Screen (event details displayed)  
+↓  
+
+Approve Event → Event appears in Discover Feed  
+Reject Event → Event removed  
+[US15]
+---
+
 
 
 
