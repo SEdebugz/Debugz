@@ -15,6 +15,9 @@
 - [Wireframes](#wireframes)
   - [Wireframes – Project Part 2](#wireframes--project-part-2)
 
+- [Storyboards](#storyboards)
+  - [Storyboards – Project Part 2](#storyboards--project-part-2)
+
 ---
 
 ## Team Information
@@ -154,6 +157,57 @@ Displays events that match a user’s search query. Users can filter results and
 - Notifications Screen
 
 Shows updates related to events, including reminders, RSVP confirmations, and event changes. It also highlights friend activity for social discovery.
+
+
+---
+
+## Storyboards
+
+### Storyboards – Project Part 2
+
+#### Storyboard 1 – Student Event Discovery and RSVP
+Discover Events Screen
+(Search bar / category filters)
+[US1, US2]
+↓ (student selects event card)
+
+Event Details Screen
+(Event information, capacity indicator, friends attending)
+[US3, US5, US9]
+↓ (student presses RSVP)
+
+RSVP Confirmation Screen
+(confirmation message + actions)
+[US4]
+↓ (student selects "Add to Calendar")
+
+My Events Screen
+(list of RSVPed events)
+[US8, US10]
+
+---
+
+#### Storyboard 2 – Event Search Flow
+Discover Events Screen
+(search bar input)
+[US1]
+↓ (student types keyword)
+
+Search Results Screen
+(filtered event cards)
+[US2]
+↓ (student selects event)
+
+Event Details Screen
+(event information displayed)
+[US3]
+↓ (student presses RSVP)
+
+RSVP Confirmation Screen
+[US4]
+
+
+---
 
 
 
