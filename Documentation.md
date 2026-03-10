@@ -165,49 +165,46 @@ Shows updates related to events, including reminders, RSVP confirmations, and ev
 
 ### Storyboards – Project Part 2
 
-#### Storyboard 1 – Student Event Discovery and RSVP
-Discover Events Screen
-(Search bar / category filters)
-[US1, US2]
-↓ (student selects event card)
+### Storyboard 1 – Student Event Discovery and RSVP
 
-Event Details Screen
-(Event information, capacity indicator, friends attending)
-[US3, US5, US9]
-↓ (student presses RSVP)
+Discover Events Screen (Search bar / category filters)  
+[US1, US2]  
+↓ Student selects event card  
 
-RSVP Confirmation Screen
-(confirmation message + actions)
-[US4]
-↓ (student selects "Add to Calendar")
+Event Details Screen (Event information, capacity indicator, friends attending)  
+[US3, US5, US9]  
+↓ Student presses RSVP  
 
-My Events Screen
-(list of RSVPed events)
+RSVP Confirmation Screen (confirmation message and actions)  
+[US4]  
+↓ Student selects "Add to Calendar"  
+
+My Events Screen (list of RSVPed events)  
 [US8, US10]
 
 ---
 
-#### Storyboard 2 – Event Search Flow
-Discover Events Screen
-(search bar input)
-[US1]
-↓ (student types keyword)
+### Storyboard 2 – Event Search Flow
 
-Search Results Screen
-(filtered event cards)
-[US2]
-↓ (student selects event)
+Discover Events Screen (search bar input)  
+[US1]  
+↓ Student types keyword  
 
-Event Details Screen
-(event information displayed)
-[US3]
-↓ (student presses RSVP)
+Search Results Screen (filtered event cards)  
+[US2]  
+↓ Student selects event  
 
-RSVP Confirmation Screen
+Event Details Screen (event information displayed)  
+[US3]  
+↓ Student presses RSVP  
+
+RSVP Confirmation Screen  
 [US4]
 
-
 ---
+
+
+
 
 
 
