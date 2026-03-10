@@ -6,7 +6,7 @@
 - [Meeting Minutes](#meeting-minutes)
   - [Meeting – Mar 06,  2026](#meeting--mar-06-2026)
 
-- [UML Diagrams](#uml-diagrams)
+- [Object Diagrams](#object-oriented-analysis)
 
 - [Product Backlog](#product-backlog)
   - [Product Backlog – Project Part 2](#product-backlog--project-part-2)
@@ -107,6 +107,7 @@ https://github.com/SEdebugz/Debugz/blob/main/Docs/crc_cards_picture.png
 
 ### Wireframes – Project Part 1
 _Add screenshots or links to wireframe images._
+
 
 
 
