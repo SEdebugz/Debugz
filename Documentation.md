@@ -93,6 +93,11 @@ _Add UML diagrams here or link images from the repository._
 | US4 | As a student, I want to RSVP to an event so that I can reserve my place. | 6 | Medium | Checkpoint |
 | US5 | As a student, I want to see how many spots remain for an event so that I know if the event might fill up soon. | 5 | Medium | Checkpoint |
 | US6 | As a student, I want to upvote an upcoming event I'm looking forward to so that the most anticipated events trend organically on the main landing page. | 7 | Medium | Later |
+| US7 | As a student, I want to receive push notifications for upcoming events so that I do not forget about them. | 8 | High | Later |
+| US8 | As a student, I want to add events to my personal calendar so that I can prevent scheduling conflicts. | 8 | High | Later |
+| US9 | As a student, I want to see which friends are attending an event so that I can decide whether I want to go. | 5 | Medium | Later |
+| US10 | As a student, I want to track the events I have RSVPed to so that I can manage my schedule effectively. | 3 | Low | Checkpoint |
+| US11 | As a student, I want to receive reminders a few days before an event so that I remember to attend. | 5 | Medium | Later |
 
 
 
@@ -103,6 +108,7 @@ _Add UML diagrams here or link images from the repository._
 
 ### Wireframes – Project Part 1
 _Add screenshots or links to wireframe images._
+
 
 
 
