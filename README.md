@@ -258,6 +258,7 @@ Approve Event → Event appears in Discover Feed
 Reject Event → Event removed  
 [US15]
 
+---
 
 ### Storyboard 6 – Search and Filter Flow
 Student Opens Discover Feed  
@@ -303,7 +304,40 @@ Check-In Confirmed Screen (attendance recorded)
 
 ---
 
+### Storyboard 9 – Profile Setup and Edit Flow
+New User Registers  
+↓  
+Profile Setup Screen (name, photo, bio, interests)  
+[US1]  
+↓ User submits profile  
+Home Screen (Discover Feed shown)  
+[US2]  
+↓ User taps "Edit Profile"  
+Edit Profile Screen (update photo, bio, preferences)  
+[US6]  
+↓ User saves changes  
+Profile Updated (changes reflected across app)  
+[US6]
 
+---
+
+### Storyboard 10 – Waitlist and Capacity Flow
+Student Opens Event Details  
+[US3]  
+↓ Event is full  
+Waitlist Prompt (event at capacity, join waitlist?)  
+[US5]  
+↓ Student joins waitlist  
+Waitlist Confirmed Screen (position shown)  
+[US5]  
+↓ Spot becomes available  
+Push Notification Sent (spot available)  
+[US7]  
+↓ Student confirms attendance  
+RSVP Confirmed (removed from waitlist)  
+[US4, US5]
+
+---
 
 
 
