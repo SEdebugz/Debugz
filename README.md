@@ -259,8 +259,49 @@ Reject Event → Event removed
 [US15]
 
 
+### Storyboard 6 – Search and Filter Flow
+Student Opens Discover Feed
+[US2]
+↓ Student taps "Search"
+Search Screen (search bar with filters: date, category, location)
+↓ Student applies filters
+Filtered Results Screen (matching events displayed)
+[US2]
+↓ Student selects event
+Event Details Screen (full event info)
+[US3]
 
+---
 
+### Storyboard 7 – Friend and Social Flow
+Student Opens Profile
+↓ Student taps "Find Friends"
+Search Users Screen (search by name or username)
+[US8]
+↓ Student sends friend request
+Friend Request Sent
+↓ Friend accepts request
+Friends List Updated
+[US8]
+↓ Student views friend activity
+Activity Feed (friends' RSVPs and events)
+[US9]
+
+---
+
+### Storyboard 8 – Event Check-In Flow
+Student Arrives at Event
+↓ Student opens app
+My Events Screen (upcoming RSVPs listed)
+[US4]
+↓ Student taps "Check In"
+QR Code Screen (unique QR code displayed)
+[US10]
+↓ Organizer scans QR code
+Check-In Confirmed Screen (attendance recorded)
+[US10, US13]
+
+---
 
 
 
