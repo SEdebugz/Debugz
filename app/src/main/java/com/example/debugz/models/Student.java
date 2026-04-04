@@ -5,15 +5,15 @@ import java.util.List;
 
 /**
  * Represents a student user of the application.
- * Responsible for managing profile details, social connections, event preferences, and registrations.
+ * Responsible for managing core profile details, event preferences, and registrations.
  */
 public class Student {
     private String studentId;
     private String name;
     private String email;
-    private String deviceToken;
+    private String school;
+    private String year;
     private List<String> preferences;
-    private List<String> friendIds;
     private List<String> registrationIds;
 
     /**
@@ -21,99 +21,94 @@ public class Student {
      */
     public Student() {
         this.preferences = new ArrayList<>();
-        this.friendIds = new ArrayList<>();
         this.registrationIds = new ArrayList<>();
     }
 
     /**
      * Constructs a new Student with core details.
      *
-     * @param studentId   The unique identifier for the student.
-     * @param name        The student's full name.
-     * @param email       The student's university email address.
-     * @param deviceToken The token required for sending push notifications.
+     * @param studentId  The unique identifier for the student.
+     * @param name       The student's full name.
+     * @param email      The student's university email address.
+     * @param school     The school or department the student belongs to.
+     * @param year       The student's current academic year.
      */
-    public Student(String studentId, String name, String email, String deviceToken) {
+    public Student(String studentId, String name, String email, String school, String year) {
         this.studentId = studentId;
         this.name = name;
         this.email = email;
-        this.deviceToken = deviceToken;
+        this.school = school;
+        this.year = year;
         this.preferences = new ArrayList<>();
-        this.friendIds = new ArrayList<>();
         this.registrationIds = new ArrayList<>();
     }
 
-    public String getStudentId() {
-        return studentId;
-    }
+    /** Returns the student's unique identifier. */
+    public String getStudentId() { return studentId; }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
+    /** Sets the student's unique identifier. */
+    public void setStudentId(String studentId) { this.studentId = studentId; }
 
-    public String getName() {
-        return name;
-    }
+    /** Returns the student's full name. */
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    /** Sets the student's full name. */
+    public void setName(String name) { this.name = name; }
 
-    public String getEmail() {
-        return email;
-    }
+    /** Returns the student's university email address. */
+    public String getEmail() { return email; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    /** Sets the student's university email address. */
+    public void setEmail(String email) { this.email = email; }
 
-    public String getDeviceToken() {
-        return deviceToken;
-    }
+    /** Returns the school or department the student belongs to. */
+    public String getSchool() { return school; }
 
-    public void setDeviceToken(String deviceToken) {
-        this.deviceToken = deviceToken;
-    }
+    /** Sets the school or department the student belongs to. */
+    public void setSchool(String school) { this.school = school; }
 
-    public List<String> getPreferences() {
-        return preferences;
-    }
+    /** Returns the student's current academic year. */
+    public String getYear() { return year; }
 
-    public void setPreferences(List<String> preferences) {
-        this.preferences = preferences;
-    }
+    /** Sets the student's current academic year. */
+    public void setYear(String year) { this.year = year; }
 
+    /** Returns the list of event category tags the student prefers. */
+    public List<String> getPreferences() { return preferences; }
+
+    /** Replaces the student's preference list with the provided list. */
+    public void setPreferences(List<String> preferences) { this.preferences = preferences; }
+
+    /**
+     * Adds a category tag to the student's preferences if not already present.
+     *
+     * @param tag The category tag to add.
+     */
     public void addPreference(String tag) {
-        if (!this.preferences.contains(tag)) {
-            this.preferences.add(tag);
-        }
+        if (!this.preferences.contains(tag)) this.preferences.add(tag);
     }
 
-    public List<String> getFriendIds() {
-        return friendIds;
-    }
+    /** Returns the list of registration IDs associated with the student. */
+    public List<String> getRegistrationIds() { return registrationIds; }
 
-    public void setFriendIds(List<String> friendIds) {
-        this.friendIds = friendIds;
-    }
+    /** Replaces the student's registration list with the provided list. */
+    public void setRegistrationIds(List<String> registrationIds) { this.registrationIds = registrationIds; }
 
-    public void addFriend(String friendId) {
-        if (!this.friendIds.contains(friendId)) {
-            this.friendIds.add(friendId);
-        }
-    }
-
-    public List<String> getRegistrationIds() {
-        return registrationIds;
-    }
-
-    public void setRegistrationIds(List<String> registrationIds) {
-        this.registrationIds = registrationIds;
-    }
-
+    /**
+     * Adds a registration ID to the student's list if not already present.
+     *
+     * @param registrationId The registration ID to add.
+     */
     public void addRegistration(String registrationId) {
-        if (!this.registrationIds.contains(registrationId)) {
-            this.registrationIds.add(registrationId);
-        }
+        if (!this.registrationIds.contains(registrationId)) this.registrationIds.add(registrationId);
+    }
+
+    /**
+     * Removes a registration ID from the student's list.
+     *
+     * @param registrationId The registration ID to remove.
+     */
+    public void removeRegistration(String registrationId) {
+        this.registrationIds.remove(registrationId);
     }
 }
