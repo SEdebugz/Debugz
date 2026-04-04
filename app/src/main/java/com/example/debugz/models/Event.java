@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Represents a campus event created by an Organizer.
- * Responsible for holding event details, managing attendees, and enforcing capacity limits.
+ * Responsible for holding core event details and tracking attendees.
  */
 public class Event {
     private String eventId;
@@ -17,18 +17,16 @@ public class Event {
     private String organizerId;
     private int maxCapacity;
     private List<String> attendeeIds;
-    private List<String> waitlistIds;
 
     /**
      * Default constructor required for Firebase Firestore data mapping.
      */
     public Event() {
         this.attendeeIds = new ArrayList<>();
-        this.waitlistIds = new ArrayList<>();
     }
 
     /**
-     * Constructs a new Event with specified core details.
+     * Constructs a new Event with core details.
      *
      * @param eventId     The unique identifier for the event.
      * @param title       The name of the event.
@@ -49,146 +47,77 @@ public class Event {
         this.organizerId = organizerId;
         this.maxCapacity = maxCapacity;
         this.attendeeIds = new ArrayList<>();
-        this.waitlistIds = new ArrayList<>();
     }
+
+    /** Returns the unique event identifier. */
+    public String getEventId() { return eventId; }
+
+    /** Sets the unique event identifier. */
+    public void setEventId(String eventId) { this.eventId = eventId; }
+
+    /** Returns the title of the event. */
+    public String getTitle() { return title; }
+
+    /** Sets the title of the event. */
+    public void setTitle(String title) { this.title = title; }
+
+    /** Returns the description of the event. */
+    public String getDescription() { return description; }
+
+    /** Sets the description of the event. */
+    public void setDescription(String description) { this.description = description; }
+
+    /** Returns the location of the event. */
+    public String getLocation() { return location; }
+
+    /** Sets the location of the event. */
+    public void setLocation(String location) { this.location = location; }
+
+    /** Returns the date of the event. */
+    public String getDate() { return date; }
+
+    /** Sets the date of the event. */
+    public void setDate(String date) { this.date = date; }
+
+    /** Returns the time of the event. */
+    public String getTime() { return time; }
+
+    /** Sets the time of the event. */
+    public void setTime(String time) { this.time = time; }
+
+    /** Returns the ID of the organizer who created the event. */
+    public String getOrganizerId() { return organizerId; }
+
+    /** Sets the ID of the organizer who created the event. */
+    public void setOrganizerId(String organizerId) { this.organizerId = organizerId; }
+
+    /** Returns the maximum capacity for the event. */
+    public int getMaxCapacity() { return maxCapacity; }
+
+    /** Sets the maximum capacity for the event. */
+    public void setMaxCapacity(int maxCapacity) { this.maxCapacity = maxCapacity; }
+
+    /** Returns the list of student IDs attending the event. */
+    public List<String> getAttendeeIds() { return attendeeIds; }
+
+    /** Replaces the attendee list with the provided list. */
+    public void setAttendeeIds(List<String> attendeeIds) { this.attendeeIds = attendeeIds; }
 
     /**
-     * Gets the unique event ID.
-     * @return The event ID string.
-     */
-    public String getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
-    }
-
-    /**
-     * Gets the title of the event.
-     * @return The event title string.
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * Gets the description of the event.
-     * @return The event description string.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Gets the location of the event.
-     * @return The location string.
-     */
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    /**
-     * Gets the date of the event.
-     * @return The date string.
-     */
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    /**
-     * Gets the time of the event.
-     * @return The time string.
-     */
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    /**
-     * Gets the ID of the organizer who created the event.
-     * @return The organizer ID string.
-     */
-    public String getOrganizerId() {
-        return organizerId;
-    }
-
-    public void setOrganizerId(String organizerId) {
-        this.organizerId = organizerId;
-    }
-
-    /**
-     * Gets the maximum capacity for the event.
-     * @return The maximum number of attendees as an integer.
-     */
-    public int getMaxCapacity() {
-        return maxCapacity;
-    }
-
-    public void setMaxCapacity(int maxCapacity) {
-        this.maxCapacity = maxCapacity;
-    }
-
-    /**
-     * Gets the list of student IDs currently attending the event.
-     * @return A list of attendee ID strings.
-     */
-    public List<String> getAttendeeIds() {
-        return attendeeIds;
-    }
-
-    public void setAttendeeIds(List<String> attendeeIds) {
-        this.attendeeIds = attendeeIds;
-    }
-
-    /**
-     * Gets the list of student IDs on the waitlist.
-     * @return A list of waitlist ID strings.
-     */
-    public List<String> getWaitlistIds() {
-        return waitlistIds;
-    }
-
-    public void setWaitlistIds(List<String> waitlistIds) {
-        this.waitlistIds = waitlistIds;
-    }
-
-    /**
-     * Adds a student ID to the attendees list if there is capacity.
-     * @param studentId The ID of the student to add.
+     * Adds a student ID to the attendees list if not already present.
+     *
+     * @param studentId The student ID to add.
      */
     public void addAttendee(String studentId) {
-        if (!this.attendeeIds.contains(studentId)) {
-            this.attendeeIds.add(studentId);
-        }
+        if (!this.attendeeIds.contains(studentId)) this.attendeeIds.add(studentId);
     }
 
     /**
-     * Adds a student ID to the waitlist.
-     * @param studentId The ID of the student to add.
+     * Removes a student ID from the attendees list.
+     *
+     * @param studentId The student ID to remove.
      */
-    public void addWaitlist(String studentId) {
-        if (!this.waitlistIds.contains(studentId)) {
-            this.waitlistIds.add(studentId);
-        }
+    public void removeAttendee(String studentId) {
+        this.attendeeIds.remove(studentId);
     }
 }
