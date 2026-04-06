@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.debugz.R;
 import com.example.debugz.models.Registration;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FieldValue;
 
 import java.util.UUID;
 
@@ -64,7 +65,7 @@ public class EventDetailActivity extends AppCompatActivity {
         // For prototype demo, we use a hardcoded student ID
         String studentId = "demo_student_123";
         String registrationId = UUID.randomUUID().toString();
-        
+
         Registration registration = new Registration(
                 registrationId,
                 studentId,
@@ -77,8 +78,16 @@ public class EventDetailActivity extends AppCompatActivity {
                 .document(registrationId)
                 .set(registration)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "RSVP Successful!", Toast.LENGTH_SHORT).show();
-                    finish(); // Go back to feed
+                    // Add student to the event's attendee array so capacity updates
+                    db.collection("events").document(eventId)
+                            .update("attendeeIds", FieldValue.arrayUnion(studentId))
+                            .addOnSuccessListener(aVoid2 -> {
+                                Toast.makeText(this, "RSVP Successful!", Toast.LENGTH_SHORT).show();
+                                finish(); // Go back to feed
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Capacity update failed.", Toast.LENGTH_SHORT).show();
+                            });
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "RSVP Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
