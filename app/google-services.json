@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "209493053530",
+    "project_id": "se-debugz",
+    "storage_bucket": "se-debugz.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209493053530:android:795ab215b2e501f8648863",
+        "android_client_info": {
+          "package_name": "com.example.debugz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXW0F6DegA_cjeuIjfjriq2FU2lHoVdE8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
