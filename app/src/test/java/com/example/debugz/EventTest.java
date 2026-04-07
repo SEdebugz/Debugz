@@ -15,6 +15,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Verifies the Event model's public contract, including constructor defaults, mutators,
+ * attendee management, and capacity-related behavior used by the prototype UI.
+ * Outstanding issues: these tests focus on in-memory behavior only and do not validate
+ * Firestore persistence or stricter domain rules such as invalid dates or capacities.
+ */
 public class EventTest {
 
     private Event event;

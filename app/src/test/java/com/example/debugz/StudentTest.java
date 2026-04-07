@@ -15,9 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Unit tests for the Student model class.
- * Covers constructor initialization, getters/setters, preference management,
- * and registration tracking — relevant to US1 (browsing), US4 (RSVP), US10 (monitor RSVPs).
+ * Verifies the Student model's public API, including profile state, preferences, and
+ * registration tracking used by browsing and RSVP workflows.
+ * Outstanding issues: the suite checks only in-memory model behavior and does not cover
+ * validation rules or persistence concerns handled elsewhere in the app.
  */
 public class StudentTest {
 
@@ -215,5 +216,4 @@ public class StudentTest {
         assertTrue(realStudent.getRegistrationIds().contains("reg_lumun_2026"));
     }
 }
-
 

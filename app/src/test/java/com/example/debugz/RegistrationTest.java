@@ -10,9 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit tests for the Registration model class.
- * Registration acts as the bridge between Student and Event (RSVP record).
- * Relevant to US4 (RSVP), US5 (capacity / waitlist), US10 (monitor RSVPs).
+ * Verifies the Registration model's public API, including status transitions and timestamp
+ * storage for the RSVP workflow.
+ * Outstanding issues: the suite does not enforce a restricted set of status values because
+ * the current model stores statuses as unchecked strings.
  */
 public class RegistrationTest {
 
@@ -177,5 +178,4 @@ public class RegistrationTest {
         assertEquals(1712500000000L, firestoreReg.getTimestamp());
     }
 }
-
 

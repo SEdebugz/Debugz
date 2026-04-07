@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a student user of the application.
- * Responsible for managing core profile details, event preferences, and registrations.
+ * Defines the student entity used by the browsing and RSVP flows in the app.
+ * This model stores the student's profile, interest tags, and registration references so
+ * other layers can personalize discovery and track the student's saved events.
+ * Outstanding issues: the model does not validate school, year, or preference values, so
+ * callers can still persist inconsistent profile data.
  */
 public class Student {
     private String studentId;
@@ -17,7 +20,7 @@ public class Student {
     private List<String> registrationIds;
 
     /**
-     * Default constructor required for Firebase Firestore data mapping.
+     * Creates an empty student instance for Firebase Firestore deserialization.
      */
     public Student() {
         this.preferences = new ArrayList<>();
@@ -25,7 +28,7 @@ public class Student {
     }
 
     /**
-     * Constructs a new Student with core details.
+     * Creates a student with the core profile details used by the app.
      *
      * @param studentId  The unique identifier for the student.
      * @param name       The student's full name.
@@ -43,61 +46,117 @@ public class Student {
         this.registrationIds = new ArrayList<>();
     }
 
-    /** Returns the student's unique identifier. */
+    /**
+     * Returns the student's unique identifier.
+     *
+     * @return the student ID.
+     */
     public String getStudentId() { return studentId; }
 
-    /** Sets the student's unique identifier. */
+    /**
+     * Sets the student's unique identifier.
+     *
+     * @param studentId the student ID to store.
+     */
     public void setStudentId(String studentId) { this.studentId = studentId; }
 
-    /** Returns the student's full name. */
+    /**
+     * Returns the student's full name.
+     *
+     * @return the student name.
+     */
     public String getName() { return name; }
 
-    /** Sets the student's full name. */
+    /**
+     * Sets the student's full name.
+     *
+     * @param name the student name to store.
+     */
     public void setName(String name) { this.name = name; }
 
-    /** Returns the student's university email address. */
+    /**
+     * Returns the student's university email address.
+     *
+     * @return the student email address.
+     */
     public String getEmail() { return email; }
 
-    /** Sets the student's university email address. */
+    /**
+     * Sets the student's university email address.
+     *
+     * @param email the student email address to store.
+     */
     public void setEmail(String email) { this.email = email; }
 
-    /** Returns the school or department the student belongs to. */
+    /**
+     * Returns the student's school or department.
+     *
+     * @return the school or department name.
+     */
     public String getSchool() { return school; }
 
-    /** Sets the school or department the student belongs to. */
+    /**
+     * Sets the student's school or department.
+     *
+     * @param school the school or department name to store.
+     */
     public void setSchool(String school) { this.school = school; }
 
-    /** Returns the student's current academic year. */
+    /**
+     * Returns the student's current academic year.
+     *
+     * @return the academic year label.
+     */
     public String getYear() { return year; }
 
-    /** Sets the student's current academic year. */
+    /**
+     * Sets the student's current academic year.
+     *
+     * @param year the academic year label to store.
+     */
     public void setYear(String year) { this.year = year; }
 
-    /** Returns the list of event category tags the student prefers. */
+    /**
+     * Returns the student's preferred event tags.
+     *
+     * @return the preference tag list.
+     */
     public List<String> getPreferences() { return preferences; }
 
-    /** Replaces the student's preference list with the provided list. */
+    /**
+     * Replaces the student's preferred event tags.
+     *
+     * @param preferences the preference tags to store.
+     */
     public void setPreferences(List<String> preferences) { this.preferences = preferences; }
 
     /**
      * Adds a category tag to the student's preferences if not already present.
      *
-     * @param tag The category tag to add.
+     * @param tag the category tag to add.
      */
     public void addPreference(String tag) {
         if (!this.preferences.contains(tag)) this.preferences.add(tag);
     }
 
-    /** Returns the list of registration IDs associated with the student. */
+    /**
+     * Returns the registration IDs associated with the student.
+     *
+     * @return the student's registration ID list.
+     */
     public List<String> getRegistrationIds() { return registrationIds; }
 
-    /** Replaces the student's registration list with the provided list. */
+    /**
+     * Replaces the student's registration IDs.
+     *
+     * @param registrationIds the registration IDs to store.
+     */
     public void setRegistrationIds(List<String> registrationIds) { this.registrationIds = registrationIds; }
 
     /**
      * Adds a registration ID to the student's list if not already present.
      *
-     * @param registrationId The registration ID to add.
+     * @param registrationId the registration ID to add.
      */
     public void addRegistration(String registrationId) {
         if (!this.registrationIds.contains(registrationId)) this.registrationIds.add(registrationId);
@@ -106,7 +165,7 @@ public class Student {
     /**
      * Removes a registration ID from the student's list.
      *
-     * @param registrationId The registration ID to remove.
+     * @param registrationId the registration ID to remove.
      */
     public void removeRegistration(String registrationId) {
         this.registrationIds.remove(registrationId);
