@@ -78,6 +78,38 @@ Friday, March 06, 2026
 - [ ] Open up the survey to the student body
 - [ ] Create the product backlog based on survey results
 
+### Meeting – Mar 06, 2026
+
+#### Date
+Monday, April 06, 2026
+
+#### Attendance
+- Faneez Ali
+- Muhammad Ahmed
+- Huzayfah Abid
+- Muhammad Mustafa Javed
+- Abdul Moeez Khurshid
+
+---
+
+#### Key Takeaways
+- The current functionality is approved and good to go
+- Nitty gritties are to be kept in mind
+- Firestore to be connected
+- UML diagram to be made
+
+#### Prepared Questions & Decisions
+
+**Firestore Requirements**
+- Adding pictures and other feature require paid feature → Not needed right now.
+
+#### General Notes
+- The progress, in general, is approved.
+- The product backlog is to be updated according to user stories.
+
+#### Action Items
+- [ ] Update backlog
+- [ ] Make sure all test cases are added and passing
 ---
 
 ## Object Oriented Analysis
