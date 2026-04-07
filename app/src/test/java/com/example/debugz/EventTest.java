@@ -15,11 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Unit tests for the Event model class.
- * Covers constructor initialization, getters/setters, attendee management,
- * and capacity logic — relevant to US1, US3, US4, US5, US13.
- */
 public class EventTest {
 
     private Event event;
@@ -34,13 +29,10 @@ public class EventTest {
                 "March 15, 2026",
                 "10:00 AM",
                 "org_cso",
-                200
+                200,
+                0.0
         );
     }
-
-    // ──────────────────────────────────────────────
-    // Constructor Tests
-    // ──────────────────────────────────────────────
 
     @Test
     public void testParameterizedConstructor_setsAllFields() {
@@ -52,6 +44,7 @@ public class EventTest {
         assertEquals("10:00 AM", event.getTime());
         assertEquals("org_cso", event.getOrganizerId());
         assertEquals(200, event.getMaxCapacity());
+        assertEquals(0.0, event.getTicketPrice(), 0.001);
     }
 
     @Test
@@ -78,11 +71,14 @@ public class EventTest {
         assertNull(defaultEvent.getTime());
         assertNull(defaultEvent.getOrganizerId());
         assertEquals(0, defaultEvent.getMaxCapacity());
+        assertEquals(0.0, defaultEvent.getTicketPrice(), 0.001);
     }
 
-    // ──────────────────────────────────────────────
-    // Getter / Setter Tests
-    // ──────────────────────────────────────────────
+    @Test
+    public void testSetAndGetTicketPrice() {
+        event.setTicketPrice(500.0);
+        assertEquals(500.0, event.getTicketPrice(), 0.001);
+    }
 
     @Test
     public void testSetAndGetEventId() {
@@ -132,10 +128,6 @@ public class EventTest {
         assertEquals(650, event.getMaxCapacity());
     }
 
-    // ──────────────────────────────────────────────
-    // Attendee Management Tests (US4 – RSVP, US5 – spots remaining)
-    // ──────────────────────────────────────────────
-
     @Test
     public void testAddAttendee_addsNewStudent() {
         event.addAttendee("stu_001");
@@ -184,10 +176,6 @@ public class EventTest {
         assertTrue(event.getAttendeeIds().contains("stu_200"));
     }
 
-    // ──────────────────────────────────────────────
-    // Capacity / Spots-Remaining Logic (US5, US13)
-    // ──────────────────────────────────────────────
-
     @Test
     public void testSpotsRemaining_whenEmpty() {
         int spotsLeft = event.getMaxCapacity() - event.getAttendeeIds().size();
@@ -223,10 +211,6 @@ public class EventTest {
         assertEquals(80, progress);
     }
 
-    // ──────────────────────────────────────────────
-    // Realistic Data Scenario Tests
-    // ──────────────────────────────────────────────
-
     @Test
     public void testRealisticEvent_LUMUN() {
         Event lumun = new Event(
@@ -237,7 +221,8 @@ public class EventTest {
                 "March 18, 2026",
                 "09:00 AM",
                 "org_lumun",
-                650
+                650,
+                1500.0
         );
         lumun.addAttendee("27100284");
         lumun.addAttendee("27100189");
@@ -258,10 +243,10 @@ public class EventTest {
                 "Tonight",
                 "05:00 PM",
                 "org_003",
-                20
+                20,
+                0.0
         );
 
-        // Fill to capacity
         for (int i = 1; i <= 20; i++) {
             studyCircle.addAttendee("stu_" + i);
         }
@@ -271,7 +256,6 @@ public class EventTest {
 
     @Test
     public void testFirestoreMapping_defaultConstructorThenSetFields() {
-        // Simulates how Firestore deserializes: default constructor + setters
         Event firestoreEvent = new Event();
         firestoreEvent.setEventId("event_fs_001");
         firestoreEvent.setTitle("Firestore Test Event");
@@ -281,17 +265,18 @@ public class EventTest {
         firestoreEvent.setTime("02:00 PM");
         firestoreEvent.setOrganizerId("org_fs");
         firestoreEvent.setMaxCapacity(30);
+        firestoreEvent.setTicketPrice(200.0);
         firestoreEvent.setAttendeeIds(new ArrayList<>(Arrays.asList("stu_a", "stu_b")));
 
         assertEquals("event_fs_001", firestoreEvent.getEventId());
         assertEquals("Firestore Test Event", firestoreEvent.getTitle());
         assertEquals(30, firestoreEvent.getMaxCapacity());
         assertEquals(2, firestoreEvent.getAttendeeIds().size());
+        assertEquals(200.0, firestoreEvent.getTicketPrice(), 0.001);
     }
 
     @Test
     public void testEditEventDetails_US12() {
-        // US12: Organizer wants to edit event details to keep info updated
         event.setTitle("Engineering Career Fair 2026 – Updated");
         event.setLocation("Sports Complex – Hall A");
         event.setDate("March 20, 2026");
