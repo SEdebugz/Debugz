@@ -15,9 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Unit tests for the Organizer model class.
- * Covers constructor initialization, getters/setters, and created-event tracking.
- * Relevant to US12 (edit event details), US13 (set capacity), US14 (view RSVP list).
+ * Verifies the Organizer model's public API, including construction, field mutation, and
+ * created-event tracking used by organizer-facing workflows.
+ * Outstanding issues: the suite does not exercise authorization or Firestore-backed
+ * organizer scenarios because those concerns live outside the model class.
  */
 public class OrganizerTest {
 
@@ -168,4 +169,3 @@ public class OrganizerTest {
         assertEquals(1, lumun.getCreatedEventIds().size());
     }
 }
-

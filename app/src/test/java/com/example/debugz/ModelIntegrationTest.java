@@ -14,6 +14,13 @@ import org.junit.Test;
 
 import java.util.List;
 
+/**
+ * Exercises how the core model classes collaborate during common event-management flows.
+ * These tests cover organizer creation, student RSVP behavior, and capacity changes using
+ * realistic in-memory scenarios that mirror the current prototype.
+ * Outstanding issues: the suite does not cover controller or Firestore integration, so the
+ * tested flows still stop short of the app's real persistence boundary.
+ */
 public class ModelIntegrationTest {
 
     private Organizer organizer;

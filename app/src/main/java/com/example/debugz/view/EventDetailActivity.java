@@ -15,8 +15,11 @@ import com.google.firebase.firestore.FieldValue;
 import java.util.UUID;
 
 /**
- * Activity to display detailed information about an event and handle RSVPs.
- * Satisfies US3 (View Details) and US4 (RSVP).
+ * Shows full event details and handles RSVP creation for a selected event.
+ * This screen is the detail view in the browse-to-RSVP flow and writes the registration
+ * record that links the demo student to the chosen event.
+ * Outstanding issues: the RSVP flow still uses a hardcoded student ID and does not block
+ * duplicate registrations or over-capacity submissions.
  */
 public class EventDetailActivity extends AppCompatActivity {
 

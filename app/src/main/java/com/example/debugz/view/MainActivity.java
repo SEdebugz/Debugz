@@ -18,6 +18,13 @@ import com.example.debugz.models.Event;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Hosts the main discovery feed where students browse and search events.
+ * The activity wires together the RecyclerView, search box, and controller callbacks that
+ * populate the event list shown after the landing screen.
+ * Outstanding issues: errors are surfaced only through toasts, and prototype data loading
+ * still depends on controller-side demo seeding when the database starts empty.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView rvEvents;
