@@ -134,6 +134,7 @@ Monday, April 06, 2026
 ---
 
 https://github.com/SEdebugz/Debugz/blob/main/Docs/crc_cards_picture.png
+https://github.com/SEdebugz/Debugz/blob/main/Docs/uml
 
 ---
 
