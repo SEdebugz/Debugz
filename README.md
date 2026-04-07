@@ -78,10 +78,11 @@ Friday, March 06, 2026
 - [ ] Open up the survey to the student body
 - [ ] Create the product backlog based on survey results
 
+
 ### Meeting – Mar 15, 2026
 
 #### Date
-Sunday, April 15, 2026
+Sunday, March 15, 2026
 
 #### Attendance
 - Faneez Ali
@@ -91,6 +92,8 @@ Sunday, April 15, 2026
 - Abdul Moeez Khurshid
 
 #### VIVA FOR PROJECT PHASE 2
+The TA checked and approved everything and asked us to add some more storyboards.
+
 
 ### Meeting – Apr 06, 2026
 
