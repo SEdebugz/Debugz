@@ -14,16 +14,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-/**
- * Integration-style unit tests that verify how the model classes work together
- * to support end-to-end flows described in the user stories and storyboards.
- *
- * These tests use realistic campus-event data to simulate:
- *   - Organizer creates event → Student discovers → Student RSVPs (Storyboard 1, 4)
- *   - Capacity tracking and waitlist scenario (Storyboard 10)
- *   - Student monitors RSVP'd events (US10)
- *   - Organizer edits event and views attendees (US12, US14)
- */
 public class ModelIntegrationTest {
 
     private Organizer organizer;
@@ -37,7 +27,7 @@ public class ModelIntegrationTest {
         // Organizer: LUMS Career Services Office
         organizer = new Organizer("org_cso", "LUMS Career Services Office", "cso@lums.edu.pk");
 
-        // Event: Engineering Career Fair — capacity of 3 (small for testing)
+        // Event: Engineering Career Fair — capacity of 3 (small for testing). Added 0.0 for ticket price.
         careerFair = new Event(
                 "event_cf_2026",
                 "Engineering Career Fair 2026",
@@ -46,7 +36,8 @@ public class ModelIntegrationTest {
                 "March 15, 2026",
                 "10:00 AM",
                 "org_cso",
-                3
+                3,
+                0.0
         );
 
         // Students
@@ -54,10 +45,6 @@ public class ModelIntegrationTest {
         ahmed = new Student("27100195", "Muhammad Ahmed", "27100195@lums.edu.pk", "SBASSE", "Junior");
         moeez = new Student("27100284", "Abdul Moeez Khurshid", "27100284@lums.edu.pk", "SBASSE", "Junior");
     }
-
-    // ──────────────────────────────────────────────
-    // Storyboard 4: Organizer Event Creation Flow
-    // ──────────────────────────────────────────────
 
     @Test
     public void testOrganizerCreatesEvent_andTracksList() {
@@ -68,13 +55,8 @@ public class ModelIntegrationTest {
         assertEquals("org_cso", careerFair.getOrganizerId());
     }
 
-    // ──────────────────────────────────────────────
-    // Storyboard 1: Student RSVP flow (US1 → US3 → US4)
-    // ──────────────────────────────────────────────
-
     @Test
     public void testStudentRSVP_createsRegistrationAndUpdatesEventAndStudent() {
-        // Student Faneez RSVPs to the Career Fair
         String regId = "reg_cf_faneez";
         Registration rsvp = new Registration(
                 regId,
@@ -84,22 +66,14 @@ public class ModelIntegrationTest {
                 System.currentTimeMillis()
         );
 
-        // Update Event attendee list
         careerFair.addAttendee(faneez.getStudentId());
-
-        // Update Student registration list
         faneez.addRegistration(regId);
 
-        // Assertions
         assertEquals("Confirmed", rsvp.getStatus());
         assertTrue(careerFair.getAttendeeIds().contains("27100247"));
         assertTrue(faneez.getRegistrationIds().contains("reg_cf_faneez"));
         assertEquals(1, careerFair.getAttendeeIds().size());
     }
-
-    // ──────────────────────────────────────────────
-    // US5 / US13: Capacity tracking
-    // ──────────────────────────────────────────────
 
     @Test
     public void testSpotsRemaining_decreasesWithEachRSVP() {
@@ -115,19 +89,13 @@ public class ModelIntegrationTest {
         assertEquals(0, careerFair.getMaxCapacity() - careerFair.getAttendeeIds().size());
     }
 
-    // ──────────────────────────────────────────────
-    // Storyboard 10: Waitlist and Capacity Flow
-    // ──────────────────────────────────────────────
-
     @Test
     public void testWaitlistFlow_eventAtCapacityThenSpotOpens() {
-        // Fill event to capacity
         careerFair.addAttendee(faneez.getStudentId());
         careerFair.addAttendee(ahmed.getStudentId());
         careerFair.addAttendee(moeez.getStudentId());
         assertEquals(0, careerFair.getMaxCapacity() - careerFair.getAttendeeIds().size());
 
-        // New student wants to attend — event is full → Waitlisted
         Student huzayfah = new Student("27100271", "Huzayfah Abid", "27100271@lums.edu.pk", "SBASSE", "Sophomore");
         Registration waitlistReg = new Registration(
                 "reg_cf_huzayfah",
@@ -138,12 +106,10 @@ public class ModelIntegrationTest {
         );
         assertEquals("Waitlisted", waitlistReg.getStatus());
 
-        // Ahmed cancels his RSVP — spot opens
         careerFair.removeAttendee(ahmed.getStudentId());
         ahmed.removeRegistration("reg_cf_ahmed");
         assertEquals(1, careerFair.getMaxCapacity() - careerFair.getAttendeeIds().size());
 
-        // Huzayfah is promoted from waitlist
         waitlistReg.setStatus("Confirmed");
         careerFair.addAttendee(huzayfah.getStudentId());
         huzayfah.addRegistration("reg_cf_huzayfah");
@@ -153,16 +119,12 @@ public class ModelIntegrationTest {
         assertEquals(0, careerFair.getMaxCapacity() - careerFair.getAttendeeIds().size());
     }
 
-    // ──────────────────────────────────────────────
-    // US10: Student monitors RSVP'd events
-    // ──────────────────────────────────────────────
-
     @Test
     public void testStudentTracksMultipleRSVPs() {
+        // Added 1500.0 ticket price here for LUMUN
         Event lumun = new Event("event_lumun_2026", "LUMUN 2026", "Model UN",
-                "SDSB Auditorium", "March 18, 2026", "09:00 AM", "org_lumun", 650);
+                "SDSB Auditorium", "March 18, 2026", "09:00 AM", "org_lumun", 650, 1500.0);
 
-        // Faneez RSVPs to both Career Fair and LUMUN
         faneez.addRegistration("reg_cf_faneez");
         faneez.addRegistration("reg_lumun_faneez");
 
@@ -173,10 +135,6 @@ public class ModelIntegrationTest {
         assertTrue(careerFair.getAttendeeIds().contains(faneez.getStudentId()));
         assertTrue(lumun.getAttendeeIds().contains(faneez.getStudentId()));
     }
-
-    // ──────────────────────────────────────────────
-    // US12: Organizer edits event details
-    // ──────────────────────────────────────────────
 
     @Test
     public void testOrganizerEditsEvent_updatesDetails() {
@@ -192,10 +150,6 @@ public class ModelIntegrationTest {
         assertEquals(500, careerFair.getMaxCapacity());
     }
 
-    // ──────────────────────────────────────────────
-    // US14: Organizer views list of RSVP'd attendees
-    // ──────────────────────────────────────────────
-
     @Test
     public void testOrganizerViewsAttendeeList() {
         careerFair.addAttendee(faneez.getStudentId());
@@ -205,14 +159,10 @@ public class ModelIntegrationTest {
         List<String> attendees = careerFair.getAttendeeIds();
 
         assertEquals(3, attendees.size());
-        assertTrue(attendees.contains("27100247")); // Faneez
-        assertTrue(attendees.contains("27100195")); // Ahmed
-        assertTrue(attendees.contains("27100284")); // Moeez
+        assertTrue(attendees.contains("27100247"));
+        assertTrue(attendees.contains("27100195"));
+        assertTrue(attendees.contains("27100284"));
     }
-
-    // ──────────────────────────────────────────────
-    // US13: Organizer sets capacity limits
-    // ──────────────────────────────────────────────
 
     @Test
     public void testCapacityLimit_canBeUpdatedByOrganizer() {
@@ -220,10 +170,6 @@ public class ModelIntegrationTest {
         careerFair.setMaxCapacity(500);
         assertEquals(500, careerFair.getMaxCapacity());
     }
-
-    // ──────────────────────────────────────────────
-    // Edge Cases
-    // ──────────────────────────────────────────────
 
     @Test
     public void testDuplicateRSVP_doesNotDuplicateAttendee() {
@@ -245,7 +191,6 @@ public class ModelIntegrationTest {
         careerFair.addAttendee(faneez.getStudentId());
         faneez.addRegistration(regId);
 
-        // Cancel
         careerFair.removeAttendee(faneez.getStudentId());
         faneez.removeRegistration(regId);
 
@@ -255,5 +200,3 @@ public class ModelIntegrationTest {
         assertEquals(0, faneez.getRegistrationIds().size());
     }
 }
-
-
