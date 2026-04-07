@@ -1,8 +1,11 @@
 package com.example.debugz.models;
 
 /**
- * Represents a student's RSVP to a specific campus event.
- * Responsible for acting as the bridge between a Student and an Event.
+ * Defines the RSVP record that connects a student to an event in the app.
+ * This model is the join object used for registration status tracking, attendance history,
+ * and other workflow state such as confirmation or waitlisting.
+ * Outstanding issues: status values are stored as raw strings, so callers can still write
+ * unsupported workflow states unless higher layers validate them first.
  */
 public class Registration {
     private String registrationId;
@@ -12,13 +15,13 @@ public class Registration {
     private long timestamp;
 
     /**
-     * Default constructor required for Firebase Firestore data mapping.
+     * Creates an empty registration instance for Firebase Firestore deserialization.
      */
     public Registration() {
     }
 
     /**
-     * Constructs a new Registration linking a student to an event.
+     * Creates a registration linking a student to an event.
      *
      * @param registrationId The unique identifier for this registration record.
      * @param studentId      The ID of the student who is RSVPing.
@@ -34,33 +37,73 @@ public class Registration {
         this.timestamp = timestamp;
     }
 
-    /** Returns the unique registration identifier. */
+    /**
+     * Returns the unique registration identifier.
+     *
+     * @return the registration ID.
+     */
     public String getRegistrationId() { return registrationId; }
 
-    /** Sets the unique registration identifier. */
+    /**
+     * Sets the unique registration identifier.
+     *
+     * @param registrationId the registration ID to store.
+     */
     public void setRegistrationId(String registrationId) { this.registrationId = registrationId; }
 
-    /** Returns the ID of the student who registered. */
+    /**
+     * Returns the ID of the student tied to the registration.
+     *
+     * @return the student ID.
+     */
     public String getStudentId() { return studentId; }
 
-    /** Sets the ID of the student who registered. */
+    /**
+     * Sets the ID of the student tied to the registration.
+     *
+     * @param studentId the student ID to store.
+     */
     public void setStudentId(String studentId) { this.studentId = studentId; }
 
-    /** Returns the ID of the event the student registered for. */
+    /**
+     * Returns the ID of the event tied to the registration.
+     *
+     * @return the event ID.
+     */
     public String getEventId() { return eventId; }
 
-    /** Sets the ID of the event the student registered for. */
+    /**
+     * Sets the ID of the event tied to the registration.
+     *
+     * @param eventId the event ID to store.
+     */
     public void setEventId(String eventId) { this.eventId = eventId; }
 
-    /** Returns the current status of the RSVP. */
+    /**
+     * Returns the current RSVP status.
+     *
+     * @return the workflow status string.
+     */
     public String getStatus() { return status; }
 
-    /** Sets the current status of the RSVP. */
+    /**
+     * Sets the current RSVP status.
+     *
+     * @param status the workflow status string to store.
+     */
     public void setStatus(String status) { this.status = status; }
 
-    /** Returns the timestamp of when the registration was created. */
+    /**
+     * Returns the creation timestamp for the registration.
+     *
+     * @return the registration timestamp in epoch milliseconds.
+     */
     public long getTimestamp() { return timestamp; }
 
-    /** Sets the timestamp of when the registration was created. */
+    /**
+     * Sets the creation timestamp for the registration.
+     *
+     * @param timestamp the registration timestamp in epoch milliseconds.
+     */
     public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
 }

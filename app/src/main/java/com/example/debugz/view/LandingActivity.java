@@ -9,8 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.debugz.R;
 
 /**
- * The entry point of the application.
- * Provides a brand introduction and a "Get Started" path.
+ * Provides the app's landing screen and initial navigation into the event feed.
+ * The activity acts as the branded entry point before handing control to the discovery
+ * experience when the user presses the call-to-action button.
+ * Outstanding issues: this screen currently offers only a single navigation path and does
+ * not yet branch by role or authentication state.
  */
 public class LandingActivity extends AppCompatActivity {
 

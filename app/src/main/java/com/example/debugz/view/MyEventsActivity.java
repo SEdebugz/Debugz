@@ -17,8 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Activity to display events the student has RSVP'd to.
- * Satisfies US10 (Monitor RSVP'd events).
+ * Shows the list of events that the demo student has already RSVP'd to.
+ * The activity reads registration records, resolves them back to event documents, and
+ * reuses the shared event-card adapter for the "My Events" screen.
+ * Outstanding issues: it still depends on the same hardcoded demo student ID as the RSVP
+ * flow and silently ignores the case where registration lookup returns no matching events.
  */
 public class MyEventsActivity extends AppCompatActivity {
 

@@ -15,18 +15,35 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import java.util.List;
 
 /**
- * Adapter for displaying events in a RecyclerView.
- * Updated to match the modern Design System with capacity tracking.
+ * Binds event model data into the cards shown by the discovery and saved-events lists.
+ * The adapter follows the standard RecyclerView adapter/view-holder pattern and also
+ * renders the capacity indicators used by the event list design.
+ * Outstanding issues: capacity text assumes attendee data is already loaded on each event,
+ * and click handling is intentionally delegated to callers instead of enforced here.
  */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private List<Event> eventList;
     private OnEventClickListener listener;
 
+    /**
+     * Listener for item-click events emitted from an event card.
+     */
     public interface OnEventClickListener {
+        /**
+         * Handles a click on a specific event.
+         *
+         * @param event the event associated with the clicked card.
+         */
         void onEventClick(Event event);
     }
 
+    /**
+     * Creates an adapter backed by the provided event list and click listener.
+     *
+     * @param eventList the events to render.
+     * @param listener the callback for item selections.
+     */
     public EventAdapter(List<Event> eventList, OnEventClickListener listener) {
         this.eventList = eventList;
         this.listener = listener;
