@@ -78,7 +78,21 @@ Friday, March 06, 2026
 - [ ] Open up the survey to the student body
 - [ ] Create the product backlog based on survey results
 
-### Meeting – Mar 06, 2026
+### Meeting – Mar 15, 2026
+
+#### Date
+Sunday, April 15, 2026
+
+#### Attendance
+- Faneez Ali
+- Muhammad Ahmed
+- Huzayfah Abid
+- Muhammad Mustafa Javed
+- Abdul Moeez Khurshid
+
+#### VIVA FOR PROJECT PHASE 2
+
+### Meeting – Apr 06, 2026
 
 #### Date
 Monday, April 06, 2026
