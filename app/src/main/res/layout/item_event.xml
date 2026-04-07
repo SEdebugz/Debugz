@@ -30,6 +30,20 @@
                 android:layout_height="match_parent"
                 android:background="#20000000" />
 
+            <TextView
+                android:id="@+id/tvItemPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:layout_gravity="top|start"
+                android:background="@drawable/bg_button_white_rounded"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="Free"
+                android:textColor="@color/pink_600"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -54,7 +68,7 @@
                 android:background="@drawable/bg_badge_orange"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp"
-                android:text="80% Full"
+                android:text="0% Full"
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -70,7 +84,7 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LUMUN 2026"
+                android:text="Event Title"
                 android:textColor="#111827"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -80,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="March 15-17"
+                android:text="Date"
                 android:textColor="#6B7280"
                 android:textSize="12sp" />
 
@@ -94,14 +108,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="520 / 650"
+                    android:text="0 / 0"
                     android:textColor="#6B7280"
                     android:textSize="11sp" />
                 <TextView
                     android:id="@+id/tvLeftInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="130 left"
+                    android:text="0 left"
                     android:textColor="#6B7280"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -111,7 +125,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:progress="80"
+                android:progress="0"
                 app:trackColor="#F3F4F6"
                 app:indicatorColor="@color/pink_600"
                 app:trackThickness="6dp"

@@ -15,8 +15,9 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import java.util.List;
 
 /**
- * Adapter for displaying events in a RecyclerView.
- * Updated to match the modern Design System with capacity tracking.
+ * ROLE: Adapter Pattern.
+ * PURPOSE: Bridges the Event data models with the RecyclerView UI components.
+ * Supports real-time capacity updates (US5) and displays event prices.
  */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
@@ -45,7 +46,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.tvTitle.setText(event.getTitle());
         holder.tvDate.setText(event.getDate());
         
-        // Capacity Logic for US5
+        // Price Logic
+        holder.tvItemPrice.setText(event.getPrice() != null ? event.getPrice() : "Free");
+        
+        // Capacity Logic (US5)
         int currentAttendees = (event.getAttendeeIds() != null) ? event.getAttendeeIds().size() : 0;
         int max = event.getMaxCapacity();
         holder.tvCapacityInfo.setText(currentAttendees + " / " + max);
@@ -66,7 +70,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     static class EventViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDate, tvCapacityInfo, tvLeftInfo, tvCapacityBadge;
+        TextView tvTitle, tvDate, tvCapacityInfo, tvLeftInfo, tvCapacityBadge, tvItemPrice;
         LinearProgressIndicator pbCapacity;
 
         public EventViewHolder(@NonNull View itemView) {
@@ -76,6 +80,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             tvCapacityInfo = itemView.findViewById(R.id.tvCapacityInfo);
             tvLeftInfo = itemView.findViewById(R.id.tvLeftInfo);
             tvCapacityBadge = itemView.findViewById(R.id.tvCapacityBadge);
+            tvItemPrice = itemView.findViewById(R.id.tvItemPrice);
             pbCapacity = itemView.findViewById(R.id.pbCapacity);
         }
     }

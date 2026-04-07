@@ -15,13 +15,15 @@ import com.example.debugz.R;
 import com.example.debugz.models.Event;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Main Activity representing the Discover Events screen (US1, US2).
- * Updated with Auto-Seed logic for the demo.
+ * ROLE: Controller / Observer Pattern.
+ * PURPOSE: Acts as the main entry point for the "Discover Events" feature (US1). 
+ * It observes the Firestore "events" collection and updates the UI in real-time.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("location", event.getLocation());
             intent.putExtra("description", event.getDescription());
             intent.putExtra("capacity", event.getMaxCapacity());
+            intent.putExtra("price", event.getPrice());
             startActivity(intent);
         });
         rvEvents.setAdapter(adapter);
@@ -69,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.isEmpty()) {
-                        // AUTO-SEED: If database is empty, fill it automatically for the demo
                         seedDemoData();
                     } else {
                         allEvents.clear();
@@ -87,16 +89,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void seedDemoData() {
-        Event e1 = new Event("event_001", "Engineering Career Fair", "Meet top employers and find internships.", "Main Hall", "March 15, 2026", "10:00 AM", "org1", 200);
-        Event e2 = new Event("event_002", "LUMUN 2026", "Premier Model UN conference.", "SDSB Auditorium", "March 18, 2026", "09:00 AM", "org2", 650);
-        Event e3 = new Event("event_003", "Khokha Study Circle", "Group study session for CS360.", "Block C-209", "Tonight", "05:00 PM", "org3", 20);
+        WriteBatch batch = db.batch();
+        Event e1 = new Event("event_001", "Engineering Career Fair", "Meet top employers and find internships.", "Main Hall", "March 15, 2026", "10:00 AM", "org1", 200, "Free");
+        Event e2 = new Event("event_002", "LUMUN 2026", "Premier Model UN conference.", "SDSB Auditorium", "March 18, 2026", "09:00 AM", "org2", 650, "5000 PKR");
+        Event e3 = new Event("event_003", "Khokha Study Circle", "Group study session for CS360.", "Block C-209", "Tonight", "05:00 PM", "org3", 20, "Free");
 
-        db.collection("events").document(e1.getEventId()).set(e1);
-        db.collection("events").document(e2.getEventId()).set(e2);
-        db.collection("events").document(e3.getEventId()).set(e3)
-            .addOnSuccessListener(aVoid -> {
-                fetchEvents(); // Reload now that data exists
-            });
+        batch.set(db.collection("events").document(e1.getEventId()), e1);
+        batch.set(db.collection("events").document(e2.getEventId()), e2);
+        batch.set(db.collection("events").document(e3.getEventId()), e3);
+
+        batch.commit().addOnSuccessListener(aVoid -> {
+            fetchEvents(); 
+        });
     }
 
     private void setupSearch() {

@@ -8,19 +8,22 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.debugz.R;
+import com.example.debugz.models.Event;
 import com.example.debugz.models.Registration;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Transaction;
 
 import java.util.UUID;
 
 /**
- * Activity to display detailed information about an event and handle RSVPs.
- * Satisfies US3 (View Details) and US4 (RSVP).
+ * ROLE: Controller / Transaction Pattern.
+ * PURPOSE: Manages the display of detailed event information (US3) and 
+ * coordinates the RSVP process (US4). 
  */
 public class EventDetailActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
-    private String eventId, title, date, time, location, description;
+    private String eventId, title, date, time, location, description, price;
     private int capacity;
 
     @Override
@@ -30,7 +33,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        // Get data from Intent
+        // Initial data from Intent
         eventId = getIntent().getStringExtra("eventId");
         title = getIntent().getStringExtra("title");
         date = getIntent().getStringExtra("date");
@@ -38,50 +41,74 @@ public class EventDetailActivity extends AppCompatActivity {
         location = getIntent().getStringExtra("location");
         description = getIntent().getStringExtra("description");
         capacity = getIntent().getIntExtra("capacity", 0);
+        price = getIntent().getStringExtra("price");
 
-        // Initialize Views
+        setupViews();
+        refreshEventData(); 
+    }
+
+    private void setupViews() {
         TextView tvTitle = findViewById(R.id.tvDetailTitle);
         TextView tvDate = findViewById(R.id.tvDetailDate);
         TextView tvLocation = findViewById(R.id.tvDetailLocation);
         TextView tvDescription = findViewById(R.id.tvDetailDescription);
-        TextView tvCapacity = findViewById(R.id.tvDetailCapacity);
+        TextView tvPrice = findViewById(R.id.tvDetailPrice);
         Button btnRSVP = findViewById(R.id.btnRSVP);
 
-        // Set Data
         tvTitle.setText(title);
         tvDate.setText(date + " at " + time);
         tvLocation.setText(location);
         tvDescription.setText(description);
-        tvCapacity.setText("Max Capacity: " + capacity);
+        tvPrice.setText("Price: " + (price != null ? price : "Free"));
 
-        btnRSVP.setOnClickListener(v -> handleRSVP());
+        btnRSVP.setOnClickListener(v -> handleRSVPWithTransaction());
     }
 
-    /**
-     * Handles the RSVP logic by writing a new Registration to Firestore.
-     */
-    private void handleRSVP() {
-        // For prototype demo, we use a hardcoded student ID
-        String studentId = "demo_student_123";
-        String registrationId = UUID.randomUUID().toString();
-        
-        Registration registration = new Registration(
-                registrationId,
-                studentId,
-                eventId,
-                "Confirmed",
-                System.currentTimeMillis()
-        );
-
-        db.collection("registrations")
-                .document(registrationId)
-                .set(registration)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "RSVP Successful!", Toast.LENGTH_SHORT).show();
-                    finish(); // Go back to feed
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "RSVP Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+    private void refreshEventData() {
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Event liveEvent = documentSnapshot.toObject(Event.class);
+                        if (liveEvent != null) {
+                            TextView tvCapacity = findViewById(R.id.tvDetailCapacity);
+                            int current = liveEvent.getAttendeeIds().size();
+                            tvCapacity.setText("Capacity: " + current + " / " + liveEvent.getMaxCapacity());
+                        }
+                    }
                 });
+    }
+
+    private void handleRSVPWithTransaction() {
+        String studentId = "demo_student_123";
+        String registrationId = eventId + "_" + studentId; 
+
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+            com.google.firebase.firestore.DocumentReference eventRef = db.collection("events").document(eventId);
+            com.google.firebase.firestore.DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+            
+            Event event = eventSnapshot.toObject(Event.class);
+            if (event == null) throw new RuntimeException("Event not found");
+
+            if (event.getAttendeeIds().contains(studentId)) {
+                throw new RuntimeException("Already RSVP'd");
+            }
+
+            if (event.getAttendeeIds().size() >= event.getMaxCapacity()) {
+                throw new RuntimeException("Event is full");
+            }
+
+            event.addAttendee(studentId);
+            transaction.update(eventRef, "attendeeIds", event.getAttendeeIds());
+
+            Registration reg = new Registration(registrationId, studentId, eventId, "Confirmed", System.currentTimeMillis());
+            transaction.set(db.collection("registrations").document(registrationId), reg);
+
+            return null;
+        }).addOnSuccessListener(aVoid -> {
+            Toast.makeText(this, "RSVP Successful!", Toast.LENGTH_SHORT).show();
+            refreshEventData();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        });
     }
 }

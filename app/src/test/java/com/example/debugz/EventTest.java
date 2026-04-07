@@ -11,7 +11,7 @@ import org.junit.Test;
 
 /**
  * Unit tests for the Event model class.
- * Tests core functionality like attendee management.
+ * Tests core functionality like attendee management and getters/setters.
  */
 public class EventTest {
 
@@ -19,7 +19,8 @@ public class EventTest {
 
     @Before
     public void setUp() {
-        event = new Event("1", "Test Event", "Description", "Location", "2023-10-10", "10:00 AM", "org1", 100);
+        // Initializing with the new constructor including the price field
+        event = new Event("1", "Test Event", "Description", "Location", "2023-10-10", "10:00 AM", "org1", 100, "Free");
     }
 
     @Test
@@ -50,5 +51,7 @@ public class EventTest {
         assertEquals("New Title", event.getTitle());
         event.setMaxCapacity(50);
         assertEquals(50, event.getMaxCapacity());
+        event.setPrice("1000 PKR");
+        assertEquals("1000 PKR", event.getPrice());
     }
 }
