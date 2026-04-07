@@ -14,6 +14,7 @@ public class Event {
     private String location;
     private String date;
     private String time;
+    private double ticketPrice;
     private String organizerId;
     private int maxCapacity;
     private List<String> attendeeIds;
@@ -37,7 +38,7 @@ public class Event {
      * @param organizerId The ID of the organizer who created it.
      * @param maxCapacity The maximum number of attendees allowed.
      */
-    public Event(String eventId, String title, String description, String location, String date, String time, String organizerId, int maxCapacity) {
+    public Event(String eventId, String title, String description, String location, String date, String time, String organizerId, int maxCapacity, double ticketPrice) {
         this.eventId = eventId;
         this.title = title;
         this.description = description;
@@ -47,6 +48,7 @@ public class Event {
         this.organizerId = organizerId;
         this.maxCapacity = maxCapacity;
         this.attendeeIds = new ArrayList<>();
+        this.ticketPrice = ticketPrice;
     }
 
     /** Returns the unique event identifier. */
@@ -96,6 +98,10 @@ public class Event {
 
     /** Sets the maximum capacity for the event. */
     public void setMaxCapacity(int maxCapacity) { this.maxCapacity = maxCapacity; }
+
+    /** Setter and getter for ticketPrice **/
+    public double getTicketPrice() { return ticketPrice; }
+    public void setTicketPrice(double ticketPrice) { this.ticketPrice = ticketPrice; }
 
     /** Returns the list of student IDs attending the event. */
     public List<String> getAttendeeIds() { return attendeeIds; }

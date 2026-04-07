@@ -23,6 +23,7 @@ public class EventDetailActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String eventId, title, date, time, location, description;
     private int capacity;
+    private double ticketPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +40,13 @@ public class EventDetailActivity extends AppCompatActivity {
         location = getIntent().getStringExtra("location");
         description = getIntent().getStringExtra("description");
         capacity = getIntent().getIntExtra("capacity", 0);
+        ticketPrice = getIntent().getDoubleExtra("ticketPrice", 0.0); // Add this pull
 
         // Initialize Views
         TextView tvTitle = findViewById(R.id.tvDetailTitle);
         TextView tvDate = findViewById(R.id.tvDetailDate);
         TextView tvLocation = findViewById(R.id.tvDetailLocation);
+        TextView tvPrice = findViewById(R.id.tvDetailPrice); // Link the new view
         TextView tvDescription = findViewById(R.id.tvDetailDescription);
         TextView tvCapacity = findViewById(R.id.tvDetailCapacity);
         Button btnRSVP = findViewById(R.id.btnRSVP);
@@ -52,6 +55,11 @@ public class EventDetailActivity extends AppCompatActivity {
         tvTitle.setText(title);
         tvDate.setText(date + " at " + time);
         tvLocation.setText(location);
+
+        // Format the price nicely
+        String priceString = ticketPrice == 0.0 ? "Price: Free" : "Price: Rs. " + ticketPrice;
+        tvPrice.setText(priceString); // Set the price text
+
         tvDescription.setText(description);
         tvCapacity.setText("Max Capacity: " + capacity);
 
