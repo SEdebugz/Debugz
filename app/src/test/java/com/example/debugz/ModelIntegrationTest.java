@@ -16,10 +16,7 @@ import java.util.List;
 
 /**
  * Exercises how the core model classes collaborate during common event-management flows.
- * These tests cover organizer creation, student RSVP behavior, and capacity changes using
- * realistic in-memory scenarios that mirror the current prototype.
- * Outstanding issues: the suite does not cover controller or Firestore integration, so the
- * tested flows still stop short of the app's real persistence boundary.
+ * UPDATED: Uses String for price to match Phase 3 requirements.
  */
 public class ModelIntegrationTest {
 
@@ -34,7 +31,7 @@ public class ModelIntegrationTest {
         // Organizer: LUMS Career Services Office
         organizer = new Organizer("org_cso", "LUMS Career Services Office", "cso@lums.edu.pk");
 
-        // Event: Engineering Career Fair — capacity of 3 (small for testing). Added 0.0 for ticket price.
+        // Event: Engineering Career Fair — capacity of 3. Price set as "Free" (String).
         careerFair = new Event(
                 "event_cf_2026",
                 "Engineering Career Fair 2026",
@@ -44,7 +41,7 @@ public class ModelIntegrationTest {
                 "10:00 AM",
                 "org_cso",
                 3,
-                0.0
+                "Free"
         );
 
         // Students
@@ -128,9 +125,8 @@ public class ModelIntegrationTest {
 
     @Test
     public void testStudentTracksMultipleRSVPs() {
-        // Added 1500.0 ticket price here for LUMUN
         Event lumun = new Event("event_lumun_2026", "LUMUN 2026", "Model UN",
-                "SDSB Auditorium", "March 18, 2026", "09:00 AM", "org_lumun", 650, 1500.0);
+                "SDSB Auditorium", "March 18, 2026", "09:00 AM", "org_lumun", 650, "1500 PKR");
 
         faneez.addRegistration("reg_cf_faneez");
         faneez.addRegistration("reg_lumun_faneez");
