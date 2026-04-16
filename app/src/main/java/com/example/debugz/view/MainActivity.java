@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("location", event.getLocation());
             intent.putExtra("description", event.getDescription());
             intent.putExtra("capacity", event.getMaxCapacity());
-            intent.putExtra("ticketPrice", event.getTicketPrice());
+            intent.putExtra("price", event.getPrice());
             startActivity(intent);
         });
         rvEvents.setAdapter(adapter);

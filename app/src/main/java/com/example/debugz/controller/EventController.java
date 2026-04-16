@@ -9,10 +9,7 @@ import java.util.List;
 
 /**
  * Coordinates event retrieval and prototype event data for the discovery screens.
- * This controller acts as a thin mediator between Firestore and the view layer, and also
- * centralizes the simple keyword-based filtering logic used by the main event feed.
- * Outstanding issues: demo seeding still lives in production code and searching currently
- * checks only titles and descriptions with no normalization beyond lowercasing.
+ * ROLE: Controller Pattern.
  */
 public class EventController {
     private FirebaseFirestore db;
@@ -26,27 +23,10 @@ public class EventController {
 
     /**
      * Callback contract for asynchronous event-loading operations.
-     * Outstanding issues: the interface exposes multiple mutually exclusive callbacks instead
-     * of a single result type, so callers must coordinate state transitions manually.
      */
     public interface OnEventsFetchedListener {
-        /**
-         * Called when events are fetched successfully.
-         *
-         * @param events the events returned from Firestore.
-         */
         void onSuccess(List<Event> events);
-
-        /**
-         * Called when event loading fails.
-         *
-         * @param e the failure reported by Firestore.
-         */
         void onFailure(Exception e);
-
-        /**
-         * Called when the events collection exists but contains no documents.
-         */
         void onDatabaseEmpty();
     }
 
@@ -75,13 +55,14 @@ public class EventController {
 
     /**
      * Writes a fixed set of demo events to Firestore for prototype use.
+     * UPDATED: Now uses String for price to match the Event model.
      *
      * @param onSuccess code to run after the final seed write succeeds.
      */
     public void seedDemoData(Runnable onSuccess) {
-        Event e1 = new Event("event_001", "Engineering Career Fair", "Meet top employers and find internships.", "Main Hall", "March 15, 2026", "10:00 AM", "org1", 200, 0.0);
-        Event e2 = new Event("event_002", "LUMUN 2026", "Premier Model UN conference.", "SDSB Auditorium", "March 18, 2026", "09:00 AM", "org2", 650, 1500.0);
-        Event e3 = new Event("event_003", "Khokha Study Circle", "Group study session for CS360.", "Block C-209", "Tonight", "05:00 PM", "org3", 20, 0.0);
+        Event e1 = new Event("event_001", "Engineering Career Fair", "Meet top employers and find internships.", "Main Hall", "March 15, 2026", "10:00 AM", "org1", 200, "Free");
+        Event e2 = new Event("event_002", "LUMUN 2026", "Premier Model UN conference.", "SDSB Auditorium", "March 18, 2026", "09:00 AM", "org2", 650, "1500 PKR");
+        Event e3 = new Event("event_003", "Khokha Study Circle", "Group study session for CS360.", "Block C-209", "Tonight", "05:00 PM", "org3", 20, "Free");
 
         db.collection("events").document(e1.getEventId()).set(e1);
         db.collection("events").document(e2.getEventId()).set(e2);
@@ -91,10 +72,6 @@ public class EventController {
 
     /**
      * Filters a list of events by checking whether the query appears in the title or description.
-     *
-     * @param query the text entered by the user.
-     * @param allEvents the complete event list to search.
-     * @return the filtered list of matching events.
      */
     public List<Event> searchEvents(String query, List<Event> allEvents) {
         List<Event> filtered = new ArrayList<>();
