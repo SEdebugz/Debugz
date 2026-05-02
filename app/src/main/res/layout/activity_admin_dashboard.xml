@@ -2,79 +2,69 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
+    tools:context=".view.AdminDashboardActivity">
 
     <TextView
-        android:id="@+id/tvDiscover"
+        android:id="@+id/tvAdminTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Discover Events"
-        android:textSize="24sp"
+        android:text="Admin Dashboard"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnMyEvents"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="My Events"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="@id/tvDiscover"
-        app:layout_constraintEnd_toStartOf="@id/btnLogout"
-        app:layout_constraintTop_toTopOf="@id/tvDiscover" />
-
-    <Button
-        android:id="@+id/btnLogout"
+        android:id="@+id/btnAdminLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="Logout"
         android:textAllCaps="false"
         android:backgroundTint="#6B7280"
-        app:layout_constraintBottom_toBottomOf="@id/tvDiscover"
+        app:layout_constraintBottom_toBottomOf="@id/tvAdminTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvDiscover" />
-
-    <EditText
-        android:id="@+id/etSearch"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="Search events..."
-        android:padding="12dp"
-        android:background="@android:drawable/editbox_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDiscover" />
+        app:layout_constraintTop_toTopOf="@id/tvAdminTitle" />
 
     <TextView
-        android:id="@+id/tvMainEmpty"
+        android:id="@+id/tvAdminSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="2dp"
+        android:text="Manage all event listings"
+        android:textColor="#6B7280"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAdminTitle" />
+
+    <TextView
+        android:id="@+id/tvAdminEmpty"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
         android:gravity="center"
-        android:text="No events yet.\nOrganizers will post events here soon!"
+        android:text="No events found."
         android:textColor="#6B7280"
-        android:textSize="15sp"
+        android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etSearch" />
+        app:layout_constraintTop_toBottomOf="@id/tvAdminSubtitle" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvEvents"
+        android:id="@+id/rvAdminEvents"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etSearch" />
+        app:layout_constraintTop_toBottomOf="@id/tvAdminSubtitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

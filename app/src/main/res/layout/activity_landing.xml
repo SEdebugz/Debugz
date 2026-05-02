@@ -75,7 +75,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome Back"
+                android:text="Welcome"
                 android:textColor="#111827"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -83,7 +83,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign in to continue"
+                android:text="Enter your details and choose your role"
                 android:textColor="#6B7280"
                 android:textSize="14sp" />
 
@@ -94,9 +94,10 @@
                 app:startIconDrawable="@drawable/ic_mail"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etUserName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Username or Email" />
+                    android:hint="Your Name" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -104,24 +105,50 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 app:startIconDrawable="@drawable/ic_lock"
-                app:passwordToggleEnabled="true"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etUserId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:hint="Password" />
+                    android:hint="Roll Number / Org ID / Admin Password" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/btnGetStarted"
+                android:id="@+id/btnStudentLogin"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="24dp"
                 android:backgroundTint="@null"
                 android:background="@drawable/bg_main_gradient"
-                android:text="Sign In"
+                android:text="Continue as Student"
                 android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:cornerRadius="16dp" />
+
+            <Button
+                android:id="@+id/btnOrganizerLogin"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#7C3AED"
+                android:text="Continue as Organizer"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:cornerRadius="16dp" />
+
+            <Button
+                android:id="@+id/btnAdminLogin"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#DC2626"
+                android:text="Continue as Admin"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:cornerRadius="16dp" />
@@ -131,7 +158,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="Don't have an account? Sign Up"
+                android:text="Choose your role to get started"
                 android:textColor="#6B7280"
                 android:textSize="14sp" />
 

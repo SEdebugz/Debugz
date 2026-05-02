@@ -43,4 +43,5 @@ dependencies {
     implementation(libs.firebase.analytics)
 
     testImplementation(libs.junit)
+    implementation(libs.work.runtime)
 }

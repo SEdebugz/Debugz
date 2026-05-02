@@ -77,6 +77,9 @@ public class EventTest {
         assertNull(defaultEvent.getOrganizerId());
         assertEquals(0, defaultEvent.getMaxCapacity());
         assertNull(defaultEvent.getPrice());
+        assertEquals("Upvote count should default to 0", 0, defaultEvent.getUpvoteCount());
+        assertNotNull("UpvotedBy list should not be null", defaultEvent.getUpvotedBy());
+        assertTrue("UpvotedBy list should start empty", defaultEvent.getUpvotedBy().isEmpty());
     }
 
     @Test
@@ -293,5 +296,64 @@ public class EventTest {
         assertEquals("March 20, 2026", event.getDate());
         assertEquals("11:00 AM", event.getTime());
         assertEquals(300, event.getMaxCapacity());
+    }
+
+    // ──────────────────────────────────────────────
+    // US6: Upvote Tests
+    // ──────────────────────────────────────────────
+
+    @Test
+    public void testUpvote_initialCountIsZero() {
+        assertEquals(0, event.getUpvoteCount());
+        assertNotNull(event.getUpvotedBy());
+        assertTrue(event.getUpvotedBy().isEmpty());
+    }
+
+    @Test
+    public void testAddUpvote_incrementsCount() {
+        boolean added = event.addUpvote("stu_001");
+        assertTrue("First upvote should be added", added);
+        assertEquals(1, event.getUpvoteCount());
+        assertTrue(event.getUpvotedBy().contains("stu_001"));
+    }
+
+    @Test
+    public void testAddUpvote_preventsDuplicate() {
+        event.addUpvote("stu_001");
+        boolean duplicate = event.addUpvote("stu_001");
+        assertFalse("Duplicate upvote should not be added", duplicate);
+        assertEquals("Count should not increment on duplicate", 1, event.getUpvoteCount());
+    }
+
+    @Test
+    public void testAddUpvote_multipleStudents() {
+        event.addUpvote("stu_001");
+        event.addUpvote("stu_002");
+        event.addUpvote("stu_003");
+        assertEquals(3, event.getUpvoteCount());
+    }
+
+    @Test
+    public void testRemoveUpvote_decrementsCount() {
+        event.addUpvote("stu_001");
+        boolean removed = event.removeUpvote("stu_001");
+        assertTrue("Upvote should be removed", removed);
+        assertEquals(0, event.getUpvoteCount());
+        assertFalse(event.getUpvotedBy().contains("stu_001"));
+    }
+
+    @Test
+    public void testRemoveUpvote_nonExistentStudent_isNoOp() {
+        event.addUpvote("stu_001");
+        boolean removed = event.removeUpvote("stu_999");
+        assertFalse("Remove of non-existent upvote should return false", removed);
+        assertEquals("Count should remain unchanged", 1, event.getUpvoteCount());
+    }
+
+    @Test
+    public void testUpvoteCountFloor_doesNotGoBelowZero() {
+        // Count starts at 0; removing a non-existent upvote should not go negative
+        event.removeUpvote("stu_000");
+        assertEquals(0, event.getUpvoteCount());
     }
 }

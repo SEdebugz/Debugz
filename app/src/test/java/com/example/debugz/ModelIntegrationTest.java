@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.example.debugz.models.Administrator;
 import com.example.debugz.models.Event;
 import com.example.debugz.models.Organizer;
 import com.example.debugz.models.Registration;
@@ -201,5 +202,91 @@ public class ModelIntegrationTest {
         assertFalse(faneez.getRegistrationIds().contains(regId));
         assertEquals(0, careerFair.getAttendeeIds().size());
         assertEquals(0, faneez.getRegistrationIds().size());
+    }
+
+    // ──────────────────────────────────────────────
+    // Administrator (US15) scenarios
+    // ──────────────────────────────────────────────
+
+    /**
+     * US15: Admin removes an event from the system.
+     * At the model layer this is represented by removing the event ID from
+     * the organizer's tracking list (in-memory); in production the controller
+     * issues a Firestore delete that propagates to all users.
+     */
+    @Test
+    public void testAdminRemovesEvent_removedFromOrganizerList() {
+        organizer.addCreatedEvent(careerFair.getEventId());
+        assertEquals(1, organizer.getCreatedEventIds().size());
+
+        // Admin decides to remove the event
+        Administrator admin = new Administrator("demo_admin_001", "Platform Admin", "admin@lums.edu.pk");
+        // Admin triggers deletion — model-level effect: event removed from organizer's list
+        organizer.removeCreatedEvent(careerFair.getEventId());
+
+        assertFalse("Organizer list should no longer contain the deleted event",
+                organizer.getCreatedEventIds().contains(careerFair.getEventId()));
+        assertEquals(0, organizer.getCreatedEventIds().size());
+        // Verify admin object was constructed correctly
+        assertEquals("demo_admin_001", admin.getAdminId());
+    }
+
+    /**
+     * US15: After an event is removed, any existing registrations are no longer valid.
+     * At the model layer this is a registration status update; in production the
+     * EventController.deleteEvent cascades the removal to the registrations collection.
+     */
+    @Test
+    public void testAdminRemovesEvent_attendeeListCleared() {
+        careerFair.addAttendee(faneez.getStudentId());
+        careerFair.addAttendee(ahmed.getStudentId());
+        assertEquals(2, careerFair.getAttendeeIds().size());
+
+        // When an admin removes an event the attendee list is effectively cleared
+        // (in Firestore: event document + registrations are deleted by the controller).
+        // At the model layer, simulate by removing all attendee IDs.
+        careerFair.getAttendeeIds().clear();
+
+        assertEquals("Attendee list should be empty after event removal",
+                0, careerFair.getAttendeeIds().size());
+    }
+
+    /**
+     * US13: Organizer updates event capacity; verifies remaining spots recalculated correctly.
+     */
+    @Test
+    public void testOrganizerUpdatesCapacity_spotsRecalculated() {
+        careerFair.addAttendee(faneez.getStudentId());
+        careerFair.addAttendee(ahmed.getStudentId());
+        // Original capacity 3, 2 attendees → 1 spot left
+        assertEquals(1, careerFair.getMaxCapacity() - careerFair.getAttendeeIds().size());
+
+        // Organizer expands capacity to 10 (US13)
+        careerFair.setMaxCapacity(10);
+        assertEquals(8, careerFair.getMaxCapacity() - careerFair.getAttendeeIds().size());
+    }
+
+    /**
+     * US14: Organizer views attendee list — already covered by testOrganizerViewsAttendeeList
+     * but here we also verify that the list matches what was RSVP'd.
+     */
+    @Test
+    public void testOrganizerViewsAttendees_matchesRSVPs() {
+        String regId1 = "reg_cf_faneez";
+        String regId2 = "reg_cf_ahmed";
+
+        careerFair.addAttendee(faneez.getStudentId());
+        faneez.addRegistration(regId1);
+        careerFair.addAttendee(ahmed.getStudentId());
+        ahmed.addRegistration(regId2);
+
+        List<String> attendees = careerFair.getAttendeeIds();
+        assertEquals(2, attendees.size());
+        assertTrue(attendees.contains(faneez.getStudentId()));
+        assertTrue(attendees.contains(ahmed.getStudentId()));
+
+        // Organizer can also inspect each student's registration link
+        assertTrue(faneez.getRegistrationIds().contains(regId1));
+        assertTrue(ahmed.getRegistrationIds().contains(regId2));
     }
 }

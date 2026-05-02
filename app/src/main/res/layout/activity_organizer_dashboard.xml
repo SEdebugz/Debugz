@@ -2,79 +2,66 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
+    tools:context=".view.OrganizerDashboardActivity">
 
     <TextView
-        android:id="@+id/tvDiscover"
+        android:id="@+id/tvOrganizerTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Discover Events"
-        android:textSize="24sp"
+        android:text="Organizer Dashboard"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnMyEvents"
+        android:id="@+id/btnCreateEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="My Events"
+        android:text="+ Create"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="@id/tvDiscover"
-        app:layout_constraintEnd_toStartOf="@id/btnLogout"
-        app:layout_constraintTop_toTopOf="@id/tvDiscover" />
+        app:layout_constraintBottom_toBottomOf="@id/tvOrganizerTitle"
+        app:layout_constraintEnd_toStartOf="@id/btnOrgLogout"
+        app:layout_constraintTop_toTopOf="@id/tvOrganizerTitle" />
 
     <Button
-        android:id="@+id/btnLogout"
+        android:id="@+id/btnOrgLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="Logout"
         android:textAllCaps="false"
         android:backgroundTint="#6B7280"
-        app:layout_constraintBottom_toBottomOf="@id/tvDiscover"
+        app:layout_constraintBottom_toBottomOf="@id/tvOrganizerTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvDiscover" />
-
-    <EditText
-        android:id="@+id/etSearch"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="Search events..."
-        android:padding="12dp"
-        android:background="@android:drawable/editbox_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDiscover" />
+        app:layout_constraintTop_toTopOf="@id/tvOrganizerTitle" />
 
     <TextView
-        android:id="@+id/tvMainEmpty"
+        android:id="@+id/tvEmptyOrganizer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
         android:gravity="center"
-        android:text="No events yet.\nOrganizers will post events here soon!"
+        android:text="No events yet.\nTap '+ Create Event' to get started."
         android:textColor="#6B7280"
-        android:textSize="15sp"
+        android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etSearch" />
+        app:layout_constraintTop_toBottomOf="@id/tvOrganizerTitle" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvEvents"
+        android:id="@+id/rvOrganizerEvents"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etSearch" />
+        app:layout_constraintTop_toBottomOf="@id/tvOrganizerTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
