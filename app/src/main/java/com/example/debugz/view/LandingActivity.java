@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,30 +12,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.debugz.NotificationHelper;
 import com.example.debugz.R;
 import com.example.debugz.UserSession;
+import com.example.debugz.controller.AccountController;
+import com.example.debugz.models.Account;
 import com.google.android.material.textfield.TextInputEditText;
 
 /**
- * Entry point that handles role-based login.
- * If the user already completed the login form in a previous session, they are
- * redirected immediately to their role-specific screen without needing to re-enter details.
+ * Shared login entry point.
  *
- * Roles:
- *   Student   — name + roll number → Discover Events feed (US1–US11)
- *   Organizer — name + org ID      → Organizer Dashboard  (US12–US14)
- *   Admin     — name + admin password ("admin2026") → Admin Dashboard (US15)
+ * Better UX choice implemented here:
+ * - Students and organizers use the same ID/password form and pick their role.
+ * - Signup is moved to its own page because signup fields differ from login fields.
+ * - Admin stays on the landing page but uses a dedicated hardcoded login path.
  */
 public class LandingActivity extends AppCompatActivity {
 
-    private TextInputEditText etUserName, etUserId;
+    private TextInputEditText etLoginId, etLoginPassword;
+    private AccountController accountController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialise notification channel (safe to call repeatedly — idempotent)
         NotificationHelper.createChannel(this);
 
-        // If already logged in, skip the form and go straight to the right screen
         UserSession session = UserSession.getInstance(this);
         if (session.isLoggedIn()) {
             navigateByRole(session.getRole());
@@ -43,47 +43,75 @@ public class LandingActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_landing);
 
-        etUserName = findViewById(R.id.etUserName);
-        etUserId   = findViewById(R.id.etUserId);
+        accountController = new AccountController();
 
-        Button btnStudent   = findViewById(R.id.btnStudentLogin);
+        etLoginId = findViewById(R.id.etLoginId);
+        etLoginPassword = findViewById(R.id.etLoginPassword);
+
+        Button btnStudent = findViewById(R.id.btnStudentLogin);
         Button btnOrganizer = findViewById(R.id.btnOrganizerLogin);
-        Button btnAdmin     = findViewById(R.id.btnAdminLogin);
+        Button btnAdmin = findViewById(R.id.btnAdminLogin);
+        TextView tvSignupLink = findViewById(R.id.tvSignupLink);
 
-        btnStudent.setOnClickListener(v   -> attemptLogin(UserSession.ROLE_STUDENT));
-        btnOrganizer.setOnClickListener(v -> attemptLogin(UserSession.ROLE_ORGANIZER));
-        btnAdmin.setOnClickListener(v     -> attemptLogin(UserSession.ROLE_ADMIN));
+        btnStudent.setOnClickListener(v -> attemptAccountLogin(UserSession.ROLE_STUDENT));
+        btnOrganizer.setOnClickListener(v -> attemptAccountLogin(UserSession.ROLE_ORGANIZER));
+        btnAdmin.setOnClickListener(v -> attemptAdminLogin());
+        tvSignupLink.setOnClickListener(v -> startActivity(new Intent(this, SignupActivity.class)));
     }
 
-    // ── Login logic ────────────────────────────────────────────────────────
+    private void attemptAccountLogin(String role) {
+        String accountId = getInput(etLoginId);
+        String password = getInput(etLoginPassword);
 
-    private void attemptLogin(String role) {
-        String name = getInput(etUserName);
-        String id   = getInput(etUserId);
-
-        if (TextUtils.isEmpty(name)) {
-            etUserName.setError("Name is required");
+        if (TextUtils.isEmpty(accountId)) {
+            etLoginId.setError("ID is required");
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            etLoginPassword.setError("Password is required");
             return;
         }
 
-        if (role.equals(UserSession.ROLE_ADMIN)) {
-            // Admin: validate secret password
-            if (!UserSession.ADMIN_PASSWORD.equals(id)) {
-                etUserId.setError("Incorrect admin password");
-                Toast.makeText(this, "Incorrect admin password", Toast.LENGTH_SHORT).show();
-                return;
+        setButtonsEnabled(false);
+        accountController.login(accountId, password, role, new AccountController.OnLoginListener() {
+            @Override
+            public void onSuccess(Account account) {
+                setButtonsEnabled(true);
+                UserSession.getInstance(LandingActivity.this)
+                        .login(account.getAccountId(), account.getName(), account.getRole());
+                Toast.makeText(LandingActivity.this,
+                        "Welcome, " + account.getName() + "!", Toast.LENGTH_SHORT).show();
+                navigateByRole(account.getRole());
             }
-            UserSession.getInstance(this).login("admin", name, UserSession.ROLE_ADMIN);
-        } else {
-            // Student / Organizer: require a non-empty ID
-            if (TextUtils.isEmpty(id)) {
-                etUserId.setError("ID is required");
-                return;
+
+            @Override
+            public void onFailure(String message) {
+                setButtonsEnabled(true);
+                Toast.makeText(LandingActivity.this, message, Toast.LENGTH_LONG).show();
             }
-            UserSession.getInstance(this).login(id, name, role);
+        });
+    }
+
+    private void attemptAdminLogin() {
+        String username = getInput(etLoginId);
+        String password = getInput(etLoginPassword);
+
+        if (TextUtils.isEmpty(username)) {
+            etLoginId.setError("Admin username is required");
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            etLoginPassword.setError("Admin password is required");
+            return;
         }
 
-        navigateByRole(role);
+        if (!UserSession.ADMIN_USERNAME.equals(username) || !UserSession.ADMIN_PASSWORD.equals(password)) {
+            Toast.makeText(this, "Incorrect admin credentials.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        UserSession.getInstance(this).login("admin", UserSession.ADMIN_USERNAME, UserSession.ROLE_ADMIN);
+        navigateByRole(UserSession.ROLE_ADMIN);
     }
 
     private void navigateByRole(String role) {
@@ -101,6 +129,12 @@ public class LandingActivity extends AppCompatActivity {
         }
         startActivity(intent);
         finish();
+    }
+
+    private void setButtonsEnabled(boolean enabled) {
+        findViewById(R.id.btnStudentLogin).setEnabled(enabled);
+        findViewById(R.id.btnOrganizerLogin).setEnabled(enabled);
+        findViewById(R.id.btnAdminLogin).setEnabled(enabled);
     }
 
     private String getInput(TextInputEditText et) {

@@ -27,6 +27,12 @@ public class UserSessionPureTest {
     }
 
     @Test
+    public void testAdminUsername_notEmpty() {
+        assertFalse("Admin username should not be empty",
+                UserSession.ADMIN_USERNAME.isEmpty());
+    }
+
+    @Test
     public void testRoleConstants_haveExpectedValues() {
         assertEquals("STUDENT",   UserSession.ROLE_STUDENT);
         assertEquals("ORGANIZER", UserSession.ROLE_ORGANIZER);
@@ -35,7 +41,12 @@ public class UserSessionPureTest {
 
     @Test
     public void testAdminPassword_matchesExpected() {
-        assertEquals("admin2026", UserSession.ADMIN_PASSWORD);
+        assertEquals("1234", UserSession.ADMIN_PASSWORD);
+    }
+
+    @Test
+    public void testAdminUsername_matchesExpected() {
+        assertEquals("sefinalboss", UserSession.ADMIN_USERNAME);
     }
 }
 

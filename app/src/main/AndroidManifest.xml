@@ -59,6 +59,11 @@
             android:label="Attendees" />
 
         <activity
+            android:name=".view.SignupActivity"
+            android:exported="false"
+            android:label="Sign Up" />
+
+        <activity
             android:name=".view.AdminDashboardActivity"
             android:exported="false"
             android:label="Admin Dashboard" />

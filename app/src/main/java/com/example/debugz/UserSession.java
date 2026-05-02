@@ -10,7 +10,7 @@ import android.content.SharedPreferences;
  * Three roles are supported:
  *   STUDENT   — campus student browsing and RSVPing to events.
  *   ORGANIZER — club / department organizer who creates and manages events.
- *   ADMIN     — platform administrator who moderates all event listings.
+ *   ADMIN     — platform administrator who moderates events and approves signups.
  */
 public class UserSession {
 
@@ -19,8 +19,9 @@ public class UserSession {
     public static final String ROLE_ORGANIZER = "ORGANIZER";
     public static final String ROLE_ADMIN     = "ADMIN";
 
-    /** Password checked locally for Admin access (no backend auth needed for prototype). */
-    public static final String ADMIN_PASSWORD = "admin2026";
+    /** Hardcoded admin credentials for this prototype. */
+    public static final String ADMIN_USERNAME = "sefinalboss";
+    public static final String ADMIN_PASSWORD = "1234";
 
     // ── SharedPreferences keys ────────────────────────────────────────────
     private static final String PREFS_NAME  = "debugz_session";
@@ -93,4 +94,3 @@ public class UserSession {
         prefs.edit().clear().apply();
     }
 }
-
