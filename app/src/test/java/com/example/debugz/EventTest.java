@@ -18,8 +18,7 @@ import java.util.List;
 /**
  * Verifies the Event model's public contract, including constructor defaults, mutators,
  * attendee management, and capacity-related behavior used by the prototype UI.
- * Outstanding issues: these tests focus on in-memory behavior only and do not validate
- * Firestore persistence or stricter domain rules such as invalid dates or capacities.
+ * UPDATED: Now uses String for price to match the current Phase 3 implementation.
  */
 public class EventTest {
 
@@ -36,7 +35,7 @@ public class EventTest {
                 "10:00 AM",
                 "org_cso",
                 200,
-                0.0
+                "Free"
         );
     }
 
@@ -50,7 +49,7 @@ public class EventTest {
         assertEquals("10:00 AM", event.getTime());
         assertEquals("org_cso", event.getOrganizerId());
         assertEquals(200, event.getMaxCapacity());
-        assertEquals(0.0, event.getTicketPrice(), 0.001);
+        assertEquals("Free", event.getPrice());
     }
 
     @Test
@@ -77,13 +76,16 @@ public class EventTest {
         assertNull(defaultEvent.getTime());
         assertNull(defaultEvent.getOrganizerId());
         assertEquals(0, defaultEvent.getMaxCapacity());
-        assertEquals(0.0, defaultEvent.getTicketPrice(), 0.001);
+        assertNull(defaultEvent.getPrice());
+        assertEquals("Upvote count should default to 0", 0, defaultEvent.getUpvoteCount());
+        assertNotNull("UpvotedBy list should not be null", defaultEvent.getUpvotedBy());
+        assertTrue("UpvotedBy list should start empty", defaultEvent.getUpvotedBy().isEmpty());
     }
 
     @Test
-    public void testSetAndGetTicketPrice() {
-        event.setTicketPrice(500.0);
-        assertEquals(500.0, event.getTicketPrice(), 0.001);
+    public void testSetAndGetPrice() {
+        event.setPrice("500 PKR");
+        assertEquals("500 PKR", event.getPrice());
     }
 
     @Test
@@ -228,7 +230,7 @@ public class EventTest {
                 "09:00 AM",
                 "org_lumun",
                 650,
-                1500.0
+                "1500 PKR"
         );
         lumun.addAttendee("27100284");
         lumun.addAttendee("27100189");
@@ -250,7 +252,7 @@ public class EventTest {
                 "05:00 PM",
                 "org_003",
                 20,
-                0.0
+                "Free"
         );
 
         for (int i = 1; i <= 20; i++) {
@@ -271,14 +273,14 @@ public class EventTest {
         firestoreEvent.setTime("02:00 PM");
         firestoreEvent.setOrganizerId("org_fs");
         firestoreEvent.setMaxCapacity(30);
-        firestoreEvent.setTicketPrice(200.0);
+        firestoreEvent.setPrice("200 PKR");
         firestoreEvent.setAttendeeIds(new ArrayList<>(Arrays.asList("stu_a", "stu_b")));
 
         assertEquals("event_fs_001", firestoreEvent.getEventId());
         assertEquals("Firestore Test Event", firestoreEvent.getTitle());
         assertEquals(30, firestoreEvent.getMaxCapacity());
         assertEquals(2, firestoreEvent.getAttendeeIds().size());
-        assertEquals(200.0, firestoreEvent.getTicketPrice(), 0.001);
+        assertEquals("200 PKR", firestoreEvent.getPrice());
     }
 
     @Test
@@ -294,5 +296,64 @@ public class EventTest {
         assertEquals("March 20, 2026", event.getDate());
         assertEquals("11:00 AM", event.getTime());
         assertEquals(300, event.getMaxCapacity());
+    }
+
+    // ──────────────────────────────────────────────
+    // US6: Upvote Tests
+    // ──────────────────────────────────────────────
+
+    @Test
+    public void testUpvote_initialCountIsZero() {
+        assertEquals(0, event.getUpvoteCount());
+        assertNotNull(event.getUpvotedBy());
+        assertTrue(event.getUpvotedBy().isEmpty());
+    }
+
+    @Test
+    public void testAddUpvote_incrementsCount() {
+        boolean added = event.addUpvote("stu_001");
+        assertTrue("First upvote should be added", added);
+        assertEquals(1, event.getUpvoteCount());
+        assertTrue(event.getUpvotedBy().contains("stu_001"));
+    }
+
+    @Test
+    public void testAddUpvote_preventsDuplicate() {
+        event.addUpvote("stu_001");
+        boolean duplicate = event.addUpvote("stu_001");
+        assertFalse("Duplicate upvote should not be added", duplicate);
+        assertEquals("Count should not increment on duplicate", 1, event.getUpvoteCount());
+    }
+
+    @Test
+    public void testAddUpvote_multipleStudents() {
+        event.addUpvote("stu_001");
+        event.addUpvote("stu_002");
+        event.addUpvote("stu_003");
+        assertEquals(3, event.getUpvoteCount());
+    }
+
+    @Test
+    public void testRemoveUpvote_decrementsCount() {
+        event.addUpvote("stu_001");
+        boolean removed = event.removeUpvote("stu_001");
+        assertTrue("Upvote should be removed", removed);
+        assertEquals(0, event.getUpvoteCount());
+        assertFalse(event.getUpvotedBy().contains("stu_001"));
+    }
+
+    @Test
+    public void testRemoveUpvote_nonExistentStudent_isNoOp() {
+        event.addUpvote("stu_001");
+        boolean removed = event.removeUpvote("stu_999");
+        assertFalse("Remove of non-existent upvote should return false", removed);
+        assertEquals("Count should remain unchanged", 1, event.getUpvoteCount());
+    }
+
+    @Test
+    public void testUpvoteCountFloor_doesNotGoBelowZero() {
+        // Count starts at 0; removing a non-existent upvote should not go negative
+        event.removeUpvote("stu_000");
+        assertEquals(0, event.getUpvoteCount());
     }
 }

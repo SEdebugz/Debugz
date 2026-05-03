@@ -2,32 +2,143 @@ package com.example.debugz.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.debugz.NotificationHelper;
 import com.example.debugz.R;
+import com.example.debugz.UserSession;
+import com.example.debugz.controller.AccountController;
+import com.example.debugz.models.Account;
+import com.google.android.material.textfield.TextInputEditText;
 
 /**
- * Provides the app's landing screen and initial navigation into the event feed.
- * The activity acts as the branded entry point before handing control to the discovery
- * experience when the user presses the call-to-action button.
- * Outstanding issues: this screen currently offers only a single navigation path and does
- * not yet branch by role or authentication state.
+ * Shared login entry point.
+ *
+ * Better UX choice implemented here:
+ * - Students and organizers use the same ID/password form and pick their role.
+ * - Signup is moved to its own page because signup fields differ from login fields.
+ * - Admin stays on the landing page but uses a dedicated hardcoded login path.
  */
 public class LandingActivity extends AppCompatActivity {
+
+    private TextInputEditText etLoginId, etLoginPassword;
+    private AccountController accountController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        NotificationHelper.createChannel(this);
+
+        UserSession session = UserSession.getInstance(this);
+        if (session.isLoggedIn()) {
+            navigateByRole(session.getRole());
+            return;
+        }
+
         setContentView(R.layout.activity_landing);
 
-        Button btnGetStarted = findViewById(R.id.btnGetStarted);
-        btnGetStarted.setOnClickListener(v -> {
-            // Navigate to the main event discovery feed
-            Intent intent = new Intent(LandingActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish(); // Prevent coming back to landing page with back button
+        accountController = new AccountController();
+
+        etLoginId = findViewById(R.id.etLoginId);
+        etLoginPassword = findViewById(R.id.etLoginPassword);
+
+        Button btnStudent = findViewById(R.id.btnStudentLogin);
+        Button btnOrganizer = findViewById(R.id.btnOrganizerLogin);
+        Button btnAdmin = findViewById(R.id.btnAdminLogin);
+        TextView tvSignupLink = findViewById(R.id.tvSignupLink);
+
+        btnStudent.setOnClickListener(v -> attemptAccountLogin(UserSession.ROLE_STUDENT));
+        btnOrganizer.setOnClickListener(v -> attemptAccountLogin(UserSession.ROLE_ORGANIZER));
+        btnAdmin.setOnClickListener(v -> attemptAdminLogin());
+        tvSignupLink.setOnClickListener(v -> startActivity(new Intent(this, SignupActivity.class)));
+    }
+
+    private void attemptAccountLogin(String role) {
+        String accountId = getInput(etLoginId);
+        String password = getInput(etLoginPassword);
+
+        if (TextUtils.isEmpty(accountId)) {
+            etLoginId.setError("ID is required");
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            etLoginPassword.setError("Password is required");
+            return;
+        }
+
+        setButtonsEnabled(false);
+        accountController.login(accountId, password, role, new AccountController.OnLoginListener() {
+            @Override
+            public void onSuccess(Account account) {
+                setButtonsEnabled(true);
+                UserSession.getInstance(LandingActivity.this)
+                        .login(account.getAccountId(), account.getName(), account.getRole());
+                Toast.makeText(LandingActivity.this,
+                        "Welcome, " + account.getName() + "!", Toast.LENGTH_SHORT).show();
+                navigateByRole(account.getRole());
+            }
+
+            @Override
+            public void onFailure(String message) {
+                setButtonsEnabled(true);
+                Toast.makeText(LandingActivity.this, message, Toast.LENGTH_LONG).show();
+            }
         });
+    }
+
+    private void attemptAdminLogin() {
+        String username = getInput(etLoginId);
+        String password = getInput(etLoginPassword);
+
+        if (TextUtils.isEmpty(username)) {
+            etLoginId.setError("Admin username is required");
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            etLoginPassword.setError("Admin password is required");
+            return;
+        }
+
+        if (!UserSession.ADMIN_USERNAME.equals(username) || !UserSession.ADMIN_PASSWORD.equals(password)) {
+            Toast.makeText(this, "Incorrect admin credentials.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        UserSession.getInstance(this).login("admin", UserSession.ADMIN_USERNAME, UserSession.ROLE_ADMIN);
+        navigateByRole(UserSession.ROLE_ADMIN);
+    }
+
+    private void navigateByRole(String role) {
+        Intent intent;
+        switch (role) {
+            case UserSession.ROLE_ORGANIZER:
+                intent = new Intent(this, OrganizerDashboardActivity.class);
+                break;
+            case UserSession.ROLE_ADMIN:
+                intent = new Intent(this, AdminDashboardActivity.class);
+                break;
+            default:
+                intent = new Intent(this, MainActivity.class);
+                break;
+        }
+        startActivity(intent);
+        finish();
+    }
+
+    private void setButtonsEnabled(boolean enabled) {
+        findViewById(R.id.btnStudentLogin).setEnabled(enabled);
+        findViewById(R.id.btnOrganizerLogin).setEnabled(enabled);
+        findViewById(R.id.btnAdminLogin).setEnabled(enabled);
+    }
+
+    private String getInput(TextInputEditText et) {
+        CharSequence text = et.getText();
+        return text != null ? text.toString().trim() : "";
     }
 }

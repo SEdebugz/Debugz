@@ -21,12 +21,17 @@ public class Event {
     private int maxCapacity;
     private String price;
     private List<String> attendeeIds;
+    /** Number of upvotes this event has received (US6). */
+    private int upvoteCount;
+    /** Student IDs that have upvoted; prevents double-upvoting (US6). */
+    private List<String> upvotedBy;
 
     /**
      * Creates an empty event instance for Firebase Firestore deserialization.
      */
     public Event() {
         this.attendeeIds = new ArrayList<>();
+        this.upvotedBy = new ArrayList<>();
     }
 
     /**
@@ -53,6 +58,8 @@ public class Event {
         this.maxCapacity = maxCapacity;
         this.price = price;
         this.attendeeIds = new ArrayList<>();
+        this.upvoteCount = 0;
+        this.upvotedBy = new ArrayList<>();
     }
 
     public String getEventId() { return eventId; }
@@ -89,5 +96,45 @@ public class Event {
 
     public void removeAttendee(String studentId) {
         if (this.attendeeIds != null) this.attendeeIds.remove(studentId);
+    }
+
+    // ── Upvote helpers (US6) ───────────────────────────────────────────────
+
+    public int getUpvoteCount() { return upvoteCount; }
+    public void setUpvoteCount(int upvoteCount) { this.upvoteCount = upvoteCount; }
+
+    public List<String> getUpvotedBy() {
+        return upvotedBy != null ? upvotedBy : new ArrayList<>();
+    }
+
+    public void setUpvotedBy(List<String> upvotedBy) {
+        this.upvotedBy = upvotedBy != null ? upvotedBy : new ArrayList<>();
+    }
+
+    /**
+     * Adds a student upvote if not already present and increments the count.
+     *
+     * @param studentId the student who upvoted.
+     * @return true if the upvote was added; false if already upvoted.
+     */
+    public boolean addUpvote(String studentId) {
+        if (this.upvotedBy == null) this.upvotedBy = new ArrayList<>();
+        if (this.upvotedBy.contains(studentId)) return false;
+        this.upvotedBy.add(studentId);
+        this.upvoteCount++;
+        return true;
+    }
+
+    /**
+     * Removes an upvote from a student and decrements the count.
+     *
+     * @param studentId the student removing their upvote.
+     * @return true if the upvote was removed; false if student hadn't upvoted.
+     */
+    public boolean removeUpvote(String studentId) {
+        if (this.upvotedBy == null || !this.upvotedBy.contains(studentId)) return false;
+        this.upvotedBy.remove(studentId);
+        if (this.upvoteCount > 0) this.upvoteCount--;
+        return true;
     }
 }

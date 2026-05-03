@@ -19,10 +19,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/cardLogin"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed">
 
         <com.google.android.material.card.MaterialCardView
@@ -51,9 +51,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Discover &amp; Manage Campus Events"
+            android:text="Login for Students / Organizers · Admin approval required for signup"
             android:textColor="#E0FFFFFF"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
@@ -75,7 +75,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome Back"
+                android:text="Sign In"
                 android:textColor="#111827"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -83,57 +83,103 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign in to continue"
+                android:text="Students and organizers use the same form below"
                 android:textColor="#6B7280"
                 android:textSize="14sp" />
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                app:startIconDrawable="@drawable/ic_mail"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:startIconDrawable="@drawable/ic_mail">
+
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLoginId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Username or Email" />
+                    android:hint="Roll Number / Org ID / Admin Username" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:startIconDrawable="@drawable/ic_lock"
-                app:passwordToggleEnabled="true"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:endIconMode="password_toggle"
+                app:startIconDrawable="@drawable/ic_lock">
+
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLoginPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:hint="Password" />
+                    android:hint="Password"
+                    android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/btnGetStarted"
+                android:id="@+id/btnStudentLogin"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="@null"
                 android:background="@drawable/bg_main_gradient"
-                android:text="Sign In"
+                android:backgroundTint="@null"
+                android:text="Login as Student"
                 android:textAllCaps="false"
-                android:textStyle="bold"
+                android:textColor="@color/white"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 app:cornerRadius="16dp" />
+
+            <Button
+                android:id="@+id/btnOrganizerLogin"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#7C3AED"
+                android:text="Login as Organizer"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="16dp" />
+
+            <Button
+                android:id="@+id/btnAdminLogin"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#DC2626"
+                android:text="Admin Login"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="16dp" />
+
+            <TextView
+                android:id="@+id/tvSignupLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="18dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="4dp"
+                android:text="New here? Sign up for Student / Organizer access"
+                android:textColor="#2563EB"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:text="Don't have an account? Sign Up"
-                android:textColor="#6B7280"
-                android:textSize="14sp" />
+                android:layout_marginTop="8dp"
+                android:text="Admin credentials: sefinalboss / 1234"
+                android:textColor="#9CA3AF"
+                android:textSize="12sp" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

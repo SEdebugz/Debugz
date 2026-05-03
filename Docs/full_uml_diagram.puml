@@ -1,0 +1,356 @@
+@startuml Full_Codebase_UML
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 13
+skinparam classFontStyle bold
+skinparam defaultFontSize 11
+skinparam shadowing true
+skinparam linetype ortho
+skinparam packageStyle rectangle
+skinparam groupInheritance 2
+
+title **Debugz — Campus Event App\nComprehensive UML Class Diagram**
+
+' ════════════════════════════════════════════════════
+'  EXTERNAL / ANDROID FRAMEWORK (simplified)
+' ════════════════════════════════════════════════════
+
+package "Android Framework" <<Framework>> #DDDDDD {
+    class AppCompatActivity {
+        # onCreate(savedInstanceState : Bundle) : void
+    }
+
+    abstract class "RecyclerView.Adapter<VH>" as RVAdapter {
+        + onCreateViewHolder(parent, viewType) : VH
+        + onBindViewHolder(holder, position) : void
+        + getItemCount() : int
+        + notifyDataSetChanged() : void
+    }
+
+    class "RecyclerView.ViewHolder" as RVViewHolder {
+        + itemView : View
+    }
+}
+
+package "Firebase" <<Cloud>> #FFF3E0 {
+    class FirebaseFirestore <<Singleton>> {
+        + {static} getInstance() : FirebaseFirestore
+        + collection(path : String) : CollectionReference
+    }
+}
+
+
+' ════════════════════════════════════════════════════
+'  MODEL LAYER
+' ════════════════════════════════════════════════════
+
+package "com.example.debugz.models" <<Models>> #E8F5E9 {
+
+    class Event {
+        - eventId : String
+        - title : String
+        - description : String
+        - location : String
+        - date : String
+        - time : String
+        - ticketPrice : double
+        - organizerId : String
+        - maxCapacity : int
+        - attendeeIds : List<String>
+        __
+        + Event()
+        + Event(eventId, title, description, location,\n\tdate, time, organizerId, maxCapacity, ticketPrice)
+        __
+        + getEventId() : String
+        + setEventId(eventId : String) : void
+        + getTitle() : String
+        + setTitle(title : String) : void
+        + getDescription() : String
+        + setDescription(description : String) : void
+        + getLocation() : String
+        + setLocation(location : String) : void
+        + getDate() : String
+        + setDate(date : String) : void
+        + getTime() : String
+        + setTime(time : String) : void
+        + getOrganizerId() : String
+        + setOrganizerId(organizerId : String) : void
+        + getMaxCapacity() : int
+        + setMaxCapacity(maxCapacity : int) : void
+        + getTicketPrice() : double
+        + setTicketPrice(ticketPrice : double) : void
+        + getAttendeeIds() : List<String>
+        + setAttendeeIds(attendeeIds : List<String>) : void
+        + addAttendee(studentId : String) : void
+        + removeAttendee(studentId : String) : void
+    }
+
+    class Organizer {
+        - organizerId : String
+        - name : String
+        - email : String
+        - createdEventIds : List<String>
+        __
+        + Organizer()
+        + Organizer(organizerId, name, email)
+        __
+        + getOrganizerId() : String
+        + setOrganizerId(organizerId : String) : void
+        + getName() : String
+        + setName(name : String) : void
+        + getEmail() : String
+        + setEmail(email : String) : void
+        + getCreatedEventIds() : List<String>
+        + setCreatedEventIds(createdEventIds : List<String>) : void
+        + addCreatedEvent(eventId : String) : void
+        + removeCreatedEvent(eventId : String) : void
+    }
+
+    class Student {
+        - studentId : String
+        - name : String
+        - email : String
+        - school : String
+        - year : String
+        - preferences : List<String>
+        - registrationIds : List<String>
+        __
+        + Student()
+        + Student(studentId, name, email, school, year)
+        __
+        + getStudentId() : String
+        + setStudentId(studentId : String) : void
+        + getName() : String
+        + setName(name : String) : void
+        + getEmail() : String
+        + setEmail(email : String) : void
+        + getSchool() : String
+        + setSchool(school : String) : void
+        + getYear() : String
+        + setYear(year : String) : void
+        + getPreferences() : List<String>
+        + setPreferences(preferences : List<String>) : void
+        + addPreference(tag : String) : void
+        + getRegistrationIds() : List<String>
+        + setRegistrationIds(registrationIds : List<String>) : void
+        + addRegistration(registrationId : String) : void
+        + removeRegistration(registrationId : String) : void
+    }
+
+    class Registration {
+        - registrationId : String
+        - studentId : String
+        - eventId : String
+        - status : String
+        - timestamp : long
+        __
+        + Registration()
+        + Registration(registrationId, studentId,\n\teventId, status, timestamp)
+        __
+        + getRegistrationId() : String
+        + setRegistrationId(registrationId : String) : void
+        + getStudentId() : String
+        + setStudentId(studentId : String) : void
+        + getEventId() : String
+        + setEventId(eventId : String) : void
+        + getStatus() : String
+        + setStatus(status : String) : void
+        + getTimestamp() : long
+        + setTimestamp(timestamp : long) : void
+    }
+}
+
+
+' ════════════════════════════════════════════════════
+'  CONTROLLER LAYER
+' ════════════════════════════════════════════════════
+
+package "com.example.debugz.controller" <<Controller>> #E3F2FD {
+
+    class EventController {
+        - db : FirebaseFirestore
+        __
+        + EventController()
+        + fetchAllEvents(listener : OnEventsFetchedListener) : void
+        + seedDemoData(onSuccess : Runnable) : void
+        + searchEvents(query : String, allEvents : List<Event>) : List<Event>
+    }
+
+    interface "EventController.\nOnEventsFetchedListener" as OnEventsFetchedListener <<callback>> {
+        + onSuccess(events : List<Event>) : void
+        + onFailure(e : Exception) : void
+        + onDatabaseEmpty() : void
+    }
+
+    EventController +-- OnEventsFetchedListener
+}
+
+
+' ════════════════════════════════════════════════════
+'  VIEW LAYER
+' ════════════════════════════════════════════════════
+
+package "com.example.debugz.view" <<View>> #FFF9C4 {
+
+    class LandingActivity {
+        # onCreate(savedInstanceState : Bundle) : void
+    }
+
+    class MainActivity {
+        - rvEvents : RecyclerView
+        - adapter : EventAdapter
+        - allEvents : List<Event>
+        - filteredEvents : List<Event>
+        - etSearch : EditText
+        - eventController : EventController
+        __
+        # onCreate(savedInstanceState : Bundle) : void
+        - loadEvents() : void
+        - setupSearch() : void
+        - filter(query : String) : void
+    }
+
+    class EventDetailActivity {
+        - db : FirebaseFirestore
+        - eventId : String
+        - title : String
+        - date : String
+        - time : String
+        - location : String
+        - description : String
+        - capacity : int
+        __
+        # onCreate(savedInstanceState : Bundle) : void
+        - handleRSVP() : void
+    }
+
+    class MyEventsActivity {
+        - rvMyEvents : RecyclerView
+        - adapter : EventAdapter
+        - myEventsList : List<Event>
+        - db : FirebaseFirestore
+        __
+        # onCreate(savedInstanceState : Bundle) : void
+        - fetchMyRegistrations() : void
+        - fetchEventDetails(eventIds : List<String>) : void
+    }
+
+    class EventAdapter {
+        - eventList : List<Event>
+        - listener : OnEventClickListener
+        __
+        + EventAdapter(eventList : List<Event>,\n\tlistener : OnEventClickListener)
+        + onCreateViewHolder(parent, viewType) : EventViewHolder
+        + onBindViewHolder(holder, position) : void
+        + getItemCount() : int
+    }
+
+    interface "EventAdapter.\nOnEventClickListener" as OnEventClickListener <<callback>> {
+        + onEventClick(event : Event) : void
+    }
+
+    class "EventAdapter.EventViewHolder" as EventViewHolder {
+        ~ tvTitle : TextView
+        ~ tvDate : TextView
+        ~ tvCapacityInfo : TextView
+        ~ tvLeftInfo : TextView
+        ~ tvCapacityBadge : TextView
+        ~ pbCapacity : LinearProgressIndicator
+        __
+        + EventViewHolder(itemView : View)
+    }
+
+    EventAdapter +-- OnEventClickListener
+    EventAdapter +-- EventViewHolder
+}
+
+
+' ════════════════════════════════════════════════════
+'  INHERITANCE RELATIONSHIPS
+' ════════════════════════════════════════════════════
+
+LandingActivity        --|> AppCompatActivity
+MainActivity           --|> AppCompatActivity
+EventDetailActivity    --|> AppCompatActivity
+MyEventsActivity       --|> AppCompatActivity
+
+EventAdapter           --|> RVAdapter
+EventViewHolder        --|> RVViewHolder
+
+
+' ════════════════════════════════════════════════════
+'  DOMAIN ASSOCIATIONS (Model ↔ Model)
+' ════════════════════════════════════════════════════
+
+Organizer "1" --> "0..*" Event : creates\n(organizerId ↔ createdEventIds)
+Student   "1" --> "0..*" Registration : holds\n(registrationIds)
+Registration "0..*" --> "1" Event : references\n(eventId)
+Registration "0..*" --> "1" Student : references\n(studentId)
+Event "1" --> "0..*" Student : tracks attendees\n(attendeeIds)
+
+
+' ════════════════════════════════════════════════════
+'  DEPENDENCY / USAGE RELATIONSHIPS
+' ════════════════════════════════════════════════════
+
+EventController --> FirebaseFirestore : uses
+EventController --> Event : fetches / creates
+EventController ..> OnEventsFetchedListener : notifies
+
+MainActivity --> EventController : uses
+MainActivity --> EventAdapter : creates & updates
+MainActivity --> Event : displays
+MainActivity ..> EventDetailActivity : <<intent>>
+MainActivity ..> MyEventsActivity : <<intent>>
+
+LandingActivity ..> MainActivity : <<intent>>\nnavigates to
+
+EventDetailActivity --> FirebaseFirestore : writes RSVP
+EventDetailActivity --> Registration : creates
+EventDetailActivity ..> Event : reads via Intent extras
+
+MyEventsActivity --> FirebaseFirestore : queries
+MyEventsActivity --> EventAdapter : creates
+MyEventsActivity --> Registration : reads
+MyEventsActivity --> Event : displays
+
+EventAdapter --> Event : binds data
+EventAdapter --> OnEventClickListener : delegates clicks
+
+
+' ════════════════════════════════════════════════════
+'  NOTES
+' ════════════════════════════════════════════════════
+
+note as N1
+  **Architecture:** MVC
+  • **Model** – Event, Organizer, Student, Registration
+  • **View** – Activities + EventAdapter
+  • **Controller** – EventController
+  All model classes have a no-arg constructor
+  for Firebase Firestore data mapping.
+end note
+
+note bottom of Registration
+  Acts as an **association class**
+  linking Student ↔ Event.
+  status ∈ {"Confirmed","Waitlisted","Checked-in"}
+end note
+
+note right of EventAdapter
+  Reused by both
+  MainActivity and
+  MyEventsActivity.
+end note
+
+note right of EventDetailActivity
+  Uses a hardcoded
+  demo student ID
+  ("demo_student_123")
+  for the prototype.
+end note
+
+@enduml
+
+
+

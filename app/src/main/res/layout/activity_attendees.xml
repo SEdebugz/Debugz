@@ -4,41 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MyEventsActivity">
+    tools:context=".view.AttendeesActivity">
 
     <TextView
-        android:id="@+id/tvMyEventsTitle"
-        android:layout_width="wrap_content"
+        android:id="@+id/tvAttendeesTitle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="My RSVP'd Events"
-        android:textSize="24sp"
+        android:text="Attendees"
+        android:textSize="22sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvMyEventsEmpty"
+        android:id="@+id/tvAttendeesCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="4dp"
+        android:text="0 attendees"
+        android:textColor="#6B7280"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAttendeesTitle" />
+
+    <TextView
+        android:id="@+id/tvNoAttendees"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
         android:gravity="center"
-        android:text="You haven't RSVP'd to any events yet.\nBrowse the Discover tab to get started!"
+        android:text="No RSVPs yet for this event."
         android:textColor="#6B7280"
-        android:textSize="15sp"
+        android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvMyEventsTitle" />
+        app:layout_constraintTop_toBottomOf="@id/tvAttendeesCount" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMyEvents"
+        android:id="@+id/rvAttendees"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvMyEventsTitle" />
+        app:layout_constraintTop_toBottomOf="@id/tvAttendeesCount" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

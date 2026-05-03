@@ -61,20 +61,25 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         Event event = eventList.get(position);
         holder.tvTitle.setText(event.getTitle());
         holder.tvDate.setText(event.getDate());
-        
+
         // Capacity Logic for US5
         int currentAttendees = (event.getAttendeeIds() != null) ? event.getAttendeeIds().size() : 0;
         int max = event.getMaxCapacity();
         holder.tvCapacityInfo.setText(currentAttendees + " / " + max);
         holder.tvLeftInfo.setText((max - currentAttendees) + " left");
-        
+
         if (max > 0) {
             int progress = (int) (((float) currentAttendees / max) * 100);
             holder.pbCapacity.setProgress(progress);
             holder.tvCapacityBadge.setText(progress + "% Full");
         }
 
+        // US6: upvote count
+        holder.tvUpvotes.setText("♥ " + event.getUpvoteCount());
+
+        // Both the card and "View Details" button navigate to event detail
         holder.itemView.setOnClickListener(v -> listener.onEventClick(event));
+        holder.btnItemRsvp.setOnClickListener(v -> listener.onEventClick(event));
     }
 
     @Override
@@ -83,17 +88,20 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     static class EventViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDate, tvCapacityInfo, tvLeftInfo, tvCapacityBadge;
+        TextView tvTitle, tvDate, tvCapacityInfo, tvLeftInfo, tvCapacityBadge, tvUpvotes;
         LinearProgressIndicator pbCapacity;
+        android.widget.Button btnItemRsvp;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTitle = itemView.findViewById(R.id.tvTitle);
-            tvDate = itemView.findViewById(R.id.tvDate);
+            tvTitle        = itemView.findViewById(R.id.tvTitle);
+            tvDate         = itemView.findViewById(R.id.tvDate);
             tvCapacityInfo = itemView.findViewById(R.id.tvCapacityInfo);
-            tvLeftInfo = itemView.findViewById(R.id.tvLeftInfo);
+            tvLeftInfo     = itemView.findViewById(R.id.tvLeftInfo);
             tvCapacityBadge = itemView.findViewById(R.id.tvCapacityBadge);
-            pbCapacity = itemView.findViewById(R.id.pbCapacity);
+            pbCapacity     = itemView.findViewById(R.id.pbCapacity);
+            tvUpvotes      = itemView.findViewById(R.id.tvItemUpvotes);
+            btnItemRsvp    = itemView.findViewById(R.id.btnItemRSVP);
         }
     }
 }
