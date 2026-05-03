@@ -68,6 +68,16 @@
             android:exported="false"
             android:label="Admin Dashboard" />
 
+        <activity
+            android:name=".view.AddFriendActivity"
+            android:exported="false"
+            android:label="Add Friend" />
+
+        <activity
+            android:name=".view.FriendsEventsActivity"
+            android:exported="false"
+            android:label="Friends Events" />
+
     </application>
 
 </manifest>

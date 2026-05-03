@@ -65,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnMyEvents).setOnClickListener(v ->
                 startActivity(new Intent(this, MyEventsActivity.class)));
 
+        findViewById(R.id.btnAddFriends).setOnClickListener(v -> {
+            startActivity(new Intent(this, AddFriendActivity.class));
+        });
+
+        findViewById(R.id.btnFriendsEvents).setOnClickListener(v -> {
+            startActivity(new Intent(this, FriendsEventsActivity.class));
+        });
+
         findViewById(R.id.btnLogout).setOnClickListener(v -> logout());
 
         setupSearch();

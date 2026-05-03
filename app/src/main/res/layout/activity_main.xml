@@ -7,52 +7,83 @@
     android:layout_height="match_parent"
     tools:context=".view.MainActivity">
 
+    <!-- Top row: title + logout -->
     <TextView
         android:id="@+id/tvDiscover"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="Discover Events"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnMyEvents"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="My Events"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="@id/tvDiscover"
         app:layout_constraintEnd_toStartOf="@id/btnLogout"
-        app:layout_constraintTop_toTopOf="@id/tvDiscover" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/btnLogout"
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         android:text="Logout"
         android:textAllCaps="false"
         android:backgroundTint="#6B7280"
-        app:layout_constraintBottom_toBottomOf="@id/tvDiscover"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvDiscover" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
-    <EditText
-        android:id="@+id/etSearch"
+    <!-- Three nav buttons below the header -->
+    <Button
+        android:id="@+id/btnAddFriends"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="Search events..."
-        android:padding="12dp"
-        android:background="@android:drawable/editbox_background"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:backgroundTint="#2196F3"
+        android:text="Find Friends"
+        android:textAllCaps="false"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDiscover" />
+        app:layout_constraintEnd_toStartOf="@id/btnFriendsEvents"
+        app:layout_constraintTop_toBottomOf="@id/btnLogout"
+        tools:ignore="HardcodedText" />
 
+    <Button
+        android:id="@+id/btnFriendsEvents"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:backgroundTint="#4CAF50"
+        android:text="Friends' Events"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/btnAddFriends"
+        app:layout_constraintEnd_toStartOf="@id/btnMyEvents"
+        app:layout_constraintTop_toBottomOf="@id/btnLogout"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/btnMyEvents"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp"
+        android:text="My Events"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/btnFriendsEvents"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnLogout"
+        tools:ignore="HardcodedText" />
+
+    <!-- Empty state -->
     <TextView
         android:id="@+id/tvMainEmpty"
         android:layout_width="0dp"
@@ -65,16 +96,32 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etSearch" />
+        app:layout_constraintTop_toBottomOf="@id/btnAddFriends"
+        tools:ignore="HardcodedText" />
 
+    <!-- Event list — fills space between buttons and search bar -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvEvents"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnAddFriends"
+        app:layout_constraintBottom_toTopOf="@id/etSearch"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etSearch" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Search bar pinned to the bottom -->
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:hint="Search events..."
+        android:padding="12dp"
+        android:background="@android:drawable/editbox_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
