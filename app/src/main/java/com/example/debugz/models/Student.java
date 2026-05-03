@@ -18,6 +18,7 @@ public class Student {
     private String year;
     private List<String> preferences;
     private List<String> registrationIds;
+    private List<String> friendIds;
 
     /**
      * Creates an empty student instance for Firebase Firestore deserialization.
@@ -25,7 +26,9 @@ public class Student {
     public Student() {
         this.preferences = new ArrayList<>();
         this.registrationIds = new ArrayList<>();
+        this.friendIds = new ArrayList<>();
     }
+
 
     /**
      * Creates a student with the core profile details used by the app.
@@ -170,4 +173,16 @@ public class Student {
     public void removeRegistration(String registrationId) {
         this.registrationIds.remove(registrationId);
     }
+
+    /**
+     * Returns friends of a student
+     *
+     * @return the student's friends ids
+     */
+    public List<String> getFriendIds() { return friendIds; }
+
+    /**
+     * Replaces the friends of a student
+     */
+    public void setFriendIds(List<String> friendIds) { this.friendIds = friendIds; }
 }
