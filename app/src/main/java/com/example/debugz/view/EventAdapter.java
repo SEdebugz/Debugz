@@ -15,35 +15,19 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import java.util.List;
 
 /**
- * Binds event model data into the cards shown by the discovery and saved-events lists.
- * The adapter follows the standard RecyclerView adapter/view-holder pattern and also
- * renders the capacity indicators used by the event list design.
- * Outstanding issues: capacity text assumes attendee data is already loaded on each event,
- * and click handling is intentionally delegated to callers instead of enforced here.
+ * ROLE: Adapter Pattern.
+ * PURPOSE: Bridges the Event data models with the RecyclerView UI components.
+ * Supports real-time capacity updates (US5) and displays event prices/categories.
  */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private List<Event> eventList;
     private OnEventClickListener listener;
 
-    /**
-     * Listener for item-click events emitted from an event card.
-     */
     public interface OnEventClickListener {
-        /**
-         * Handles a click on a specific event.
-         *
-         * @param event the event associated with the clicked card.
-         */
         void onEventClick(Event event);
     }
 
-    /**
-     * Creates an adapter backed by the provided event list and click listener.
-     *
-     * @param eventList the events to render.
-     * @param listener the callback for item selections.
-     */
     public EventAdapter(List<Event> eventList, OnEventClickListener listener) {
         this.eventList = eventList;
         this.listener = listener;
@@ -61,25 +45,24 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         Event event = eventList.get(position);
         holder.tvTitle.setText(event.getTitle());
         holder.tvDate.setText(event.getDate());
-
-        // Capacity Logic for US5
+        
+        // Price and Category UI
+        holder.tvItemPrice.setText(event.getPrice() != null ? event.getPrice() : "Free");
+        holder.tvItemCategory.setText(event.getCategory() != null ? event.getCategory() : "Other");
+        
+        // Capacity Logic (US5)
         int currentAttendees = (event.getAttendeeIds() != null) ? event.getAttendeeIds().size() : 0;
         int max = event.getMaxCapacity();
         holder.tvCapacityInfo.setText(currentAttendees + " / " + max);
         holder.tvLeftInfo.setText((max - currentAttendees) + " left");
-
+        
         if (max > 0) {
             int progress = (int) (((float) currentAttendees / max) * 100);
             holder.pbCapacity.setProgress(progress);
             holder.tvCapacityBadge.setText(progress + "% Full");
         }
 
-        // US6: upvote count
-        holder.tvUpvotes.setText("♥ " + event.getUpvoteCount());
-
-        // Both the card and "View Details" button navigate to event detail
         holder.itemView.setOnClickListener(v -> listener.onEventClick(event));
-        holder.btnItemRsvp.setOnClickListener(v -> listener.onEventClick(event));
     }
 
     @Override
@@ -88,20 +71,19 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     static class EventViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDate, tvCapacityInfo, tvLeftInfo, tvCapacityBadge, tvUpvotes;
+        TextView tvTitle, tvDate, tvCapacityInfo, tvLeftInfo, tvCapacityBadge, tvItemPrice, tvItemCategory;
         LinearProgressIndicator pbCapacity;
-        android.widget.Button btnItemRsvp;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTitle        = itemView.findViewById(R.id.tvTitle);
-            tvDate         = itemView.findViewById(R.id.tvDate);
+            tvTitle = itemView.findViewById(R.id.tvTitle);
+            tvDate = itemView.findViewById(R.id.tvDate);
             tvCapacityInfo = itemView.findViewById(R.id.tvCapacityInfo);
-            tvLeftInfo     = itemView.findViewById(R.id.tvLeftInfo);
+            tvLeftInfo = itemView.findViewById(R.id.tvLeftInfo);
             tvCapacityBadge = itemView.findViewById(R.id.tvCapacityBadge);
-            pbCapacity     = itemView.findViewById(R.id.pbCapacity);
-            tvUpvotes      = itemView.findViewById(R.id.tvItemUpvotes);
-            btnItemRsvp    = itemView.findViewById(R.id.btnItemRSVP);
+            tvItemPrice = itemView.findViewById(R.id.tvItemPrice);
+            tvItemCategory = itemView.findViewById(R.id.tvItemCategory);
+            pbCapacity = itemView.findViewById(R.id.pbCapacity);
         }
     }
 }

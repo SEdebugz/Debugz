@@ -14,15 +14,24 @@
             android:id="@+id/tvDetailTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
+            android:textSize="26sp"
             android:textStyle="bold"
             android:text="Event Title" />
+
+        <TextView
+            android:id="@+id/tvUpvoteCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="♥ 0 upvotes"
+            android:textColor="@color/pink_600"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvDetailDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:textSize="16sp"
             android:text="Date &amp; Time" />
 
@@ -34,41 +43,44 @@
             android:textSize="16sp"
             android:text="Location" />
 
-        <!-- US5: Spots remaining / US9: attendees count -->
+        <TextView
+            android:id="@+id/tvDetailPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="16sp"
+            android:textColor="@color/pink_600"
+            android:textStyle="bold"
+            android:text="Price: Free" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
-
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
             <TextView
                 android:id="@+id/tvDetailCapacity"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:textSize="14sp"
-                android:textColor="@color/design_default_color_primary"
-                android:text="Capacity: 0 / 0" />
-
+                android:textColor="@color/purple_600"
+                android:text="Attending: 0/0" />
             <TextView
                 android:id="@+id/tvSpotsLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#D97706"
+                android:textColor="@android:color/holo_orange_dark"
                 android:text="0 spots left" />
-
         </LinearLayout>
 
-        <!-- US9: who is attending -->
         <TextView
             android:id="@+id/tvAttendeesInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textSize="13sp"
-            android:textColor="#6B7280"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
             android:text="0 students attending" />
 
         <View
@@ -83,61 +95,55 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textSize="16sp"
+            android:lineSpacingExtra="4dp"
             android:text="Event Description goes here..." />
 
-        <TextView
-            android:id="@+id/tvDetailPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="16sp"
-            android:textColor="#388E3C"
-            android:text="Price: Free" />
-
-        <!-- US6: Upvote section -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/tvUpvoteCount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="♥  0 upvotes"
-                android:textSize="15sp"
-                android:textColor="#7C3AED" />
-
-            <Button
-                android:id="@+id/btnUpvote"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:text="Upvote"
-                android:textAllCaps="false"
-                android:backgroundTint="#7C3AED" />
-
-        </LinearLayout>
-
-        <!-- US8: Add to Calendar -->
-        <Button
-            android:id="@+id/btnAddToCalendar"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="12dp"
-            android:text="📅  Add to Calendar"
-            android:textAllCaps="false"
-            android:backgroundTint="#0EA5E9" />
-
-        <!-- US4: RSVP -->
         <Button
             android:id="@+id/btnRSVP"
             android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="@null"
+            android:background="@drawable/bg_main_gradient"
+            android:text="RSVP to Event"
+            android:textStyle="bold"
+            app:cornerRadius="16dp" />
+
+        <Button
+            android:id="@+id/btnCancelRSVP"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="RSVP to Event" />
+            android:layout_marginTop="8dp"
+            android:text="Cancel My RSVP"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+            <Button
+                android:id="@+id/btnUpvote"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Upvote"
+                app:strokeColor="@color/pink_600"
+                android:textColor="@color/pink_600" />
+            <Button
+                android:id="@+id/btnAddToCalendar"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Calendar"
+                app:strokeColor="@color/purple_600"
+                android:textColor="@color/purple_600" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

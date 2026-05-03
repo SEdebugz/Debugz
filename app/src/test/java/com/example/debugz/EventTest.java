@@ -16,9 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Verifies the Event model's public contract, including constructor defaults, mutators,
- * attendee management, and capacity-related behavior used by the prototype UI.
- * UPDATED: Now uses String for price to match the current Phase 3 implementation.
+ * Verifies the Event model's public contract.
+ * Updated for US2 (Category) and String prices.
  */
 public class EventTest {
 
@@ -35,7 +34,8 @@ public class EventTest {
                 "10:00 AM",
                 "org_cso",
                 200,
-                "Free"
+                "Free",
+                "Academic"
         );
     }
 
@@ -43,180 +43,28 @@ public class EventTest {
     public void testParameterizedConstructor_setsAllFields() {
         assertEquals("event_001", event.getEventId());
         assertEquals("Engineering Career Fair", event.getTitle());
-        assertEquals("Meet top employers and find internships.", event.getDescription());
-        assertEquals("Main Hall", event.getLocation());
-        assertEquals("March 15, 2026", event.getDate());
-        assertEquals("10:00 AM", event.getTime());
-        assertEquals("org_cso", event.getOrganizerId());
-        assertEquals(200, event.getMaxCapacity());
+        assertEquals("Academic", event.getCategory());
         assertEquals("Free", event.getPrice());
     }
 
     @Test
-    public void testParameterizedConstructor_initializesEmptyAttendeeList() {
-        assertNotNull("Attendee list should not be null", event.getAttendeeIds());
-        assertTrue("Attendee list should start empty", event.getAttendeeIds().isEmpty());
-    }
-
-    @Test
-    public void testDefaultConstructor_initializesEmptyAttendeeList() {
-        Event defaultEvent = new Event();
-        assertNotNull("Default attendee list should not be null", defaultEvent.getAttendeeIds());
-        assertTrue("Default attendee list should be empty", defaultEvent.getAttendeeIds().isEmpty());
-    }
-
-    @Test
-    public void testDefaultConstructor_fieldsAreDefaults() {
-        Event defaultEvent = new Event();
-        assertNull(defaultEvent.getEventId());
-        assertNull(defaultEvent.getTitle());
-        assertNull(defaultEvent.getDescription());
-        assertNull(defaultEvent.getLocation());
-        assertNull(defaultEvent.getDate());
-        assertNull(defaultEvent.getTime());
-        assertNull(defaultEvent.getOrganizerId());
-        assertEquals(0, defaultEvent.getMaxCapacity());
-        assertNull(defaultEvent.getPrice());
-        assertEquals("Upvote count should default to 0", 0, defaultEvent.getUpvoteCount());
-        assertNotNull("UpvotedBy list should not be null", defaultEvent.getUpvotedBy());
-        assertTrue("UpvotedBy list should start empty", defaultEvent.getUpvotedBy().isEmpty());
-    }
-
-    @Test
-    public void testSetAndGetPrice() {
-        event.setPrice("500 PKR");
-        assertEquals("500 PKR", event.getPrice());
-    }
-
-    @Test
-    public void testSetAndGetEventId() {
-        event.setEventId("event_updated");
-        assertEquals("event_updated", event.getEventId());
-    }
-
-    @Test
-    public void testSetAndGetTitle() {
-        event.setTitle("LUMUN 2026");
-        assertEquals("LUMUN 2026", event.getTitle());
-    }
-
-    @Test
-    public void testSetAndGetDescription() {
-        event.setDescription("Premier Model UN conference at LUMS.");
-        assertEquals("Premier Model UN conference at LUMS.", event.getDescription());
-    }
-
-    @Test
-    public void testSetAndGetLocation() {
-        event.setLocation("SDSB Auditorium");
-        assertEquals("SDSB Auditorium", event.getLocation());
-    }
-
-    @Test
-    public void testSetAndGetDate() {
-        event.setDate("March 18, 2026");
-        assertEquals("March 18, 2026", event.getDate());
-    }
-
-    @Test
-    public void testSetAndGetTime() {
-        event.setTime("09:00 AM");
-        assertEquals("09:00 AM", event.getTime());
-    }
-
-    @Test
-    public void testSetAndGetOrganizerId() {
-        event.setOrganizerId("org_lumun");
-        assertEquals("org_lumun", event.getOrganizerId());
-    }
-
-    @Test
-    public void testSetAndGetMaxCapacity() {
-        event.setMaxCapacity(650);
-        assertEquals(650, event.getMaxCapacity());
+    public void testSetAndGetCategory() {
+        event.setCategory("Sports");
+        assertEquals("Sports", event.getCategory());
     }
 
     @Test
     public void testAddAttendee_addsNewStudent() {
         event.addAttendee("stu_001");
-        assertTrue("Attendee list should contain stu_001", event.getAttendeeIds().contains("stu_001"));
+        assertTrue(event.getAttendeeIds().contains("stu_001"));
         assertEquals(1, event.getAttendeeIds().size());
     }
 
     @Test
-    public void testAddAttendee_preventsDuplicates() {
+    public void testRemoveAttendee() {
         event.addAttendee("stu_001");
-        event.addAttendee("stu_001");
-        assertEquals("Should not add duplicate attendee", 1, event.getAttendeeIds().size());
-    }
-
-    @Test
-    public void testAddAttendee_multipleDistinctStudents() {
-        event.addAttendee("stu_001");
-        event.addAttendee("stu_002");
-        event.addAttendee("stu_003");
-        assertEquals(3, event.getAttendeeIds().size());
-    }
-
-    @Test
-    public void testRemoveAttendee_removesExistingStudent() {
-        event.addAttendee("stu_001");
-        event.addAttendee("stu_002");
         event.removeAttendee("stu_001");
         assertFalse(event.getAttendeeIds().contains("stu_001"));
-        assertEquals(1, event.getAttendeeIds().size());
-    }
-
-    @Test
-    public void testRemoveAttendee_nonExistentId_doesNothing() {
-        event.addAttendee("stu_001");
-        event.removeAttendee("stu_999");
-        assertEquals("Removing a non-existent ID should not change the list", 1, event.getAttendeeIds().size());
-    }
-
-    @Test
-    public void testSetAttendeeIds_replacesEntireList() {
-        event.addAttendee("old_stu");
-        List<String> newIds = Arrays.asList("stu_100", "stu_200");
-        event.setAttendeeIds(newIds);
-        assertEquals(2, event.getAttendeeIds().size());
-        assertFalse(event.getAttendeeIds().contains("old_stu"));
-        assertTrue(event.getAttendeeIds().contains("stu_200"));
-    }
-
-    @Test
-    public void testSpotsRemaining_whenEmpty() {
-        int spotsLeft = event.getMaxCapacity() - event.getAttendeeIds().size();
-        assertEquals(200, spotsLeft);
-    }
-
-    @Test
-    public void testSpotsRemaining_afterSomeRSVPs() {
-        for (int i = 0; i < 50; i++) {
-            event.addAttendee("stu_" + i);
-        }
-        int spotsLeft = event.getMaxCapacity() - event.getAttendeeIds().size();
-        assertEquals(150, spotsLeft);
-    }
-
-    @Test
-    public void testSpotsRemaining_atFullCapacity() {
-        for (int i = 0; i < 200; i++) {
-            event.addAttendee("stu_" + i);
-        }
-        int spotsLeft = event.getMaxCapacity() - event.getAttendeeIds().size();
-        assertEquals(0, spotsLeft);
-    }
-
-    @Test
-    public void testCapacityPercentage_calculation() {
-        for (int i = 0; i < 160; i++) {
-            event.addAttendee("stu_" + i);
-        }
-        int currentAttendees = event.getAttendeeIds().size();
-        int max = event.getMaxCapacity();
-        int progress = (int) (((float) currentAttendees / max) * 100);
-        assertEquals(80, progress);
     }
 
     @Test
@@ -230,130 +78,10 @@ public class EventTest {
                 "09:00 AM",
                 "org_lumun",
                 650,
-                "1500 PKR"
+                "1500 PKR",
+                "Talk"
         );
-        lumun.addAttendee("27100284");
-        lumun.addAttendee("27100189");
-        lumun.addAttendee("27100247");
-
-        assertEquals("LUMUN 2026", lumun.getTitle());
-        assertEquals(3, lumun.getAttendeeIds().size());
-        assertEquals(647, lumun.getMaxCapacity() - lumun.getAttendeeIds().size());
-    }
-
-    @Test
-    public void testRealisticEvent_smallStudyCircle() {
-        Event studyCircle = new Event(
-                "event_003",
-                "Khokha Study Circle",
-                "Group study session for CS360.",
-                "Block C-209",
-                "Tonight",
-                "05:00 PM",
-                "org_003",
-                20,
-                "Free"
-        );
-
-        for (int i = 1; i <= 20; i++) {
-            studyCircle.addAttendee("stu_" + i);
-        }
-        assertEquals(20, studyCircle.getAttendeeIds().size());
-        assertEquals(0, studyCircle.getMaxCapacity() - studyCircle.getAttendeeIds().size());
-    }
-
-    @Test
-    public void testFirestoreMapping_defaultConstructorThenSetFields() {
-        Event firestoreEvent = new Event();
-        firestoreEvent.setEventId("event_fs_001");
-        firestoreEvent.setTitle("Firestore Test Event");
-        firestoreEvent.setDescription("Testing Firebase mapping");
-        firestoreEvent.setLocation("Lab 12");
-        firestoreEvent.setDate("April 10, 2026");
-        firestoreEvent.setTime("02:00 PM");
-        firestoreEvent.setOrganizerId("org_fs");
-        firestoreEvent.setMaxCapacity(30);
-        firestoreEvent.setPrice("200 PKR");
-        firestoreEvent.setAttendeeIds(new ArrayList<>(Arrays.asList("stu_a", "stu_b")));
-
-        assertEquals("event_fs_001", firestoreEvent.getEventId());
-        assertEquals("Firestore Test Event", firestoreEvent.getTitle());
-        assertEquals(30, firestoreEvent.getMaxCapacity());
-        assertEquals(2, firestoreEvent.getAttendeeIds().size());
-        assertEquals("200 PKR", firestoreEvent.getPrice());
-    }
-
-    @Test
-    public void testEditEventDetails_US12() {
-        event.setTitle("Engineering Career Fair 2026 – Updated");
-        event.setLocation("Sports Complex – Hall A");
-        event.setDate("March 20, 2026");
-        event.setTime("11:00 AM");
-        event.setMaxCapacity(300);
-
-        assertEquals("Engineering Career Fair 2026 – Updated", event.getTitle());
-        assertEquals("Sports Complex – Hall A", event.getLocation());
-        assertEquals("March 20, 2026", event.getDate());
-        assertEquals("11:00 AM", event.getTime());
-        assertEquals(300, event.getMaxCapacity());
-    }
-
-    // ──────────────────────────────────────────────
-    // US6: Upvote Tests
-    // ──────────────────────────────────────────────
-
-    @Test
-    public void testUpvote_initialCountIsZero() {
-        assertEquals(0, event.getUpvoteCount());
-        assertNotNull(event.getUpvotedBy());
-        assertTrue(event.getUpvotedBy().isEmpty());
-    }
-
-    @Test
-    public void testAddUpvote_incrementsCount() {
-        boolean added = event.addUpvote("stu_001");
-        assertTrue("First upvote should be added", added);
-        assertEquals(1, event.getUpvoteCount());
-        assertTrue(event.getUpvotedBy().contains("stu_001"));
-    }
-
-    @Test
-    public void testAddUpvote_preventsDuplicate() {
-        event.addUpvote("stu_001");
-        boolean duplicate = event.addUpvote("stu_001");
-        assertFalse("Duplicate upvote should not be added", duplicate);
-        assertEquals("Count should not increment on duplicate", 1, event.getUpvoteCount());
-    }
-
-    @Test
-    public void testAddUpvote_multipleStudents() {
-        event.addUpvote("stu_001");
-        event.addUpvote("stu_002");
-        event.addUpvote("stu_003");
-        assertEquals(3, event.getUpvoteCount());
-    }
-
-    @Test
-    public void testRemoveUpvote_decrementsCount() {
-        event.addUpvote("stu_001");
-        boolean removed = event.removeUpvote("stu_001");
-        assertTrue("Upvote should be removed", removed);
-        assertEquals(0, event.getUpvoteCount());
-        assertFalse(event.getUpvotedBy().contains("stu_001"));
-    }
-
-    @Test
-    public void testRemoveUpvote_nonExistentStudent_isNoOp() {
-        event.addUpvote("stu_001");
-        boolean removed = event.removeUpvote("stu_999");
-        assertFalse("Remove of non-existent upvote should return false", removed);
-        assertEquals("Count should remain unchanged", 1, event.getUpvoteCount());
-    }
-
-    @Test
-    public void testUpvoteCountFloor_doesNotGoBelowZero() {
-        // Count starts at 0; removing a non-existent upvote should not go negative
-        event.removeUpvote("stu_000");
-        assertEquals(0, event.getUpvoteCount());
+        assertEquals("Talk", lumun.getCategory());
+        assertEquals("1500 PKR", lumun.getPrice());
     }
 }

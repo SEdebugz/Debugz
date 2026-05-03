@@ -17,14 +17,15 @@ import com.example.debugz.R;
 import com.example.debugz.UserSession;
 import com.example.debugz.controller.EventController;
 import com.example.debugz.models.Event;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Hosts the main discovery feed where students browse and search events (US1, US2).
- * Events are sorted by upvote count so the most anticipated ones surface first (US6).
- * An empty-state message is shown when no events exist yet.
+ * Hosts the main discovery feed where students browse and search events.
+ * Updated to support Category filtering (US2) and friends navigation.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -33,8 +34,11 @@ public class MainActivity extends AppCompatActivity {
     private final List<Event> allEvents      = new ArrayList<>();
     private final List<Event> filteredEvents = new ArrayList<>();
     private EditText etSearch;
+    private ChipGroup cgCategories;
     private TextView tvEmpty;
     private EventController eventController;
+
+    private String currentCategory = "All";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
         eventController = new EventController();
 
-        rvEvents = findViewById(R.id.rvEvents);
-        etSearch = findViewById(R.id.etSearch);
-        tvEmpty  = findViewById(R.id.tvMainEmpty);
+        rvEvents      = findViewById(R.id.rvEvents);
+        etSearch      = findViewById(R.id.etSearch);
+        cgCategories  = findViewById(R.id.cgCategories);
+        tvEmpty       = findViewById(R.id.tvMainEmpty);
 
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         adapter = new EventAdapter(filteredEvents, event -> {
@@ -58,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("description", event.getDescription());
             intent.putExtra("capacity",    event.getMaxCapacity());
             intent.putExtra("price",       event.getPrice());
+            intent.putExtra("category",    event.getCategory());
             startActivity(intent);
         });
         rvEvents.setAdapter(adapter);
@@ -65,17 +71,15 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnMyEvents).setOnClickListener(v ->
                 startActivity(new Intent(this, MyEventsActivity.class)));
 
-        findViewById(R.id.btnAddFriends).setOnClickListener(v -> {
-            startActivity(new Intent(this, AddFriendActivity.class));
-        });
+        findViewById(R.id.btnAddFriends).setOnClickListener(v ->
+                startActivity(new Intent(this, AddFriendActivity.class)));
 
-        findViewById(R.id.btnFriendsEvents).setOnClickListener(v -> {
-            startActivity(new Intent(this, FriendsEventsActivity.class));
-        });
+        findViewById(R.id.btnFriendsEvents).setOnClickListener(v ->
+                startActivity(new Intent(this, FriendsEventsActivity.class)));
 
         findViewById(R.id.btnLogout).setOnClickListener(v -> logout());
 
-        setupSearch();
+        setupSearchAndFilters();
         loadEvents();
     }
 
@@ -98,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 allEvents.addAll(events);
                 tvEmpty.setVisibility(View.GONE);
                 rvEvents.setVisibility(View.VISIBLE);
-                filter(etSearch.getText().toString());
+                applyFilters();
             }
 
             @Override
@@ -109,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDatabaseEmpty() {
-                // No events yet — organizers will create them through the Organizer Dashboard
                 allEvents.clear();
                 filteredEvents.clear();
                 adapter.notifyDataSetChanged();
@@ -119,25 +122,45 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // ── Search (US2) ───────────────────────────────────────────────────────
+    // ── Search and category filter (US2) ───────────────────────────────────
 
-    private void setupSearch() {
+    private void setupSearchAndFilters() {
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filter(s.toString());
+                applyFilters();
             }
             @Override public void afterTextChanged(Editable s) {}
         });
+
+        cgCategories.setOnCheckedChangeListener((group, checkedId) -> {
+            Chip chip = findViewById(checkedId);
+            currentCategory = (chip != null) ? chip.getText().toString() : "All";
+            applyFilters();
+        });
     }
 
-    private void filter(String query) {
+    private void applyFilters() {
+        String query = etSearch.getText().toString().toLowerCase().trim();
         filteredEvents.clear();
-        filteredEvents.addAll(eventController.searchEvents(query, allEvents));
+
+        for (Event event : allEvents) {
+            boolean matchesSearch = query.isEmpty()
+                    || event.getTitle().toLowerCase().contains(query)
+                    || event.getDescription().toLowerCase().contains(query);
+
+            boolean matchesCategory = currentCategory.equals("All")
+                    || currentCategory.equalsIgnoreCase(event.getCategory());
+
+            if (matchesSearch && matchesCategory) {
+                filteredEvents.add(event);
+            }
+        }
+
         adapter.notifyDataSetChanged();
 
         if (filteredEvents.isEmpty() && !allEvents.isEmpty()) {
-            tvEmpty.setText("No events match your search.");
+            tvEmpty.setText("No events match your filters.");
             tvEmpty.setVisibility(View.VISIBLE);
         } else if (filteredEvents.isEmpty()) {
             tvEmpty.setVisibility(View.VISIBLE);

@@ -16,14 +16,14 @@ import com.example.debugz.models.Account;
 import com.google.android.material.textfield.TextInputEditText;
 
 /**
- * Manual signup screen for students and organizers.
- * Signups are stored in Firestore with PENDING status and require admin approval
- * before the account can log in from the landing page.
+ * ROLE: Controller Pattern.
+ * PURPOSE: Handles user registration for Students, Organizers, and new Admins.
+ * All signups are PENDING until an existing admin approves them.
  */
 public class SignupActivity extends AppCompatActivity {
 
     private TextInputEditText etName, etEmail, etId, etPassword, etConfirmPassword;
-    private RadioButton rbStudent, rbOrganizer;
+    private RadioButton rbStudent, rbOrganizer, rbAdmin;
     private Button btnSubmit;
     private AccountController accountController;
 
@@ -41,6 +41,7 @@ public class SignupActivity extends AppCompatActivity {
         etConfirmPassword = findViewById(R.id.etSignupConfirmPassword);
         rbStudent = findViewById(R.id.rbSignupStudent);
         rbOrganizer = findViewById(R.id.rbSignupOrganizer);
+        rbAdmin = findViewById(R.id.rbSignupAdmin);
         btnSubmit = findViewById(R.id.btnSubmitSignup);
         TextView tvBack = findViewById(R.id.tvBackToLogin);
 
@@ -54,7 +55,10 @@ public class SignupActivity extends AppCompatActivity {
         String accountId = getInput(etId);
         String password = getInput(etPassword);
         String confirmPassword = getInput(etConfirmPassword);
-        String role = rbOrganizer.isChecked() ? UserSession.ROLE_ORGANIZER : UserSession.ROLE_STUDENT;
+        
+        String role = UserSession.ROLE_STUDENT;
+        if (rbOrganizer.isChecked()) role = UserSession.ROLE_ORGANIZER;
+        else if (rbAdmin.isChecked()) role = UserSession.ROLE_ADMIN;
 
         if (TextUtils.isEmpty(name)) {
             etName.setError("Name is required");
@@ -66,10 +70,6 @@ public class SignupActivity extends AppCompatActivity {
         }
         if (TextUtils.isEmpty(password)) {
             etPassword.setError("Password is required");
-            return;
-        }
-        if (password.length() < 4) {
-            etPassword.setError("Use at least 4 characters");
             return;
         }
         if (!password.equals(confirmPassword)) {
@@ -94,7 +94,7 @@ public class SignupActivity extends AppCompatActivity {
             public void onSuccess() {
                 btnSubmit.setEnabled(true);
                 Toast.makeText(SignupActivity.this,
-                        "Signup submitted! Wait for admin approval before logging in.",
+                        "Signup submitted! Wait for admin approval.",
                         Toast.LENGTH_LONG).show();
                 finish();
             }
@@ -112,4 +112,3 @@ public class SignupActivity extends AppCompatActivity {
         return text != null ? text.toString().trim() : "";
     }
 }
-
