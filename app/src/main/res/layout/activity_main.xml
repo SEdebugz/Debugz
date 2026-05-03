@@ -9,12 +9,15 @@
 
     <TextView
         android:id="@+id/tvDiscover"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="Discover Events"
-        android:textSize="24sp"
+        android:textSize="22sp"
         android:textStyle="bold"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@id/btnMyEvents"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,6 +28,7 @@
         android:layout_marginEnd="8dp"
         android:text="My Events"
         android:textAllCaps="false"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@id/tvDiscover"
         app:layout_constraintEnd_toStartOf="@id/btnLogout"
         app:layout_constraintTop_toTopOf="@id/tvDiscover" />
@@ -36,6 +40,7 @@
         android:layout_marginEnd="16dp"
         android:text="Logout"
         android:textAllCaps="false"
+        android:textSize="12sp"
         android:backgroundTint="#6B7280"
         app:layout_constraintBottom_toBottomOf="@id/tvDiscover"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,12 +51,74 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:hint="Search events..."
+        android:hint="Search title or description..."
         android:padding="12dp"
         android:background="@android:drawable/editbox_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDiscover" />
+
+    <HorizontalScrollView
+        android:id="@+id/hsvCategories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingHorizontal="16dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/etSearch">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/cgCategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            app:selectionRequired="false">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAll"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All"
+                android:checked="true" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSports"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sports" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTalk"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Talk" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPerformance"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Performance" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipClub"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Club" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAcademic"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Academic" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
 
     <TextView
         android:id="@+id/tvMainEmpty"
@@ -59,13 +126,13 @@
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
         android:gravity="center"
-        android:text="No events yet.\nOrganizers will post events here soon!"
+        android:text="No events matching your filters."
         android:textColor="#6B7280"
         android:textSize="15sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etSearch" />
+        app:layout_constraintTop_toBottomOf="@id/hsvCategories" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvEvents"
@@ -75,6 +142,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etSearch" />
+        app:layout_constraintTop_toBottomOf="@id/hsvCategories" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,12 +17,9 @@ import com.example.debugz.models.Account;
 import com.google.android.material.textfield.TextInputEditText;
 
 /**
- * Shared login entry point.
- *
- * Better UX choice implemented here:
- * - Students and organizers use the same ID/password form and pick their role.
- * - Signup is moved to its own page because signup fields differ from login fields.
- * - Admin stays on the landing page but uses a dedicated hardcoded login path.
+ * Shared login entry point for all roles.
+ * Supports hardcoded master admin login and Firestore-based login for approved users.
+ * ROLE: View / Controller.
  */
 public class LandingActivity extends AppCompatActivity {
 
@@ -63,12 +60,8 @@ public class LandingActivity extends AppCompatActivity {
         String accountId = getInput(etLoginId);
         String password = getInput(etLoginPassword);
 
-        if (TextUtils.isEmpty(accountId)) {
-            etLoginId.setError("ID is required");
-            return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            etLoginPassword.setError("Password is required");
+        if (TextUtils.isEmpty(accountId) || TextUtils.isEmpty(password)) {
+            Toast.makeText(this, "ID and Password required", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -79,8 +72,6 @@ public class LandingActivity extends AppCompatActivity {
                 setButtonsEnabled(true);
                 UserSession.getInstance(LandingActivity.this)
                         .login(account.getAccountId(), account.getName(), account.getRole());
-                Toast.makeText(LandingActivity.this,
-                        "Welcome, " + account.getName() + "!", Toast.LENGTH_SHORT).show();
                 navigateByRole(account.getRole());
             }
 
@@ -96,22 +87,35 @@ public class LandingActivity extends AppCompatActivity {
         String username = getInput(etLoginId);
         String password = getInput(etLoginPassword);
 
-        if (TextUtils.isEmpty(username)) {
-            etLoginId.setError("Admin username is required");
-            return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            etLoginPassword.setError("Admin password is required");
+        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+            Toast.makeText(this, "Admin ID and Password required", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!UserSession.ADMIN_USERNAME.equals(username) || !UserSession.ADMIN_PASSWORD.equals(password)) {
-            Toast.makeText(this, "Incorrect admin credentials.", Toast.LENGTH_SHORT).show();
+        // 1. Check Master Admin (Hardcoded)
+        if (UserSession.ADMIN_USERNAME.equals(username) && UserSession.ADMIN_PASSWORD.equals(password)) {
+            UserSession.getInstance(this).login("admin", "Master Admin", UserSession.ROLE_ADMIN);
+            navigateByRole(UserSession.ROLE_ADMIN);
             return;
         }
 
-        UserSession.getInstance(this).login("admin", UserSession.ADMIN_USERNAME, UserSession.ROLE_ADMIN);
-        navigateByRole(UserSession.ROLE_ADMIN);
+        // 2. Check Firestore for Approved Custom Admins
+        setButtonsEnabled(false);
+        accountController.login(username, password, UserSession.ROLE_ADMIN, new AccountController.OnLoginListener() {
+            @Override
+            public void onSuccess(Account account) {
+                setButtonsEnabled(true);
+                UserSession.getInstance(LandingActivity.this)
+                        .login(account.getAccountId(), account.getName(), account.getRole());
+                navigateByRole(UserSession.ROLE_ADMIN);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                setButtonsEnabled(true);
+                Toast.makeText(LandingActivity.this, "Admin Login Failed: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void navigateByRole(String role) {
@@ -138,7 +142,6 @@ public class LandingActivity extends AppCompatActivity {
     }
 
     private String getInput(TextInputEditText et) {
-        CharSequence text = et.getText();
-        return text != null ? text.toString().trim() : "";
+        return et.getText() != null ? et.getText().toString().trim() : "";
     }
 }

@@ -20,6 +20,7 @@ public class Event {
     private String organizerId;
     private int maxCapacity;
     private String price;
+    private String category; // Added for US2
     private List<String> attendeeIds;
     /** Number of upvotes this event has received (US6). */
     private int upvoteCount;
@@ -46,8 +47,9 @@ public class Event {
      * @param organizerId The ID of the organizer who created it.
      * @param maxCapacity The maximum number of attendees allowed.
      * @param price       The display price of the event (e.g., "Free", "1000 PKR").
+     * @param category    The category of the event (e.g., "Sports", "Talk").
      */
-    public Event(String eventId, String title, String description, String location, String date, String time, String organizerId, int maxCapacity, String price) {
+    public Event(String eventId, String title, String description, String location, String date, String time, String organizerId, int maxCapacity, String price, String category) {
         this.eventId = eventId;
         this.title = title;
         this.description = description;
@@ -57,6 +59,7 @@ public class Event {
         this.organizerId = organizerId;
         this.maxCapacity = maxCapacity;
         this.price = price;
+        this.category = category;
         this.attendeeIds = new ArrayList<>();
         this.upvoteCount = 0;
         this.upvotedBy = new ArrayList<>();
@@ -80,6 +83,8 @@ public class Event {
     public void setMaxCapacity(int maxCapacity) { this.maxCapacity = maxCapacity; }
     public String getPrice() { return price; }
     public void setPrice(String price) { this.price = price; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
     public List<String> getAttendeeIds() {
         return attendeeIds != null ? attendeeIds : new ArrayList<>();
@@ -111,12 +116,6 @@ public class Event {
         this.upvotedBy = upvotedBy != null ? upvotedBy : new ArrayList<>();
     }
 
-    /**
-     * Adds a student upvote if not already present and increments the count.
-     *
-     * @param studentId the student who upvoted.
-     * @return true if the upvote was added; false if already upvoted.
-     */
     public boolean addUpvote(String studentId) {
         if (this.upvotedBy == null) this.upvotedBy = new ArrayList<>();
         if (this.upvotedBy.contains(studentId)) return false;
@@ -125,12 +124,6 @@ public class Event {
         return true;
     }
 
-    /**
-     * Removes an upvote from a student and decrements the count.
-     *
-     * @param studentId the student removing their upvote.
-     * @return true if the upvote was removed; false if student hadn't upvoted.
-     */
     public boolean removeUpvote(String studentId) {
         if (this.upvotedBy == null || !this.upvotedBy.contains(studentId)) return false;
         this.upvotedBy.remove(studentId);

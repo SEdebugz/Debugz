@@ -1,0 +1,46 @@
+[
+  {
+    "eventId": "lums_fest_2026",
+    "title": "LUMS Music Festival",
+    "description": "Annual concert featuring local bands and student performances.",
+    "location": "Central Courtyard",
+    "date": "April 25, 2026",
+    "time": "7:00 PM",
+    "price": "1500 PKR",
+    "maxCapacity": 1000,
+    "organizerId": "lums_music_soc"
+  },
+  {
+    "eventId": "career_fair_2026",
+    "title": "Engineering Career Fair",
+    "description": "Meet top tech recruiters from across Pakistan.",
+    "location": "Pepsico Dining Hall (PDF)",
+    "date": "May 10, 2026",
+    "time": "10:00 AM",
+    "price": "Free",
+    "maxCapacity": 500,
+    "organizerId": "cso_lums"
+  },
+  {
+    "eventId": "sdsb_tech_talk",
+    "title": "AI in Business Seminar",
+    "description": "Keynote by industry leaders on the impact of AI.",
+    "location": "SDSB Auditorium",
+    "date": "May 15, 2026",
+    "time": "3:00 PM",
+    "price": "Free",
+    "maxCapacity": 200,
+    "organizerId": "sdsb_council"
+  },
+  {
+    "eventId": "acfc_sports_gala",
+    "title": "Inter-Batch Cricket Finals",
+    "description": "Final match of the batch tournament.",
+    "location": "ACF Ground",
+    "date": "May 20, 2026",
+    "time": "5:00 PM",
+    "price": "Free",
+    "maxCapacity": 300,
+    "organizerId": "slas_sports"
+  }
+]

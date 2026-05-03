@@ -65,16 +65,21 @@ public class EventController {
 
     /**
      * Writes a fixed set of demo events to Firestore for prototype use.
-     * UPDATED: Now uses String for price to match the Event model.
+     * UPDATED: Includes categories for US2.
      *
      * @param onSuccess code to run after the final seed write succeeds.
-     * @deprecated No longer called by the app; events are created by real organizers.
-     *             Kept only so existing references compile during migration.
      */
-    @Deprecated
     public void seedDemoData(Runnable onSuccess) {
-        // Seeding removed — organizers create events through the Organizer Dashboard.
-        if (onSuccess != null) onSuccess.run();
+        Event e1 = new Event("event_001", "Engineering Career Fair", "Meet top employers and find internships.", "Main Hall", "March 15, 2026", "10:00 AM", "org1", 200, "Free", "Academic");
+        Event e2 = new Event("event_002", "LUMUN 2026", "Premier Model UN conference.", "SDSB Auditorium", "March 18, 2026", "09:00 AM", "org2", 650, "1500 PKR", "Talk");
+        Event e3 = new Event("event_003", "Khokha Study Circle", "Group study session for CS360.", "Block C-209", "Tonight", "05:00 PM", "org3", 20, "Free", "Academic");
+
+        db.collection("events").document(e1.getEventId()).set(e1);
+        db.collection("events").document(e2.getEventId()).set(e2);
+        db.collection("events").document(e3.getEventId()).set(e3)
+                .addOnSuccessListener(aVoid -> {
+                    if (onSuccess != null) onSuccess.run();
+                });
     }
 
     /**
