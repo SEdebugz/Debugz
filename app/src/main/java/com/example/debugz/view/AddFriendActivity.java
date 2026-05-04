@@ -93,6 +93,7 @@ public class AddFriendActivity extends AppCompatActivity {
                         allAccounts.clear();
                         for (QueryDocumentSnapshot doc : querySnap) {
                             Account account = doc.toObject(Account.class);
+                            account.setAccountId(doc.getId());
                             if (!doc.getId().equals(currentUserId)) {
                                 allAccounts.add(account);
                             }

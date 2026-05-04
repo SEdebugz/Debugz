@@ -182,6 +182,17 @@ public class EventDetailActivity extends AppCompatActivity {
         }).addOnSuccessListener(aVoid -> {
             Toast.makeText(this, "RSVP Successful!", Toast.LENGTH_SHORT).show();
             NotificationHelper.postRsvpConfirmation(this, title);
+            NotificationModel n = new NotificationModel(
+                    null,
+                    session.getUserId(),
+                    "RSVP Confirmed!",
+                    "You're registered for: " + title,
+                    "RSVP_CONFIRMED",
+                    eventId,
+                    System.currentTimeMillis(),
+                    false
+            );
+            notificationController.createNotification(n, null);
             refreshEventData();
         }).addOnFailureListener(e -> Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }

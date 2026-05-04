@@ -1,5 +1,6 @@
 package com.example.debugz;
 
+import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -39,6 +40,8 @@ public class AccountTest {
         assertEquals("STUDENT", account.getRole());
         assertEquals(Account.STATUS_PENDING, account.getStatus());
         assertEquals(1712500000000L, account.getCreatedAt());
+        assertNotNull(account.getFriendIds());
+        assertTrue(account.getFriendIds().isEmpty());
     }
 
     @Test
@@ -51,6 +54,15 @@ public class AccountTest {
         assertNull(empty.getRole());
         assertNull(empty.getStatus());
         assertEquals(0L, empty.getCreatedAt());
+    }
+
+    @Test
+    public void testFriendIds_initializedEmpty() {
+        Account a = new Account();
+        assertNotNull(a.getFriendIds());
+        assertTrue(a.getFriendIds().isEmpty());
+        assertNotNull(a.getFriendRequests());
+        assertTrue(a.getFriendRequests().isEmpty());
     }
 
     @Test

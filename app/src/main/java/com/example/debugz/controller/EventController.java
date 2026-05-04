@@ -77,6 +77,10 @@ public class EventController {
     public void fetchEventsByOrganizer(String organizerId, OnEventsFetchedListener listener) {
         db.collection("events").whereEqualTo("organizerId", organizerId).get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        listener.onDatabaseEmpty();
+                        return;
+                    }
                     List<Event> events = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         Event event = doc.toObject(Event.class);
