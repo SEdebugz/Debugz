@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,8 +40,8 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Shows full event details and handles RSVP, upvote toggle, and reminders.
  * ROLE: View (Activity).
+ * PURPOSE: Shows full event details and handles RSVP, upvote toggle, and reminders.
  */
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -51,13 +50,11 @@ public class EventDetailActivity extends AppCompatActivity {
     private EventController eventController;
     private NotificationController notificationController;
 
-    private String eventId, title, date, time, location, description, price, category;
-    private TextView tvTitle, tvDescription, tvCapacity, tvSpotsLeft, tvUpvoteCount;
+    private String eventId, title, date, time, location, description, price;
+    private TextView tvTitle, tvDescription, tvCapacity, tvSpotsLeft, tvUpvoteSummary;
     private Chip chipDate, chipTime, chipLocation, chipPrice;
     private LinearProgressIndicator pbCapacity;
-    private Button btnRSVP, btnCancelRSVP, btnCalendar;
-    private View btnUpvote;
-    private ImageView ivUpvoteHeart;
+    private Button btnRSVP, btnCancelRSVP, btnCalendar, btnUpvote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +66,7 @@ public class EventDetailActivity extends AppCompatActivity {
         eventController = new EventController();
         notificationController = new NotificationController();
 
+        // Extract Intent extras
         eventId = getIntent().getStringExtra("eventId");
         title = getIntent().getStringExtra("title");
         date = getIntent().getStringExtra("date");
@@ -76,30 +74,45 @@ public class EventDetailActivity extends AppCompatActivity {
         location = getIntent().getStringExtra("location");
         description = getIntent().getStringExtra("description");
         price = getIntent().getStringExtra("price");
-        category = getIntent().getStringExtra("category");
 
+        setupToolbar();
+        initializeViews();
+        
+        // Set initial static data
+        tvTitle.setText(title);
+        tvDescription.setText(description);
+        chipDate.setText(date != null ? date : "Date TBD");
+        chipTime.setText(time != null ? time : "Time TBD");
+        chipLocation.setText(location != null ? location : "Location TBD");
+        chipPrice.setText(price != null ? price : "Free");
+
+        // Set listeners
+        btnRSVP.setOnClickListener(v -> handleRSVP());
+        btnCancelRSVP.setOnClickListener(v -> handleCancelRSVP());
+        btnCalendar.setOnClickListener(v -> addToCalendar());
+        btnUpvote.setOnClickListener(v -> toggleUpvote());
+
+        refreshEventData();
+    }
+
+    private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.detailToolbar);
         setSupportActionBar(toolbar);
-        
-        // FIX: Disable the default CollapsingToolbar title to prevent overlap with the event title
         CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsingToolbar);
-        if (collapsingToolbar != null) {
-            collapsingToolbar.setTitleEnabled(false);
-            collapsingToolbar.setTitle("");
-        }
-        
+        if (collapsingToolbar != null) collapsingToolbar.setTitleEnabled(false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false); // Definitely hide Activity title
-            getSupportActionBar().setTitle(""); 
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         toolbar.setNavigationOnClickListener(v -> finish());
+    }
 
+    private void initializeViews() {
         tvTitle = findViewById(R.id.tvDetailTitle);
         tvDescription = findViewById(R.id.tvDetailDescription);
         tvCapacity = findViewById(R.id.tvCapacityInfo);
         tvSpotsLeft = findViewById(R.id.tvSpotsLeft);
-        tvUpvoteCount = findViewById(R.id.tvUpvoteCount);
+        tvUpvoteSummary = findViewById(R.id.tvUpvoteCountDisplay);
         pbCapacity = findViewById(R.id.pbCapacity);
         
         chipDate = findViewById(R.id.chipDetailDate);
@@ -111,24 +124,10 @@ public class EventDetailActivity extends AppCompatActivity {
         btnCancelRSVP = findViewById(R.id.btnCancelRSVP);
         btnCalendar = findViewById(R.id.btnAddToCalendar);
         btnUpvote = findViewById(R.id.btnUpvote);
-        ivUpvoteHeart = findViewById(R.id.ivUpvoteHeart);
-
-        tvTitle.setText(title);
-        tvDescription.setText(description);
-        chipDate.setText(date);
-        chipTime.setText(time);
-        chipLocation.setText(location);
-        chipPrice.setText(price != null ? price : "Free");
-
-        btnRSVP.setOnClickListener(v -> handleRSVP());
-        btnCancelRSVP.setOnClickListener(v -> handleCancelRSVP());
-        btnCalendar.setOnClickListener(v -> addToCalendar());
-        btnUpvote.setOnClickListener(v -> toggleUpvote());
-
-        refreshEventData();
     }
 
     private void refreshEventData() {
+        if (eventId == null) return;
         db.collection("events").document(eventId).get().addOnSuccessListener(snapshot -> {
             Event event = snapshot.toObject(Event.class);
             if (event != null) updateUI(event);
@@ -140,23 +139,19 @@ public class EventDetailActivity extends AppCompatActivity {
         int max = event.getMaxCapacity();
         tvCapacity.setText(current + " / " + max);
         
-        int left = max - current;
+        int left = Math.max(0, max - current);
         tvSpotsLeft.setText(left + " spots left");
         
         int percent = (max > 0) ? (int) (((float) current / max) * 100) : 0;
         pbCapacity.setProgress(percent);
 
-        int color = Color.parseColor("#27AE60"); // Green
-        if (left <= (max * 0.1)) color = Color.parseColor("#E74C3C"); // Red
-        else if (left <= (max * 0.2)) color = Color.parseColor("#F39C12"); // Amber
-        
-        tvSpotsLeft.setTextColor(color);
-        pbCapacity.setIndicatorColor(color);
-
-        tvUpvoteCount.setText(String.valueOf(event.getUpvoteCount()));
+        // Update Upvote state
+        tvUpvoteSummary.setText(event.getUpvoteCount() + " people have upvoted this event");
         boolean isUpvoted = event.getUpvotedBy().contains(session.getUserId());
-        ivUpvoteHeart.setColorFilter(isUpvoted ? Color.parseColor("#E74C3C") : Color.GRAY);
+        btnUpvote.setText(isUpvoted ? "UPVOTED" : "UPVOTE");
+        btnUpvote.setAlpha(isUpvoted ? 1.0f : 0.7f);
 
+        // Update RSVP state
         boolean alreadyRsvpd = event.getAttendeeIds().contains(session.getUserId());
         btnRSVP.setVisibility(alreadyRsvpd ? View.GONE : View.VISIBLE);
         btnCancelRSVP.setVisibility(alreadyRsvpd ? View.VISIBLE : View.GONE);
@@ -169,7 +164,6 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private void handleRSVP() {
         String studentId = session.getUserId();
-        String studentName = session.getUserName();
         DocumentReference eventRef = db.collection("events").document(eventId);
 
         db.runTransaction(transaction -> {
@@ -184,58 +178,12 @@ public class EventDetailActivity extends AppCompatActivity {
             Registration reg = new Registration(regId, studentId, eventId, "Confirmed", System.currentTimeMillis());
             transaction.set(db.collection("registrations").document(regId), reg);
             
-            return event;
-        }).addOnSuccessListener(event -> {
+            return null;
+        }).addOnSuccessListener(aVoid -> {
             Toast.makeText(this, "RSVP Successful!", Toast.LENGTH_SHORT).show();
-            triggerRsvpNotificationsBatch(event, studentId, studentName);
-            scheduleReminder(event);
+            NotificationHelper.postRsvpConfirmation(this, title);
             refreshEventData();
         }).addOnFailureListener(e -> Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
-
-    /** Optimized: send all notifications in a single batch to stop UI lag. */
-    private void triggerRsvpNotificationsBatch(Event event, String studentId, String studentName) {
-        List<NotificationModel> batch = new ArrayList<>();
-
-        // 1. My RSVP
-        batch.add(new NotificationModel(null, studentId, "RSVP Confirmed 🎉", 
-                "You're going to " + event.getTitle() + "!", "RSVP_CONFIRMED", eventId, System.currentTimeMillis(), false));
-        NotificationHelper.postRsvpConfirmation(this, event.getTitle());
-
-        // 2. Notify friends (only those who are actual mutual friends)
-        db.collection("accounts").whereArrayContains("friendIds", studentId).get().addOnSuccessListener(snapshots -> {
-            for (QueryDocumentSnapshot doc : snapshots) {
-                batch.add(new NotificationModel(null, doc.getId(), "Friend Activity", 
-                        studentName + " is going to " + event.getTitle() + "!", "FRIEND_RSVP", eventId, System.currentTimeMillis(), false));
-            }
-
-            if (event.getAttendeeIds().size() >= (event.getMaxCapacity() * 0.8)) {
-                for (String upvoterId : event.getUpvotedBy()) {
-                    batch.add(new NotificationModel(null, upvoterId, "Almost Full! ⚠️", 
-                            event.getTitle() + " is nearly at capacity. RSVP now!", "CAPACITY_LOW", eventId, System.currentTimeMillis(), false));
-                }
-            }
-            
-            notificationController.createNotificationsBatch(batch);
-        });
-    }
-
-    private void scheduleReminder(Event event) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MMMM d, yyyy h:mm a", Locale.US);
-            Date eventDate = sdf.parse(event.getDate() + " " + event.getTime());
-            if (eventDate == null) return;
-
-            long delay = eventDate.getTime() - System.currentTimeMillis() - TimeUnit.HOURS.toMillis(24);
-            if (delay > 0) {
-                Data data = new Data.Builder().putString(ReminderWorker.KEY_EVENT_TITLE, event.getTitle()).build();
-                OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(ReminderWorker.class)
-                        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                        .setInputData(data)
-                        .build();
-                WorkManager.getInstance(this).enqueue(request);
-            }
-        } catch (Exception ignored) {}
     }
 
     private void handleCancelRSVP() {
@@ -269,8 +217,7 @@ public class EventDetailActivity extends AppCompatActivity {
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .putExtra(CalendarContract.Events.TITLE, title)
                 .putExtra(CalendarContract.Events.EVENT_LOCATION, location)
-                .putExtra(CalendarContract.Events.DESCRIPTION, description)
-                .putExtra(CalendarContract.Events.ALL_DAY, false);
+                .putExtra(CalendarContract.Events.DESCRIPTION, description);
         startActivity(intent);
     }
 }
