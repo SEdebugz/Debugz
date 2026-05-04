@@ -508,3 +508,66 @@ FriendsEventsActivity (loads current user's friendIds → queries registrations 
 
 EventDetailActivity (full event detail; student can RSVP, upvote, or add to calendar)  
 [US3, US4, US5, US6, US8]d has RSVP'd to.
+
+---
+
+### Storyboard 14 – New User Signup and Admin Approval
+
+LandingActivity (student taps "New here? Create an Account")
+↓
+
+SignupActivity (name, email, ID, password, role radio buttons: Student / Organizer / Admin)
+↓ Student fills form, taps "Submit for Approval" → AccountController.submitSignup() checks for duplicate ID, writes account with status PENDING
+
+SignupActivity ("Signup submitted! Wait for admin approval." Toast; activity finishes)
+↓ Admin logs in via LandingActivity
+
+AdminDashboardActivity (PENDING APPROVALS section lists new account with name, role badge, ID + email)
+↓ Admin taps "Approve" → AccountController.updateStatus() sets status = APPROVED; row removed from list
+
+LandingActivity (student can now log in successfully)
+[US1]
+
+---
+
+### Storyboard 15 – Organizer Edits an Existing Event
+
+OrganizerDashboardActivity (event list loaded via fetchEventsByOrganizer())
+[US12]
+↓ Organizer taps "Edit" on an event row → Intent passes all existing fields as extras
+
+EditEventActivity (form pre-filled with existing title, description, location, date, time, capacity, price, category; header reads "Edit Event")
+[US12, US13]
+↓ Organizer updates fields, taps "Save Changes" → EventController.updateEvent() overwrites Firestore document; triggerUpdateNotifications() writes EVENT_UPDATED notification for every student in attendeeIds
+
+OrganizerDashboardActivity (onResume reloads events; updated details reflected in list)
+[US12]
+
+---
+
+### Storyboard 16 – Student Cancels an RSVP
+
+MainActivity (student taps a previously RSVP'd event card)
+↓
+
+EventDetailActivity (refreshEventData() detects studentId in attendeeIds; btnRSVP hidden, btnCancelRSVP visible)
+[US4]
+↓ Student taps "CANCEL RSVP" → handleCancelRSVP() opens Firestore transaction: removes studentId from attendeeIds, deletes registrations/{eventId}_{studentId}
+
+EventDetailActivity (transaction succeeds; btnRSVP visible again, capacity bar updates, "RSVP Cancelled" Toast shown)
+[US4, US5]
+
+---
+
+### Storyboard 17 – Admin Seeds Demo Data and Moderates Events
+
+AdminDashboardActivity (total events count = 0; tvAdminEmpty visible)
+[US15]
+↓ Admin taps "Seed Demo Events" → EventController.seedDemoData() batch-writes 6 pre-built events with status APPROVED
+
+AdminDashboardActivity (ALL EVENTS section populates with 6 events; counts update)
+[US15]
+↓ Admin taps "Reject" on a PENDING organizer event → EventController.updateEvent() sets status = REJECTED; event disappears from student MainActivity feed
+
+AdminDashboardActivity (admin taps "Delete" on any event → confirmation dialog → EventController.deleteEvent() removes event doc and batch-deletes all matching registrations)
+[US15]
