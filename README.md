@@ -479,141 +479,113 @@ RSVP Confirmed (removed from waitlist)
 
 ### Storyboard 11 – Student Event Discovery, RSVP, and Notification
 
-LandingActivity (roll number + password, tap "Student" button)  
-↓ AccountController verifies APPROVED status, UserSession caches session  
+Tap "Student" button
+↓
 
-MainActivity (approved events sorted by upvote count, search bar + category chips)  
+Approved events sorted by upvote count, search bar + category chips
 [US1, US2, US6]  
-↓ Student types keyword → applyFilters() updates RecyclerView in real time  
+↓ 
+Student types keyword  
 
-MainActivity (filtered event cards with capacity bar and spots-left colour coding)  
+Filtered event cards with capacity bar and spots-left 
 [US5]  
-↓ Student taps event card  
-
-EventDetailActivity (date/time/location/price chips, capacity progress bar, RSVP + Upvote buttons)  
+↓ Student taps event card
+Shows date/time/location/price chips, capacity progress bar, RSVP + Upvote buttons
 [US3, US5]  
-↓ refreshEventData() loads live Firestore state; student taps "RSVP NOW"  
-
-EventDetailActivity (Firestore transaction: attendeeIds updated, Registration doc written with status "Confirmed")  
+↓ 
+Student taps "RSVP NOW"  
+↓
+Registration  with status "Confirmed"
 [US4]  
-↓ NotificationHelper.postRsvpConfirmation() posts local push notification; NotificationController writes RSVP_CONFIRMED to Firestore; btnCancelRSVP shown  
-
-EventDetailActivity (student taps "CALENDAR" → CalendarContract Intent opens device calendar pre-filled)  
+Student taps "CALENDAR" 
 [US8]  
-↓ Student taps notification bell → NotificationsActivity  
-
-NotificationsActivity (notifications sorted newest-first, unread rows highlighted, "Mark all as read" button)  
+↓ 
+Calender opens automatically with pre-fill
 [US7, US11]
 
 ---
 
 ### Storyboard 12 – Organizer Creates Event and Views Attendees
 
-LandingActivity (org ID + password, tap "Organizer" button)  
-↓ AccountController verifies APPROVED + ORGANIZER role, navigates to OrganizerDashboardActivity  
-
-OrganizerDashboardActivity (organizer name, event count, list of own events via fetchEventsByOrganizer())  
+Shows org ID + password, tap "Organizer" button,, fills in
+↓ 
+Shows organizer name, event count, list of own events via fetchEventsByOrganizer())  
 [US12, US14]  
-↓ Organizer taps "+ Create New Event"  
-
-EditEventActivity (blank form; Date + Time fields open native DatePickerDialog / TimePickerDialog; Category dropdown with preset options)  
+↓ 
+Organizer taps "+ Create New Event"  
 [US12, US13]  
-↓ Organizer fills fields, taps "Create Event" → EventController.createEvent() writes event with status PENDING  
-
-OrganizerDashboardActivity (new event appears in list; status PENDING until admin approves)  
-↓ Admin approves event in AdminDashboardActivity; event becomes visible to students  
-
-OrganizerDashboardActivity (organizer taps "Attendees" on an event row)  
-[US14]  
-↓  
-
-AttendeesActivity (registrations queried by eventId; each row shows studentId, colour-coded status badge, registration timestamp)  
+↓
+Organizer fills fields, taps "Create Event" 
+↓ 
+Admin approves event in AdminDashboardActivity; event becomes visible to students  
 [US14]
 
 ---
 
-### Storyboard 13 – Social Loop: Finding a Friend and Viewing Their Events
+### Storyboard 13 – Finding a Friend and Viewing Their Events
 
-MainActivity (student taps "Find Friends")  
+Student taps "Find Friends"
 ↓  
 
-AddFriendActivity (all approved students listed; search bar filters by name or roll number in real time)  
+All approved students listed; search bar filters by name or roll number in real time
 [US9]  
-↓ Student taps "Add" on a row → Firestore arrayUnion appends currentUserId to target's friendRequests; button changes to "Sent"  
-
-Target student opens FriendRequestsActivity (incoming requests listed with Accept / Decline buttons)  
+↓ 
+Student taps "Add" on a row
+↓
+Target student opens incoming requests listed with Accept / Decline buttons)  
 [US9]  
-↓ Target taps "Accept" → WriteBatch: mutual friendIds updated on both accounts, request removed  
-
-FriendRequestsActivity (accepted row removed; "Friend added!" Toast shown)  
-↓ Original student taps "Friends" on MainActivity  
-
-FriendsEventsActivity (loads current user's friendIds → queries registrations by those IDs → collects unique eventIds → fetches matching events)  
+↓ 
+Target taps "Accept" 
+↓
+Original student taps "Friends"  
+↓
+Loads current user's friends  
 [US9]  
-↓ EventAdapter displays friends' RSVP'd events using same polished cards as MainActivity; student taps a card  
-
-EventDetailActivity (full event detail; student can RSVP, upvote, or add to calendar)  
-[US3, US4, US5, US6, US8]d has RSVP'd to.
+↓ 
+Displays friends' RSVP'd events upon clicking on the rsvp events on friend profile 
+↓
+Full event detail; student can RSVP, upvote, or add to calendar  
+[US3, US4, US5, US6, US8]
 
 ---
 
 ### Storyboard 14 – New User Signup and Admin Approval
 
-LandingActivity (student taps "New here? Create an Account")
+Student taps "New here? Create an Account"
 ↓
-
-SignupActivity (name, email, ID, password, role radio buttons: Student / Organizer / Admin)
-↓ Student fills form, taps "Submit for Approval" → AccountController.submitSignup() checks for duplicate ID, writes account with status PENDING
-
-SignupActivity ("Signup submitted! Wait for admin approval." Toast; activity finishes)
-↓ Admin logs in via LandingActivity
-
-AdminDashboardActivity (PENDING APPROVALS section lists new account with name, role badge, ID + email)
-↓ Admin taps "Approve" → AccountController.updateStatus() sets status = APPROVED; row removed from list
-
-LandingActivity (student can now log in successfully)
+Student fills form, taps "Submit for Approval" 
+↓ 
+Admin logs in
+PENDING APPROVALS section lists new account with name, role badge, ID + email
+↓
+Admin taps "Approve"
+↓ 
+Student can now log in successfully
 [US1]
 
 ---
 
 ### Storyboard 15 – Organizer Edits an Existing Event
 
-OrganizerDashboardActivity (event list loaded via fetchEventsByOrganizer())
-[US12]
-↓ Organizer taps "Edit" on an event row → Intent passes all existing fields as extras
-
-EditEventActivity (form pre-filled with existing title, description, location, date, time, capacity, price, category; header reads "Edit Event")
-[US12, US13]
-↓ Organizer updates fields, taps "Save Changes" → EventController.updateEvent() overwrites Firestore document; triggerUpdateNotifications() writes EVENT_UPDATED notification for every student in attendeeIds
-
-OrganizerDashboardActivity (onResume reloads events; updated details reflected in list)
+Event list loaded
+↓ 
+Organizer taps "Edit" on an event row
+↓ 
+Organizer updates fields, taps "Save Changes" 
+↓ 
+Events reloaded and displayed
 [US12]
 
 ---
 
 ### Storyboard 16 – Student Cancels an RSVP
 
-MainActivity (student taps a previously RSVP'd event card)
+Student taps a previously RSVP'd event card
 ↓
-
-EventDetailActivity (refreshEventData() detects studentId in attendeeIds; btnRSVP hidden, btnCancelRSVP visible)
 [US4]
-↓ Student taps "CANCEL RSVP" → handleCancelRSVP() opens Firestore transaction: removes studentId from attendeeIds, deletes registrations/{eventId}_{studentId}
+↓ Student taps "CANCEL RSVP" 
 
-EventDetailActivity (transaction succeeds; btnRSVP visible again, capacity bar updates, "RSVP Cancelled" Toast shown)
+ "RSVP Cancelled" Toast shown
 [US4, US5]
 
 ---
-
-### Storyboard 17 – Admin Seeds Demo Data and Moderates Events
-
-AdminDashboardActivity (total events count = 0; tvAdminEmpty visible)
-[US15]
-↓ Admin taps "Seed Demo Events" → EventController.seedDemoData() batch-writes 6 pre-built events with status APPROVED
-
-AdminDashboardActivity (ALL EVENTS section populates with 6 events; counts update)
-[US15]
-↓ Admin taps "Reject" on a PENDING organizer event → EventController.updateEvent() sets status = REJECTED; event disappears from student MainActivity feed
-
-AdminDashboardActivity (admin taps "Delete" on any event → confirmation dialog → EventController.deleteEvent() removes event doc and batch-deletes all matching registrations)
-[US15]
