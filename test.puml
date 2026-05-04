@@ -1,0 +1,5 @@
+﻿@startuml test
+skinparam linetype ortho
+abstract class "RecyclerView.Adapter<VH>" as RVAdapter
+class Foo +-- interface Bar
+@enduml
