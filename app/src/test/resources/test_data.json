@@ -1,0 +1,74 @@
+[
+  {
+    "eventId": "lums_fest_2026",
+    "title": "LUMS Music Festival",
+    "category": "Performance",
+    "location": "Central Courtyard",
+    "date": "April 25, 2026",
+    "time": "7:00 PM",
+    "organizerId": "lums_music_soc",
+    "maxCapacity": 1000,
+    "price": "1500 PKR",
+    "description": "Annual concert featuring local bands."
+  },
+  {
+    "eventId": "cs_symposium_2026",
+    "title": "CS Research Symposium",
+    "category": "Talk",
+    "location": "SDSB Auditorium",
+    "date": "May 22, 2026",
+    "time": "10:00 AM",
+    "organizerId": "lums_cs_society",
+    "maxCapacity": 150,
+    "price": "Free",
+    "description": "Undergraduate and graduate students present their research in AI, systems, and software engineering."
+  },
+  {
+    "eventId": "cricket_iba_2026",
+    "title": "LUMS vs IBA Cricket Match",
+    "category": "Sports",
+    "location": "Cricket Ground",
+    "date": "May 24, 2026",
+    "time": "9:00 AM",
+    "organizerId": "lums_sports_board",
+    "maxCapacity": 500,
+    "price": "Free",
+    "description": "Inter-university cricket rivalry returns. Come support LUMS against IBA Karachi."
+  },
+  {
+    "eventId": "ent_summit_2026",
+    "title": "Entrepreneurship Summit 2026",
+    "category": "Talk",
+    "location": "SDSB Auditorium",
+    "date": "May 25, 2026",
+    "time": "11:00 AM",
+    "organizerId": "lums_entrepreneurship_society",
+    "maxCapacity": 300,
+    "price": "500 PKR",
+    "description": "Pakistan's leading startup founders and investors share insights on building companies from scratch."
+  },
+  {
+    "eventId": "sanat_ghar_2026",
+    "title": "Sanat Ghar Cultural Evening",
+    "category": "Performance",
+    "location": "Sanat Ghar",
+    "date": "May 28, 2026",
+    "time": "6:00 PM",
+    "organizerId": "lums_arts_council",
+    "maxCapacity": 120,
+    "price": "Free",
+    "description": "A fusion evening of classical music, poetry, and visual art celebrating Pakistani heritage."
+  },
+  {
+    "eventId": "ml_workshop_2026",
+    "title": "Machine Learning Workshop",
+    "category": "Club",
+    "location": "SBASSE Building",
+    "date": "May 30, 2026",
+    "time": "2:00 PM",
+    "organizerId": "lums_cs_society",
+    "maxCapacity": 60,
+    "price": "Free",
+    "description": "Hands-on workshop covering neural networks and model training using Python. Laptops required."
+  }
+]

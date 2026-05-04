@@ -10,12 +10,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debugz.R;
 import com.example.debugz.UserSession;
 import com.example.debugz.controller.EventController;
+import com.example.debugz.controller.NotificationController;
 import com.example.debugz.models.Event;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -25,18 +27,22 @@ import java.util.List;
 
 /**
  * Hosts the main discovery feed where students browse and search events.
- * Updated to support Category filtering (US2) and friends navigation.
+ * Only shows APPROVED events (US-Admin Approval).
+ *
+ * ROLE: View (Activity).
  */
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView rvEvents;
     private EventAdapter adapter;
-    private final List<Event> allEvents      = new ArrayList<>();
+    private final List<Event> allEvents = new ArrayList<>();
     private final List<Event> filteredEvents = new ArrayList<>();
     private EditText etSearch;
     private ChipGroup cgCategories;
     private TextView tvEmpty;
+    private View notificationBadge;
     private EventController eventController;
+    private NotificationController notificationController;
 
     private String currentCategory = "All";
 
@@ -46,27 +52,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         eventController = new EventController();
+        notificationController = new NotificationController();
 
-        rvEvents      = findViewById(R.id.rvEvents);
-        etSearch      = findViewById(R.id.etSearch);
-        cgCategories  = findViewById(R.id.cgCategories);
-        tvEmpty       = findViewById(R.id.tvMainEmpty);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        rvEvents = findViewById(R.id.rvEvents);
+        etSearch = findViewById(R.id.etSearch);
+        cgCategories = findViewById(R.id.cgCategories);
+        tvEmpty = findViewById(R.id.tvMainEmpty);
+        notificationBadge = findViewById(R.id.notificationBadge);
 
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         adapter = new EventAdapter(filteredEvents, event -> {
             Intent intent = new Intent(MainActivity.this, EventDetailActivity.class);
-            intent.putExtra("eventId",     event.getEventId());
-            intent.putExtra("title",       event.getTitle());
-            intent.putExtra("date",        event.getDate());
-            intent.putExtra("time",        event.getTime());
-            intent.putExtra("location",    event.getLocation());
+            intent.putExtra("eventId", event.getEventId());
+            intent.putExtra("title", event.getTitle());
+            intent.putExtra("date", event.getDate());
+            intent.putExtra("time", event.getTime());
+            intent.putExtra("location", event.getLocation());
             intent.putExtra("description", event.getDescription());
-            intent.putExtra("capacity",    event.getMaxCapacity());
-            intent.putExtra("price",       event.getPrice());
-            intent.putExtra("category",    event.getCategory());
+            intent.putExtra("capacity", event.getMaxCapacity());
+            intent.putExtra("price", event.getPrice());
+            intent.putExtra("category", event.getCategory());
             startActivity(intent);
         });
         rvEvents.setAdapter(adapter);
+
+        findViewById(R.id.btnNotifications).setOnClickListener(v -> 
+            startActivity(new Intent(this, NotificationsActivity.class)));
 
         findViewById(R.id.btnMyEvents).setOnClickListener(v ->
                 startActivity(new Intent(this, MyEventsActivity.class)));
@@ -80,49 +94,55 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnLogout).setOnClickListener(v -> logout());
 
         setupSearchAndFilters();
-        loadEvents();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh so upvote counts and RSVP status stay current
         loadEvents();
+        updateNotificationBadge();
     }
 
-    // ── Data loading ───────────────────────────────────────────────────────
+    private void updateNotificationBadge() {
+        notificationController.getUnreadCount(UserSession.getInstance(this).getUserId(), new NotificationController.OnCountListener() {
+            @Override
+            public void onSuccess(int count) {
+                notificationBadge.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
+            }
+            @Override public void onFailure(Exception e) {}
+        });
+    }
 
     private void loadEvents() {
         eventController.fetchAllEvents(new EventController.OnEventsFetchedListener() {
             @Override
             public void onSuccess(List<Event> events) {
-                // US6: sort by upvote count descending so trending events rise to the top
-                events.sort((a, b) -> b.getUpvoteCount() - a.getUpvoteCount());
+                // Admin Approval Logic: Only show APPROVED events to students
+                List<Event> approvedEvents = new ArrayList<>();
+                for (Event e : events) {
+                    if (Event.STATUS_APPROVED.equals(e.getStatus())) {
+                        approvedEvents.add(e);
+                    }
+                }
+                
+                approvedEvents.sort((a, b) -> b.getUpvoteCount() - a.getUpvoteCount());
                 allEvents.clear();
-                allEvents.addAll(events);
-                tvEmpty.setVisibility(View.GONE);
-                rvEvents.setVisibility(View.VISIBLE);
+                allEvents.addAll(approvedEvents);
                 applyFilters();
             }
 
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(MainActivity.this,
-                        "Failed to load events. Check your connection.", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onDatabaseEmpty() {
                 allEvents.clear();
-                filteredEvents.clear();
-                adapter.notifyDataSetChanged();
-                tvEmpty.setVisibility(View.VISIBLE);
-                rvEvents.setVisibility(View.GONE);
+                applyFilters();
             }
         });
     }
-
-    // ── Search and category filter (US2) ───────────────────────────────────
 
     private void setupSearchAndFilters() {
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -158,18 +178,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         adapter.notifyDataSetChanged();
-
-        if (filteredEvents.isEmpty() && !allEvents.isEmpty()) {
-            tvEmpty.setText("No events match your filters.");
-            tvEmpty.setVisibility(View.VISIBLE);
-        } else if (filteredEvents.isEmpty()) {
-            tvEmpty.setVisibility(View.VISIBLE);
-        } else {
-            tvEmpty.setVisibility(View.GONE);
-        }
+        tvEmpty.setVisibility(filteredEvents.isEmpty() ? View.VISIBLE : View.GONE);
     }
-
-    // ── Logout ─────────────────────────────────────────────────────────────
 
     private void logout() {
         UserSession.getInstance(this).logout();

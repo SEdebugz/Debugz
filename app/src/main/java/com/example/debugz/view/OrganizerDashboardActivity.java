@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,33 +27,40 @@ import java.util.List;
  * Shows the organizer's own events loaded from Firestore and allows them to create new events,
  * edit existing ones (US12, US13), and view the attendee list (US14).
  * Uses the logged-in organizer ID from {@link UserSession}.
+ *
+ * ROLE: View (Activity).
+ * DESIGN PATTERN: Controller Pattern, Adapter Pattern.
  */
 public class OrganizerDashboardActivity extends AppCompatActivity {
 
-    private String organizerId;  // resolved from UserSession at runtime
+    private String organizerId;
 
     private RecyclerView rvOrganizerEvents;
     private OrganizerEventAdapter adapter;
     private List<Event> eventList = new ArrayList<>();
     private EventController eventController;
-    private TextView tvEmpty;
+    private TextView tvEmpty, tvOrganizerName, tvEventCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_dashboard);
 
-        organizerId  = UserSession.getInstance(this).getUserId();
+        organizerId = UserSession.getInstance(this).getUserId();
         eventController = new EventController();
 
         tvEmpty = findViewById(R.id.tvEmptyOrganizer);
+        tvOrganizerName = findViewById(R.id.tvOrganizerName);
+        tvEventCount = findViewById(R.id.tvOrganizerEventCount);
         rvOrganizerEvents = findViewById(R.id.rvOrganizerEvents);
+        
+        tvOrganizerName.setText(UserSession.getInstance(this).getUserName());
+
         rvOrganizerEvents.setLayoutManager(new LinearLayoutManager(this));
         adapter = new OrganizerEventAdapter(eventList);
         rvOrganizerEvents.setAdapter(adapter);
 
         findViewById(R.id.btnCreateEvent).setOnClickListener(v -> {
-            // Open EditEventActivity in "create" mode (no event data passed)
             startActivity(new Intent(this, EditEventActivity.class));
         });
 
@@ -67,7 +75,6 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh list every time we return (e.g., after creating or editing an event)
         loadOrganizerEvents();
     }
 
@@ -80,6 +87,7 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
                 tvEmpty.setVisibility(View.GONE);
                 rvOrganizerEvents.setVisibility(View.VISIBLE);
+                tvEventCount.setText("Managing " + events.size() + " events");
             }
 
             @Override
@@ -94,13 +102,10 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
                 tvEmpty.setVisibility(View.VISIBLE);
                 rvOrganizerEvents.setVisibility(View.GONE);
+                tvEventCount.setText("No events created yet");
             }
         });
     }
-
-    // ──────────────────────────────────────────────
-    // Inner RecyclerView adapter for organizer events
-    // ──────────────────────────────────────────────
 
     private class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAdapter.ViewHolder> {
 
@@ -136,6 +141,7 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
                 intent.putExtra("time", event.getTime());
                 intent.putExtra("maxCapacity", event.getMaxCapacity());
                 intent.putExtra("price", event.getPrice());
+                intent.putExtra("category", event.getCategory());
                 startActivity(intent);
             });
 
@@ -144,6 +150,39 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
                 intent.putExtra("eventId", event.getEventId());
                 intent.putExtra("eventTitle", event.getTitle());
                 startActivity(intent);
+            });
+
+            holder.btnDelete.setOnClickListener(v -> {
+                new AlertDialog.Builder(OrganizerDashboardActivity.this)
+                        .setTitle("Delete " + event.getTitle() + "?")
+                        .setMessage("This will remove all RSVPs. Cannot be undone.")
+                        .setPositiveButton("Delete", (dialog, which) -> {
+                            eventController.deleteEvent(event.getEventId(), new EventController.OnEventOperationListener() {
+                                @Override
+                                public void onSuccess() {
+                                    int currentPos = holder.getAdapterPosition();
+                                    if (currentPos != RecyclerView.NO_POSITION) {
+                                        events.remove(currentPos);
+                                        notifyItemRemoved(currentPos);
+                                        Toast.makeText(OrganizerDashboardActivity.this, "Event deleted.", Toast.LENGTH_SHORT).show();
+                                        if (events.isEmpty()) {
+                                            tvEmpty.setVisibility(View.VISIBLE);
+                                            rvOrganizerEvents.setVisibility(View.GONE);
+                                            tvEventCount.setText("No events created yet");
+                                        } else {
+                                            tvEventCount.setText("Managing " + events.size() + " events");
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Toast.makeText(OrganizerDashboardActivity.this, "Failed to delete: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
             });
         }
 
@@ -154,7 +193,7 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
 
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvTitle, tvDate, tvCapacity;
-            Button btnEdit, btnAttendees;
+            Button btnEdit, btnAttendees, btnDelete;
 
             ViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -163,8 +202,8 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
                 tvCapacity = itemView.findViewById(R.id.tvOrgEventCapacity);
                 btnEdit = itemView.findViewById(R.id.btnEditEvent);
                 btnAttendees = itemView.findViewById(R.id.btnViewAttendees);
+                btnDelete = itemView.findViewById(R.id.btnDeleteEvent);
             }
         }
     }
 }
-

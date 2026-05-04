@@ -13,8 +13,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Exercises how the core model classes collaborate.
- * Updated with US2 Category and String Price.
+ * Exercises how the core model classes (Event, Student, Registration, Organizer) collaborate.
+ * This test ensures that when a student RSVPs, the state changes are correctly reflected
+ * across the linked model objects.
+ *
+ * ROLE: Integration Test for Model Layer.
+ *
+ * Outstanding issues:
+ * 1. Does not test edge cases like negative capacity or duplicate registration IDs.
+ * 2. Does not simulate Firestore latency or transaction failures.
  */
 public class ModelIntegrationTest {
 
@@ -42,6 +49,10 @@ public class ModelIntegrationTest {
         faneez = new Student("27100247", "Faneez Zulfiqar Ali", "27100247@lums.edu.pk", "SBASSE", "Sophomore");
     }
 
+    /**
+     * Verifies that adding an attendee to an event and a registration ID to a student
+     * maintains data consistency across models.
+     */
     @Test
     public void testStudentRSVP_Flow() {
         String regId = "reg_cf_faneez";

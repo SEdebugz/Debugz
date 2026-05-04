@@ -3,23 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    app:cardCornerRadius="24dp"
-    app:cardElevation="8dp"
-    app:strokeWidth="1dp"
-    app:strokeColor="#10000000">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/card_bg">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="140dp">
+            android:layout_height="160dp">
 
             <ImageView
-                android:id="@+id/ivEventImage"
+                android:id="@+id/ivEventBanner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
@@ -28,48 +29,34 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#20000000" />
+                android:background="@drawable/bg_main_gradient"
+                android:alpha="0.3" />
 
             <TextView
-                android:id="@+id/tvItemPrice"
+                android:id="@+id/tvPriceBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
-                android:layout_gravity="top|start"
-                android:background="@drawable/bg_button_white_rounded"
+                android:background="@drawable/bg_badge_primary"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="6dp"
                 android:text="Free"
-                android:textColor="@color/pink_600"
-                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:textSize="11sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvItemCategory"
+                android:id="@+id/tvCategoryBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
                 android:layout_gravity="top|end"
-                android:background="#40000000"
+                android:background="@drawable/bg_badge_dark_semi"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp"
-                android:text="Sports"
+                android:text="CATEGORY"
                 android:textColor="@color/white"
-                android:textSize="10sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvCapacityBadge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:layout_gravity="bottom|start"
-                android:background="@drawable/bg_badge_orange"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:text="0% Full"
-                android:textColor="@color/white"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textStyle="bold" />
         </FrameLayout>
 
@@ -80,42 +67,59 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/tvTitle"
+                android:id="@+id/tvEventTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Event Title"
-                android:textColor="#111827"
-                android:textSize="18sp"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvDate"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Date"
-                android:textColor="#6B7280"
-                android:textSize="12sp" />
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="@color/text_secondary" />
+
+                <TextView
+                    android:id="@+id/tvEventDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Date &amp; Time"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:orientation="horizontal">
+
                 <TextView
-                    android:id="@+id/tvCapacityInfo"
+                    android:id="@+id/tvSpotsLeft"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="0 / 0"
-                    android:textColor="#6B7280"
-                    android:textSize="11sp" />
+                    android:text="20 spots left"
+                    android:textColor="@color/success"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
                 <TextView
-                    android:id="@+id/tvLeftInfo"
+                    android:id="@+id/tvCapacityPercent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 left"
-                    android:textColor="#6B7280"
+                    android:text="80% full"
+                    android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
             </LinearLayout>
 
@@ -124,45 +128,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:progress="0"
-                app:trackColor="#F3F4F6"
-                app:indicatorColor="@color/pink_600"
-                app:trackThickness="6dp"
-                app:trackCornerRadius="3dp" />
+                android:progress="80"
+                app:indicatorColor="@color/success"
+                app:trackColor="#E5E7EB"
+                app:trackCornerRadius="2dp"
+                app:trackThickness="4dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <Button
-                    android:id="@+id/btnItemRSVP"
+                    android:id="@+id/btnRSVP"
                     android:layout_width="0dp"
-                    android:layout_height="44dp"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:backgroundTint="@null"
-                    android:background="@drawable/bg_main_gradient"
+                    android:backgroundTint="@color/primary"
                     android:text="RSVP"
-                    android:textAllCaps="false"
+                    android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:cornerRadius="12dp" />
+                    app:cornerRadius="8dp" />
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCalendar"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_marginStart="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardBackgroundColor="#F3F4F6"
-                    app:cardElevation="0dp">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"
-                        android:src="@drawable/ic_calendar"
-                        app:tint="#374151" />
-                </com.google.android.material.card.MaterialCardView>
+                    android:padding="0dp"
+                    app:icon="@drawable/ic_calendar"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="20dp"
+                    app:iconTint="@color/primary"
+                    app:strokeColor="@color/primary"
+                    app:cornerRadius="8dp" />
             </LinearLayout>
 
         </LinearLayout>

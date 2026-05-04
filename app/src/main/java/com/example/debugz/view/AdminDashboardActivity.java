@@ -26,9 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Admin-only screen that now serves two responsibilities from one place:
- * 1) approve or reject pending student / organizer signups
- * 2) manage all event listings, including deletion
+ * Admin-only screen that manages pending signups and moderates event listings.
+ * Updated to support Event Approval (organizers' events must be approved by admin).
+ *
+ * ROLE: View (Activity).
  */
 public class AdminDashboardActivity extends AppCompatActivity {
 
@@ -41,7 +42,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private AccountController accountController;
     private EventController eventController;
-    private TextView tvPendingEmpty, tvEventEmpty;
+    
+    private TextView tvPendingEmpty, tvEventEmpty, tvTotalEventsCount, tvPendingApprovalsCount;
+    private TextView tvPendingHeader, tvEventsHeader;
+    private Button btnSeedEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,11 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         tvPendingEmpty = findViewById(R.id.tvPendingEmpty);
         tvEventEmpty = findViewById(R.id.tvAdminEmpty);
+        tvTotalEventsCount = findViewById(R.id.tvTotalEventsCount);
+        tvPendingApprovalsCount = findViewById(R.id.tvPendingApprovalsCount);
+        tvPendingHeader = findViewById(R.id.tvPendingHeader);
+        tvEventsHeader = findViewById(R.id.tvEventsHeader);
+        btnSeedEvents = findViewById(R.id.btnSeedEvents);
 
         rvPendingAccounts = findViewById(R.id.rvPendingAccounts);
         rvPendingAccounts.setLayoutManager(new LinearLayoutManager(this));
@@ -63,6 +72,26 @@ public class AdminDashboardActivity extends AppCompatActivity {
         rvAdminEvents.setLayoutManager(new LinearLayoutManager(this));
         eventAdapter = new AdminEventAdapter(eventList);
         rvAdminEvents.setAdapter(eventAdapter);
+
+        btnSeedEvents.setOnClickListener(v -> {
+            eventController.fetchAllEvents(new EventController.OnEventsFetchedListener() {
+                @Override
+                public void onSuccess(List<Event> events) {
+                    Toast.makeText(AdminDashboardActivity.this, "Database already has events.", Toast.LENGTH_SHORT).show();
+                }
+                @Override
+                public void onFailure(Exception e) { seed(); }
+                @Override
+                public void onDatabaseEmpty() { seed(); }
+
+                private void seed() {
+                    eventController.seedDemoData(() -> {
+                        Toast.makeText(AdminDashboardActivity.this, "Demo events seeded!", Toast.LENGTH_SHORT).show();
+                        loadAllEvents();
+                    });
+                }
+            });
+        });
 
         findViewById(R.id.btnAdminLogout).setOnClickListener(v -> {
             UserSession.getInstance(this).logout();
@@ -79,8 +108,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
         loadAllEvents();
     }
 
-    // ── Pending signup approvals ──────────────────────────────────────────
-
     private void loadPendingAccounts() {
         accountController.fetchPendingAccounts(new AccountController.OnAccountsFetchedListener() {
             @Override
@@ -88,46 +115,14 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 pendingAccounts.clear();
                 pendingAccounts.addAll(accounts);
                 pendingAdapter.notifyDataSetChanged();
-                tvPendingEmpty.setVisibility(pendingAccounts.isEmpty() ? View.VISIBLE : View.GONE);
+                updatePendingUI();
             }
-
             @Override
             public void onFailure(String message) {
-                Toast.makeText(AdminDashboardActivity.this,
-                        "Failed to load pending accounts: " + message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminDashboardActivity.this, "Failed to load accounts", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
-    private void approveAccount(Account account, int position) {
-        updateAccountStatus(account, position, Account.STATUS_APPROVED, "Account approved.");
-    }
-
-    private void rejectAccount(Account account, int position) {
-        updateAccountStatus(account, position, Account.STATUS_REJECTED, "Account rejected.");
-    }
-
-    private void updateAccountStatus(Account account, int position, String status, String successMessage) {
-        accountController.updateStatus(account.getAccountId(), status, new AccountController.OnAccountOperationListener() {
-            @Override
-            public void onSuccess() {
-                if (position < pendingAccounts.size()) {
-                    pendingAccounts.remove(position);
-                    pendingAdapter.notifyItemRemoved(position);
-                }
-                tvPendingEmpty.setVisibility(pendingAccounts.isEmpty() ? View.VISIBLE : View.GONE);
-                Toast.makeText(AdminDashboardActivity.this, successMessage, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(String message) {
-                Toast.makeText(AdminDashboardActivity.this,
-                        "Status update failed: " + message, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    // ── Event moderation ──────────────────────────────────────────────────
 
     private void loadAllEvents() {
         eventController.fetchAllEvents(new EventController.OnEventsFetchedListener() {
@@ -136,69 +131,81 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 eventList.clear();
                 eventList.addAll(events);
                 eventAdapter.notifyDataSetChanged();
-                tvEventEmpty.setVisibility(eventList.isEmpty() ? View.VISIBLE : View.GONE);
+                updateEventsUI();
             }
-
             @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(AdminDashboardActivity.this,
-                        "Failed to load events: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-
+            public void onFailure(Exception e) { updateEventsUI(); }
             @Override
             public void onDatabaseEmpty() {
                 eventList.clear();
                 eventAdapter.notifyDataSetChanged();
-                tvEventEmpty.setVisibility(View.VISIBLE);
+                updateEventsUI();
             }
         });
+    }
+
+    private void updatePendingUI() {
+        int count = pendingAccounts.size();
+        tvPendingApprovalsCount.setText(String.valueOf(count));
+        tvPendingHeader.setText("PENDING APPROVALS (" + count + ")");
+        tvPendingEmpty.setVisibility(count == 0 ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateEventsUI() {
+        int count = eventList.size();
+        tvTotalEventsCount.setText(String.valueOf(count));
+        tvEventsHeader.setText("ALL EVENTS (" + count + ")");
+        tvEventEmpty.setVisibility(count == 0 ? View.VISIBLE : View.GONE);
     }
 
     private void confirmDeleteEvent(int position) {
         Event event = eventList.get(position);
         new AlertDialog.Builder(this)
                 .setTitle("Delete Event")
-                .setMessage("Remove \"" + event.getTitle() + "\"?\n\nThis will also remove all registrations for this event.")
-                .setPositiveButton("Delete", (dialog, which) -> deleteEvent(event, position))
+                .setMessage("Remove \"" + event.getTitle() + "\"?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    eventController.deleteEvent(event.getEventId(), new EventController.OnEventOperationListener() {
+                        @Override
+                        public void onSuccess() {
+                            eventList.remove(position);
+                            eventAdapter.notifyItemRemoved(position);
+                            updateEventsUI();
+                            Toast.makeText(AdminDashboardActivity.this, "Event deleted.", Toast.LENGTH_SHORT).show();
+                        }
+                        @Override
+                        public void onFailure(Exception e) {
+                            Toast.makeText(AdminDashboardActivity.this, "Delete failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private void deleteEvent(Event event, int position) {
-        eventController.deleteEvent(event.getEventId(), new EventController.OnEventOperationListener() {
+    private void updateEventStatus(Event event, int position, String status) {
+        event.setStatus(status);
+        eventController.updateEvent(event, new EventController.OnEventOperationListener() {
             @Override
             public void onSuccess() {
-                if (position < eventList.size()) {
-                    eventList.remove(position);
-                    eventAdapter.notifyItemRemoved(position);
-                }
-                tvEventEmpty.setVisibility(eventList.isEmpty() ? View.VISIBLE : View.GONE);
-                Toast.makeText(AdminDashboardActivity.this, "Event deleted.", Toast.LENGTH_SHORT).show();
+                eventAdapter.notifyItemChanged(position);
+                Toast.makeText(AdminDashboardActivity.this, "Event " + status.toLowerCase(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(AdminDashboardActivity.this,
-                        "Delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminDashboardActivity.this, "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // ── Adapters ──────────────────────────────────────────────────────────
-
     private class PendingAccountAdapter extends RecyclerView.Adapter<PendingAccountAdapter.ViewHolder> {
-
         private final List<Account> accounts;
-
-        PendingAccountAdapter(List<Account> accounts) {
-            this.accounts = accounts;
-        }
+        PendingAccountAdapter(List<Account> accounts) { this.accounts = accounts; }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_pending_account, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pending_account, parent, false);
             return new ViewHolder(view);
         }
 
@@ -206,57 +213,51 @@ public class AdminDashboardActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Account account = accounts.get(position);
             holder.tvName.setText(account.getName());
-            String email = (account.getEmail() == null || account.getEmail().isEmpty())
-                    ? "no email" : account.getEmail();
-            holder.tvMeta.setText(account.getRole() + " • " + account.getAccountId() + " • " + email);
+            holder.tvRole.setText(account.getRole());
+            holder.tvMeta.setText(account.getAccountId() + " • " + (account.getEmail() != null ? account.getEmail() : "no email"));
+            
+            holder.btnApprove.setOnClickListener(v -> updateStatus(account, holder.getAdapterPosition(), Account.STATUS_APPROVED));
+            holder.btnReject.setOnClickListener(v -> updateStatus(account, holder.getAdapterPosition(), Account.STATUS_REJECTED));
+        }
 
-            holder.btnApprove.setOnClickListener(v -> {
-                int pos = holder.getAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION) {
-                    approveAccount(accounts.get(pos), pos);
+        private void updateStatus(Account account, int position, String status) {
+            accountController.updateStatus(account.getAccountId(), status, new AccountController.OnAccountOperationListener() {
+                @Override
+                public void onSuccess() {
+                    accounts.remove(position);
+                    notifyItemRemoved(position);
+                    updatePendingUI();
                 }
-            });
-
-            holder.btnReject.setOnClickListener(v -> {
-                int pos = holder.getAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION) {
-                    rejectAccount(accounts.get(pos), pos);
-                }
+                @Override
+                public void onFailure(String message) {}
             });
         }
 
         @Override
-        public int getItemCount() {
-            return accounts.size();
-        }
+        public int getItemCount() { return accounts.size(); }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvName, tvMeta;
+            TextView tvName, tvMeta, tvRole;
             Button btnApprove, btnReject;
-
-            ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                tvName = itemView.findViewById(R.id.tvPendingAccountName);
-                tvMeta = itemView.findViewById(R.id.tvPendingAccountMeta);
-                btnApprove = itemView.findViewById(R.id.btnApproveAccount);
-                btnReject = itemView.findViewById(R.id.btnRejectAccount);
+            ViewHolder(View v) {
+                super(v);
+                tvName = v.findViewById(R.id.tvPendingAccountName);
+                tvMeta = v.findViewById(R.id.tvPendingAccountMeta);
+                tvRole = v.findViewById(R.id.tvRoleBadge);
+                btnApprove = v.findViewById(R.id.btnApproveAccount);
+                btnReject = v.findViewById(R.id.btnRejectAccount);
             }
         }
     }
 
     private class AdminEventAdapter extends RecyclerView.Adapter<AdminEventAdapter.ViewHolder> {
-
         private final List<Event> events;
-
-        AdminEventAdapter(List<Event> events) {
-            this.events = events;
-        }
+        AdminEventAdapter(List<Event> events) { this.events = events; }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_admin_event, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_admin_event, parent, false);
             return new ViewHolder(v);
         }
 
@@ -264,33 +265,41 @@ public class AdminDashboardActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Event event = events.get(position);
             holder.tvTitle.setText(event.getTitle());
-            holder.tvDate.setText(event.getDate() + " • " + event.getLocation());
-            String organizer = event.getOrganizerId() != null ? event.getOrganizerId() : "—";
-            holder.tvOrganizer.setText("Organizer: " + organizer);
+            holder.tvDate.setText(event.getDate());
+            holder.tvOrganizer.setText("Organizer: " + (event.getOrganizerId() != null ? event.getOrganizerId() : "Unknown"));
+            
+            String status = event.getStatus() != null ? event.getStatus() : Event.STATUS_PENDING;
+            holder.tvStatus.setText(status);
+            
+            // Show approve/reject buttons only if pending
+            if (Event.STATUS_PENDING.equals(status)) {
+                holder.btnApprove.setVisibility(View.VISIBLE);
+                holder.btnReject.setVisibility(View.VISIBLE);
+                holder.btnApprove.setOnClickListener(v -> updateEventStatus(event, holder.getAdapterPosition(), Event.STATUS_APPROVED));
+                holder.btnReject.setOnClickListener(v -> updateEventStatus(event, holder.getAdapterPosition(), Event.STATUS_REJECTED));
+            } else {
+                holder.btnApprove.setVisibility(View.GONE);
+                holder.btnReject.setVisibility(View.GONE);
+            }
 
-            holder.btnDelete.setOnClickListener(v -> {
-                int pos = holder.getAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION) {
-                    confirmDeleteEvent(pos);
-                }
-            });
+            holder.btnDelete.setOnClickListener(v -> confirmDeleteEvent(holder.getAdapterPosition()));
         }
 
         @Override
-        public int getItemCount() {
-            return events.size();
-        }
+        public int getItemCount() { return events.size(); }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvTitle, tvDate, tvOrganizer;
-            Button btnDelete;
-
-            ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                tvTitle = itemView.findViewById(R.id.tvAdminEventTitle);
-                tvDate = itemView.findViewById(R.id.tvAdminEventDate);
-                tvOrganizer = itemView.findViewById(R.id.tvAdminEventOrganizer);
-                btnDelete = itemView.findViewById(R.id.btnDeleteEvent);
+            TextView tvTitle, tvDate, tvOrganizer, tvStatus;
+            Button btnDelete, btnApprove, btnReject;
+            ViewHolder(View v) {
+                super(v);
+                tvTitle = v.findViewById(R.id.tvAdminEventTitle);
+                tvDate = v.findViewById(R.id.tvAdminEventDate);
+                tvOrganizer = v.findViewById(R.id.tvAdminEventOrganizer);
+                tvStatus = v.findViewById(R.id.tvAdminEventStatus);
+                btnDelete = v.findViewById(R.id.btnDeleteEvent);
+                btnApprove = v.findViewById(R.id.btnApproveEvent);
+                btnReject = v.findViewById(R.id.btnRejectEvent);
             }
         }
     }
