@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surface">
+    android:background="#FFFFFF">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -16,7 +16,6 @@
             android:layout_width="match_parent"
             android:layout_height="220dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:contentScrim="@color/primary"
             app:titleEnabled="false">
 
             <FrameLayout
@@ -43,7 +42,7 @@
                     android:layout_gravity="bottom"
                     android:layout_margin="16dp"
                     android:text="Event Title"
-                    android:textColor="@color/white"
+                    android:textColor="#FFFFFF"
                     android:textSize="24sp"
                     android:textStyle="bold" />
             </FrameLayout>
@@ -54,40 +53,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:navigationIcon="?attr/homeAsUpIndicator"
-                app:navigationIconTint="@color/white" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/btnUpvote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="16dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
-                app:strokeWidth="0dp">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="8dp">
-                    <ImageView
-                        android:id="@+id/ivUpvoteHeart"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_notifications"
-                        app:tint="@color/accent" />
-                    <TextView
-                        android:id="@+id/tvUpvoteCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:text="0"
-                        android:textColor="@color/text_primary"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                app:navigationIconTint="#FFFFFF" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -103,7 +69,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Info Pills -->
+            <!-- Info Chips -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -117,7 +83,7 @@
                         style="@style/Widget.Material3.Chip.Assist"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="May 10, 2026"
+                        android:text="Date"
                         app:chipIcon="@drawable/ic_calendar" />
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipDetailTime"
@@ -125,22 +91,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="10:00 AM" />
+                        android:text="Time" />
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipDetailLocation"
                         style="@style/Widget.Material3.Chip.Assist"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="SDSB Hall" />
+                        android:text="Location" />
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipDetailPrice"
                         style="@style/Widget.Material3.Chip.Assist"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Free"
-                        app:chipIconTint="@color/success" />
+                        android:text="Free" />
                 </LinearLayout>
             </HorizontalScrollView>
 
@@ -149,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="ABOUT THIS EVENT"
-                android:textColor="@color/text_secondary"
+                android:textColor="#6B7280"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.1" />
@@ -160,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Description goes here..."
-                android:textColor="@color/text_primary"
+                android:textColor="#111827"
                 android:textSize="14sp"
                 android:lineSpacingExtra="4dp" />
 
@@ -180,16 +145,16 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="20 spots left"
-                    android:textColor="@color/success"
+                    android:text="Spots left"
+                    android:textColor="#27AE60"
                     android:textSize="14sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/tvCapacityInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="80 / 100"
-                    android:textColor="@color/text_secondary"
+                    android:text="0 / 0"
+                    android:textColor="#6B7280"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -198,10 +163,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:progress="80"
+                android:progress="0"
                 app:trackThickness="8dp"
                 app:trackCornerRadius="4dp"
-                app:indicatorColor="@color/success"
+                app:indicatorColor="#27AE60"
                 app:trackColor="#E5E7EB" />
 
             <Button
@@ -210,7 +175,7 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="32dp"
                 android:text="RSVP NOW"
-                android:backgroundTint="@color/primary"
+                android:backgroundTint="@color/purple_600"
                 android:textStyle="bold"
                 app:cornerRadius="8dp" />
 
@@ -221,21 +186,55 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
                 android:text="CANCEL RSVP"
-                android:textColor="@color/accent"
-                app:strokeColor="@color/accent"
+                android:textColor="#E74C3C"
+                app:strokeColor="#E74C3C"
                 app:cornerRadius="8dp"
                 android:visibility="gone" />
 
-            <Button
-                android:id="@+id/btnAddToCalendar"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+            <!-- Action Row -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/btnUpvote"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:text="UPVOTE"
+                    android:textColor="@color/pink_600"
+                    app:strokeColor="@color/pink_600"
+                    app:cornerRadius="8dp"
+                    app:icon="@drawable/ic_notifications"
+                    app:iconTint="@color/pink_600" />
+
+                <Button
+                    android:id="@+id/btnAddToCalendar"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="CALENDAR"
+                    android:textColor="@color/purple_600"
+                    app:strokeColor="@color/purple_600"
+                    app:cornerRadius="8dp"
+                    app:icon="@drawable/ic_calendar"
+                    app:iconTint="@color/purple_600" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvUpvoteCountDisplay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="ADD TO CALENDAR"
-                android:textColor="@color/primary"
-                app:strokeColor="@color/primary"
-                app:cornerRadius="8dp" />
+                android:gravity="center"
+                android:text="0 people have upvoted this event"
+                android:textColor="#6B7280"
+                android:textSize="12sp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

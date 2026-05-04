@@ -44,12 +44,15 @@ dependencies {
     implementation(libs.firebase.analytics)
 
     implementation(libs.work.runtime)
+    implementation(libs.glide)
 
-    // Glide for image loading (Task 7)
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-
-    // Testing
+    // Unit Testing
     testImplementation(libs.junit)
+
+    // Instrumentation Testing (Espresso)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.test.monitor)
+    androidTestImplementation(libs.test.runner)
+    androidTestImplementation(libs.test.rules)
 }
