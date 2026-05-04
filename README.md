@@ -15,9 +15,11 @@
 
 - [Wireframes](#wireframes)
   - [Wireframes – Project Part 2](#wireframes--project-part-2)
+  - [Wireframes – Project Part 4](#wireframes--project-part-4)
 
 - [Storyboards](#storyboards)
   - [Storyboards – Project Part 2](#storyboards--project-part-2)
+  - [Storyboards – Project Part 4](#storyboards--project-part-4)
 
 ---
 
@@ -247,6 +249,51 @@ Displays events that match a user’s search query. Users can filter results and
 
 Shows updates related to events, including reminders, RSVP confirmations, and event changes. It also highlights friend activity for social discovery.
 
+---
+
+### Wireframes – Project Part 4
+
+https://github.com/SEdebugz/Debugz/blob/main/Docs/FinalScreens
+
+- Login Screen
+
+Enables user login for different user roles like students, organizers, and admins using email/username and password or social media accounts. New user registration is also enabled, and after successful login, users are redirected to their respective home pages.
+
+- Discover Events Screen (Student Home)
+
+The main page for students to explore events organized by different clubs and organizations on campus using a search bar and category filters.
+
+- Event Details Page
+
+Displays details of the chosen event, like date, venue, organizer, and available capacity. Students can confirm their attendance by clicking on the RSVP button.
+
+- RSVP Confirmation & My Events Screen
+
+Confirms registration for events and also enables users to add events to their calendar or share with friends. The “My Events” section contains all events registered by the user.
+
+- Organizer Dashboard
+
+Provides organizers with details of their events, like statistics of active events, number of RSVPs, etc. Organizers can also create events from this page.
+
+- Create Event Screen
+
+Enables organizers to create new events by providing details of events like event name, category, date, venue, capacity, and cover photo.
+
+- Attendees Management Screen
+
+Shows the list of participants for an event along with attendance statistics. Organizers can search attendees, check in participants, and manage waitlisted users.
+
+- Admin Dashboard
+
+Enables administrators to monitor platform activity and moderate events. Admins can review submissions, approve or reject events, and investigate flagged content.
+
+- Search Results Screen
+
+Displays events that match a user’s search query. Users can filter results and RSVP directly from the list.
+
+- Notifications Screen
+
+Shows updates related to events, including reminders, RSVP confirmations, and event changes. It also highlights friend activity for social discovery.
 
 ---
 
@@ -427,3 +474,146 @@ RSVP Confirmed (removed from waitlist)
 [US4, US5]
 
 ---
+
+### Storyboards – Project Part 4
+
+### Storyboard 11 – Student Event Discovery, RSVP, and Notification
+
+LandingActivity (roll number + password, tap "Student" button)  
+↓ AccountController verifies APPROVED status, UserSession caches session  
+
+MainActivity (approved events sorted by upvote count, search bar + category chips)  
+[US1, US2, US6]  
+↓ Student types keyword → applyFilters() updates RecyclerView in real time  
+
+MainActivity (filtered event cards with capacity bar and spots-left colour coding)  
+[US5]  
+↓ Student taps event card  
+
+EventDetailActivity (date/time/location/price chips, capacity progress bar, RSVP + Upvote buttons)  
+[US3, US5]  
+↓ refreshEventData() loads live Firestore state; student taps "RSVP NOW"  
+
+EventDetailActivity (Firestore transaction: attendeeIds updated, Registration doc written with status "Confirmed")  
+[US4]  
+↓ NotificationHelper.postRsvpConfirmation() posts local push notification; NotificationController writes RSVP_CONFIRMED to Firestore; btnCancelRSVP shown  
+
+EventDetailActivity (student taps "CALENDAR" → CalendarContract Intent opens device calendar pre-filled)  
+[US8]  
+↓ Student taps notification bell → NotificationsActivity  
+
+NotificationsActivity (notifications sorted newest-first, unread rows highlighted, "Mark all as read" button)  
+[US7, US11]
+
+---
+
+### Storyboard 12 – Organizer Creates Event and Views Attendees
+
+LandingActivity (org ID + password, tap "Organizer" button)  
+↓ AccountController verifies APPROVED + ORGANIZER role, navigates to OrganizerDashboardActivity  
+
+OrganizerDashboardActivity (organizer name, event count, list of own events via fetchEventsByOrganizer())  
+[US12, US14]  
+↓ Organizer taps "+ Create New Event"  
+
+EditEventActivity (blank form; Date + Time fields open native DatePickerDialog / TimePickerDialog; Category dropdown with preset options)  
+[US12, US13]  
+↓ Organizer fills fields, taps "Create Event" → EventController.createEvent() writes event with status PENDING  
+
+OrganizerDashboardActivity (new event appears in list; status PENDING until admin approves)  
+↓ Admin approves event in AdminDashboardActivity; event becomes visible to students  
+
+OrganizerDashboardActivity (organizer taps "Attendees" on an event row)  
+[US14]  
+↓  
+
+AttendeesActivity (registrations queried by eventId; each row shows studentId, colour-coded status badge, registration timestamp)  
+[US14]
+
+---
+
+### Storyboard 13 – Social Loop: Finding a Friend and Viewing Their Events
+
+MainActivity (student taps "Find Friends")  
+↓  
+
+AddFriendActivity (all approved students listed; search bar filters by name or roll number in real time)  
+[US9]  
+↓ Student taps "Add" on a row → Firestore arrayUnion appends currentUserId to target's friendRequests; button changes to "Sent"  
+
+Target student opens FriendRequestsActivity (incoming requests listed with Accept / Decline buttons)  
+[US9]  
+↓ Target taps "Accept" → WriteBatch: mutual friendIds updated on both accounts, request removed  
+
+FriendRequestsActivity (accepted row removed; "Friend added!" Toast shown)  
+↓ Original student taps "Friends" on MainActivity  
+
+FriendsEventsActivity (loads current user's friendIds → queries registrations by those IDs → collects unique eventIds → fetches matching events)  
+[US9]  
+↓ EventAdapter displays friends' RSVP'd events using same polished cards as MainActivity; student taps a card  
+
+EventDetailActivity (full event detail; student can RSVP, upvote, or add to calendar)  
+[US3, US4, US5, US6, US8]d has RSVP'd to.
+
+---
+
+### Storyboard 14 – New User Signup and Admin Approval
+
+LandingActivity (student taps "New here? Create an Account")
+↓
+
+SignupActivity (name, email, ID, password, role radio buttons: Student / Organizer / Admin)
+↓ Student fills form, taps "Submit for Approval" → AccountController.submitSignup() checks for duplicate ID, writes account with status PENDING
+
+SignupActivity ("Signup submitted! Wait for admin approval." Toast; activity finishes)
+↓ Admin logs in via LandingActivity
+
+AdminDashboardActivity (PENDING APPROVALS section lists new account with name, role badge, ID + email)
+↓ Admin taps "Approve" → AccountController.updateStatus() sets status = APPROVED; row removed from list
+
+LandingActivity (student can now log in successfully)
+[US1]
+
+---
+
+### Storyboard 15 – Organizer Edits an Existing Event
+
+OrganizerDashboardActivity (event list loaded via fetchEventsByOrganizer())
+[US12]
+↓ Organizer taps "Edit" on an event row → Intent passes all existing fields as extras
+
+EditEventActivity (form pre-filled with existing title, description, location, date, time, capacity, price, category; header reads "Edit Event")
+[US12, US13]
+↓ Organizer updates fields, taps "Save Changes" → EventController.updateEvent() overwrites Firestore document; triggerUpdateNotifications() writes EVENT_UPDATED notification for every student in attendeeIds
+
+OrganizerDashboardActivity (onResume reloads events; updated details reflected in list)
+[US12]
+
+---
+
+### Storyboard 16 – Student Cancels an RSVP
+
+MainActivity (student taps a previously RSVP'd event card)
+↓
+
+EventDetailActivity (refreshEventData() detects studentId in attendeeIds; btnRSVP hidden, btnCancelRSVP visible)
+[US4]
+↓ Student taps "CANCEL RSVP" → handleCancelRSVP() opens Firestore transaction: removes studentId from attendeeIds, deletes registrations/{eventId}_{studentId}
+
+EventDetailActivity (transaction succeeds; btnRSVP visible again, capacity bar updates, "RSVP Cancelled" Toast shown)
+[US4, US5]
+
+---
+
+### Storyboard 17 – Admin Seeds Demo Data and Moderates Events
+
+AdminDashboardActivity (total events count = 0; tvAdminEmpty visible)
+[US15]
+↓ Admin taps "Seed Demo Events" → EventController.seedDemoData() batch-writes 6 pre-built events with status APPROVED
+
+AdminDashboardActivity (ALL EVENTS section populates with 6 events; counts update)
+[US15]
+↓ Admin taps "Reject" on a PENDING organizer event → EventController.updateEvent() sets status = REJECTED; event disappears from student MainActivity feed
+
+AdminDashboardActivity (admin taps "Delete" on any event → confirmation dialog → EventController.deleteEvent() removes event doc and batch-deletes all matching registrations)
+[US15]
