@@ -180,7 +180,25 @@ https://github.com/SEdebugz/Debugz/blob/main/Docs/uml.png
 | US14 | As an organizer, I want to view the list of RSVPed attendees so that I can estimate participation. | 5 | Medium | Later |
 | US15 | As an administrator, I want to manage event listings so that inappropriate or duplicate events can be removed. | 5 | Medium | Later |
 
+### Product Backlog – Project Part 4
 
+| ID | User Story | Story Points | Risk | Release |
+|-----|-----|-----|-----|-----|
+| US1 | As a student, I want to browse all upcoming campus events so that I can discover activities when I have free time. | 4 | Low | DONE |
+| US2 | As a student, I want to search events by category or keyword so that I can find events that match my interests. | 3 | Low | DONE |
+| US3 | As a student, I want to view detailed event information (topic, time, location, speaker, ticket price) so that I can decide whether to attend. | 2 | Low | DONE |
+| US4 | As a student, I want to RSVP to an event so that I can reserve my place. | 6 | Medium | DONE |
+| US5 | As a student, I want to see how many spots remain for an event so that I know if the event might fill up soon. | 5 | Medium | DONE |
+| US6 | As a student, I want to upvote an upcoming event I'm looking forward to so that the most anticipated events trend organically on the main landing page. | 7 | Medium | DONE |
+| US7 | As a student, I want to receive push notifications for upcoming events so that I do not forget about them. | 8 | High | DONE |
+| US8 | As a student, I need to have the ability to add events to my calendar because that will help me prevent schedule conflicts. | 8 | High | DONE |
+| US9 | As a student, I'd like to see which friends will attend an event because this information will help me decide whether to I want go. | 5 | Medium | DONE |
+| US10 | As a student, I need a system to monitor my RSVP'd events which helps me plan my time effectively. | 3 | Low | DONE |
+| US11 | As a student, I'd like event reminders some days before the event to ensure I remember to attend. | 5 | Medium | DONE |
+| US12 | As an organizer, I want to edit event details so that I can keep event information updated. | 3 | Low | DONE |
+| US13 | As an organizer, I want to set event capacity or ticket limits so that attendance can be controlled. | 5 | Medium | DONE |
+| US14 | As an organizer, I want to view the list of RSVPed attendees so that I can estimate participation. | 5 | Medium | DONE |
+| US15 | As an administrator, I want to manage event listings so that inappropriate or duplicate events can be removed. | 5 | Medium | DONE |
 ---
 
 ## Wireframes
