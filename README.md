@@ -429,6 +429,82 @@ RSVP Confirmed (removed from waitlist)
 
 ---
 
-## Storyboards
-
 ### Storyboards – Project Part 4
+
+### Storyboard 11 – Student Event Discovery, RSVP, and Notification
+
+LandingActivity (roll number + password, tap "Student" button)  
+↓ AccountController verifies APPROVED status, UserSession caches session  
+
+MainActivity (approved events sorted by upvote count, search bar + category chips)  
+[US1, US2, US6]  
+↓ Student types keyword → applyFilters() updates RecyclerView in real time  
+
+MainActivity (filtered event cards with capacity bar and spots-left colour coding)  
+[US5]  
+↓ Student taps event card  
+
+EventDetailActivity (date/time/location/price chips, capacity progress bar, RSVP + Upvote buttons)  
+[US3, US5]  
+↓ refreshEventData() loads live Firestore state; student taps "RSVP NOW"  
+
+EventDetailActivity (Firestore transaction: attendeeIds updated, Registration doc written with status "Confirmed")  
+[US4]  
+↓ NotificationHelper.postRsvpConfirmation() posts local push notification; NotificationController writes RSVP_CONFIRMED to Firestore; btnCancelRSVP shown  
+
+EventDetailActivity (student taps "CALENDAR" → CalendarContract Intent opens device calendar pre-filled)  
+[US8]  
+↓ Student taps notification bell → NotificationsActivity  
+
+NotificationsActivity (notifications sorted newest-first, unread rows highlighted, "Mark all as read" button)  
+[US7, US11]
+
+---
+
+### Storyboard 12 – Organizer Creates Event and Views Attendees
+
+LandingActivity (org ID + password, tap "Organizer" button)  
+↓ AccountController verifies APPROVED + ORGANIZER role, navigates to OrganizerDashboardActivity  
+
+OrganizerDashboardActivity (organizer name, event count, list of own events via fetchEventsByOrganizer())  
+[US12, US14]  
+↓ Organizer taps "+ Create New Event"  
+
+EditEventActivity (blank form; Date + Time fields open native DatePickerDialog / TimePickerDialog; Category dropdown with preset options)  
+[US12, US13]  
+↓ Organizer fills fields, taps "Create Event" → EventController.createEvent() writes event with status PENDING  
+
+OrganizerDashboardActivity (new event appears in list; status PENDING until admin approves)  
+↓ Admin approves event in AdminDashboardActivity; event becomes visible to students  
+
+OrganizerDashboardActivity (organizer taps "Attendees" on an event row)  
+[US14]  
+↓  
+
+AttendeesActivity (registrations queried by eventId; each row shows studentId, colour-coded status badge, registration timestamp)  
+[US14]
+
+---
+
+### Storyboard 13 – Social Loop: Finding a Friend and Viewing Their Events
+
+MainActivity (student taps "Find Friends")  
+↓  
+
+AddFriendActivity (all approved students listed; search bar filters by name or roll number in real time)  
+[US9]  
+↓ Student taps "Add" on a row → Firestore arrayUnion appends currentUserId to target's friendRequests; button changes to "Sent"  
+
+Target student opens FriendRequestsActivity (incoming requests listed with Accept / Decline buttons)  
+[US9]  
+↓ Target taps "Accept" → WriteBatch: mutual friendIds updated on both accounts, request removed  
+
+FriendRequestsActivity (accepted row removed; "Friend added!" Toast shown)  
+↓ Original student taps "Friends" on MainActivity  
+
+FriendsEventsActivity (loads current user's friendIds → queries registrations by those IDs → collects unique eventIds → fetches matching events)  
+[US9]  
+↓ EventAdapter displays friends' RSVP'd events using same polished cards as MainActivity; student taps a card  
+
+EventDetailActivity (full event detail; student can RSVP, upvote, or add to calendar)  
+[US3, US4, US5, US6, US8]d has RSVP'd to.
