@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- US7/US11: local notification permission (required on Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- US8: read calendar events may be needed on some devices -->
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
@@ -28,55 +26,18 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".view.MainActivity"
-            android:exported="false"
-            android:label="Discover Events" />
-
-        <activity
-            android:name=".view.EventDetailActivity"
-            android:exported="false"
-            android:label="Event Details" />
-
-        <activity
-            android:name=".view.MyEventsActivity"
-            android:exported="false"
-            android:label="My Events" />
-
-        <activity
-            android:name=".view.OrganizerDashboardActivity"
-            android:exported="false"
-            android:label="Organizer Dashboard" />
-
-        <activity
-            android:name=".view.EditEventActivity"
-            android:exported="false"
-            android:label="Event Form" />
-
-        <activity
-            android:name=".view.AttendeesActivity"
-            android:exported="false"
-            android:label="Attendees" />
-
-        <activity
-            android:name=".view.SignupActivity"
-            android:exported="false"
-            android:label="Sign Up" />
-
-        <activity
-            android:name=".view.AdminDashboardActivity"
-            android:exported="false"
-            android:label="Admin Dashboard" />
-
-        <activity
-            android:name=".view.AddFriendActivity"
-            android:exported="false"
-            android:label="Add Friend" />
-
-        <activity
-            android:name=".view.FriendsEventsActivity"
-            android:exported="false"
-            android:label="Friends Events" />
+        <activity android:name=".view.MainActivity" android:exported="false" />
+        <activity android:name=".view.EventDetailActivity" android:exported="false" />
+        <activity android:name=".view.MyEventsActivity" android:exported="false" />
+        <activity android:name=".view.OrganizerDashboardActivity" android:exported="false" />
+        <activity android:name=".view.EditEventActivity" android:exported="false" />
+        <activity android:name=".view.AttendeesActivity" android:exported="false" />
+        <activity android:name=".view.SignupActivity" android:exported="false" />
+        <activity android:name=".view.AdminDashboardActivity" android:exported="false" />
+        <activity android:name=".view.AddFriendActivity" android:exported="false" />
+        <activity android:name=".view.FriendsEventsActivity" android:exported="false" />
+        <activity android:name=".view.NotificationsActivity" android:exported="false" />
+        <activity android:name=".view.FriendRequestsActivity" android:exported="false" />
 
     </application>
 

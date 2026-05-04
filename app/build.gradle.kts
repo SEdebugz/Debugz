@@ -45,6 +45,9 @@ dependencies {
 
     implementation(libs.work.runtime)
 
+    // Glide for image loading (Task 7)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Defines the event entity used throughout the app's event-discovery workflow.
- * This model stores the details shown in listings and event-detail screens, along with
- * attendee tracking data used for RSVP and remaining-capacity calculations.
- * 
+ * Defines the event entity used throughout the app.
  * ROLE: Model.
  */
 public class Event {
+    public static final String STATUS_PENDING = "PENDING";
+    public static final String STATUS_APPROVED = "APPROVED";
+    public static final String STATUS_REJECTED = "REJECTED";
+
     private String eventId;
     private String title;
     private String description;
@@ -20,35 +21,18 @@ public class Event {
     private String organizerId;
     private int maxCapacity;
     private String price;
-    private String category; // Added for US2
+    private String category;
+    private String status; 
     private List<String> attendeeIds;
-    /** Number of upvotes this event has received (US6). */
     private int upvoteCount;
-    /** Student IDs that have upvoted; prevents double-upvoting (US6). */
     private List<String> upvotedBy;
 
-    /**
-     * Creates an empty event instance for Firebase Firestore deserialization.
-     */
     public Event() {
         this.attendeeIds = new ArrayList<>();
         this.upvotedBy = new ArrayList<>();
+        this.status = STATUS_PENDING;
     }
 
-    /**
-     * Creates an event with the core data needed by the UI and Firestore.
-     *
-     * @param eventId     The unique identifier for the event.
-     * @param title       The name of the event.
-     * @param description Details about what the event is.
-     * @param location    Where the event is taking place.
-     * @param date        The date of the event.
-     * @param time        The time of the event.
-     * @param organizerId The ID of the organizer who created it.
-     * @param maxCapacity The maximum number of attendees allowed.
-     * @param price       The display price of the event (e.g., "Free", "1000 PKR").
-     * @param category    The category of the event (e.g., "Sports", "Talk").
-     */
     public Event(String eventId, String title, String description, String location, String date, String time, String organizerId, int maxCapacity, String price, String category) {
         this.eventId = eventId;
         this.title = title;
@@ -60,6 +44,7 @@ public class Event {
         this.maxCapacity = maxCapacity;
         this.price = price;
         this.category = category;
+        this.status = STATUS_PENDING;
         this.attendeeIds = new ArrayList<>();
         this.upvoteCount = 0;
         this.upvotedBy = new ArrayList<>();
@@ -85,37 +70,31 @@ public class Event {
     public void setPrice(String price) { this.price = price; }
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public List<String> getAttendeeIds() {
         return attendeeIds != null ? attendeeIds : new ArrayList<>();
     }
-
     public void setAttendeeIds(List<String> attendeeIds) {
         this.attendeeIds = attendeeIds != null ? attendeeIds : new ArrayList<>();
+    }
+    public int getUpvoteCount() { return upvoteCount; }
+    public void setUpvoteCount(int upvoteCount) { this.upvoteCount = upvoteCount; }
+    public List<String> getUpvotedBy() {
+        return upvotedBy != null ? upvotedBy : new ArrayList<>();
+    }
+    public void setUpvotedBy(List<String> upvotedBy) {
+        this.upvotedBy = upvotedBy != null ? upvotedBy : new ArrayList<>();
     }
 
     public void addAttendee(String studentId) {
         if (this.attendeeIds == null) this.attendeeIds = new ArrayList<>();
         if (!this.attendeeIds.contains(studentId)) this.attendeeIds.add(studentId);
     }
-
     public void removeAttendee(String studentId) {
         if (this.attendeeIds != null) this.attendeeIds.remove(studentId);
     }
-
-    // ── Upvote helpers (US6) ───────────────────────────────────────────────
-
-    public int getUpvoteCount() { return upvoteCount; }
-    public void setUpvoteCount(int upvoteCount) { this.upvoteCount = upvoteCount; }
-
-    public List<String> getUpvotedBy() {
-        return upvotedBy != null ? upvotedBy : new ArrayList<>();
-    }
-
-    public void setUpvotedBy(List<String> upvotedBy) {
-        this.upvotedBy = upvotedBy != null ? upvotedBy : new ArrayList<>();
-    }
-
     public boolean addUpvote(String studentId) {
         if (this.upvotedBy == null) this.upvotedBy = new ArrayList<>();
         if (this.upvotedBy.contains(studentId)) return false;
@@ -123,7 +102,6 @@ public class Event {
         this.upvoteCount++;
         return true;
     }
-
     public boolean removeUpvote(String studentId) {
         if (this.upvotedBy == null || !this.upvotedBy.contains(studentId)) return false;
         this.upvotedBy.remove(studentId);

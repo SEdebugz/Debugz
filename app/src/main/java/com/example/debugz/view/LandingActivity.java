@@ -19,7 +19,13 @@ import com.google.android.material.textfield.TextInputEditText;
 /**
  * Shared login entry point for all roles.
  * Supports hardcoded master admin login and Firestore-based login for approved users.
- * ROLE: View / Controller.
+ *
+ * ROLE: View (Activity).
+ * DESIGN PATTERN: Controller Pattern (delegates auth logic).
+ *
+ * Outstanding issues:
+ * 1. Biometric authentication is not implemented.
+ * 2. Does not support "Forgot Password" or account recovery flows.
  */
 public class LandingActivity extends AppCompatActivity {
 
@@ -92,14 +98,12 @@ public class LandingActivity extends AppCompatActivity {
             return;
         }
 
-        // 1. Check Master Admin (Hardcoded)
         if (UserSession.ADMIN_USERNAME.equals(username) && UserSession.ADMIN_PASSWORD.equals(password)) {
             UserSession.getInstance(this).login("admin", "Master Admin", UserSession.ROLE_ADMIN);
             navigateByRole(UserSession.ROLE_ADMIN);
             return;
         }
 
-        // 2. Check Firestore for Approved Custom Admins
         setButtonsEnabled(false);
         accountController.login(username, password, UserSession.ROLE_ADMIN, new AccountController.OnLoginListener() {
             @Override

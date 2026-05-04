@@ -16,9 +16,15 @@ import com.example.debugz.models.Account;
 import com.google.android.material.textfield.TextInputEditText;
 
 /**
- * ROLE: Controller Pattern.
- * PURPOSE: Handles user registration for Students, Organizers, and new Admins.
- * All signups are PENDING until an existing admin approves them.
+ * Handles user registration for Students, Organizers, and new Admins.
+ * All signups are PENDING until an existing admin approves them in the dashboard.
+ *
+ * ROLE: View (Activity).
+ * DESIGN PATTERN: Controller Pattern.
+ *
+ * Outstanding issues:
+ * 1. Email format validation is basic; does not strictly enforce @lums.edu.pk domains.
+ * 2. Does not yet support profile picture upload during registration.
  */
 public class SignupActivity extends AppCompatActivity {
 
@@ -49,6 +55,9 @@ public class SignupActivity extends AppCompatActivity {
         tvBack.setOnClickListener(v -> finish());
     }
 
+    /**
+     * Collects form data and submits a new account request to Firestore via the controller.
+     */
     private void submitSignup() {
         String name = getInput(etName);
         String email = getInput(etEmail);
@@ -107,6 +116,9 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Helper to safely extract trimmed text from input fields.
+     */
     private String getInput(TextInputEditText editText) {
         CharSequence text = editText.getText();
         return text != null ? text.toString().trim() : "";

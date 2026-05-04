@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- LUMS Brand Colors (Task 7) -->
+    <color name="primary">#1B4F72</color>
+    <color name="primary_dark">#154360</color>
+    <color name="accent">#E74C3C</color>
+    <color name="accent_light">#FADBD8</color>
+    <color name="surface">#F8F9FA</color>
+    <color name="card_bg">#FFFFFF</color>
+    <color name="text_primary">#1A1A2E</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="success">#27AE60</color>
+    <color name="warning">#F39C12</color>
 
-    <!-- Design System Palette -->
-    <color name="purple_600">#9333ea</color>
-    <color name="pink_600">#ec4899</color>
-    <color name="orange_500">#f97316</color>
+    <!-- Standard Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="glass_white">#CCFFFFFF</color>
 
-    <color name="bg_light">#FDF2F8</color> <!-- Light pinkish background -->
-    <color name="glass_white">#CCFFFFFF</color> <!-- Semi-transparent for glass effect -->
-    <color name="gray_text">#4B5563</color>
+    <!-- Legacy compatibility -->
+    <color name="purple_600">#1B4F72</color>
+    <color name="pink_600">#E74C3C</color>
+    <color name="orange_500">#F39C12</color>
+    <color name="gray_text">#6B7280</color>
 </resources>
